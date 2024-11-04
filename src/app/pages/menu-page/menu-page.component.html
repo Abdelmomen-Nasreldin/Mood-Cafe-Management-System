@@ -1,1 +1,5 @@
-<p>menu-page works!</p>
+<div class="flex gap-[15px]">
+  @for (item of menuItems; track $index) {
+  <app-menu-item [item]="item"></app-menu-item>
+  }
+</div>
