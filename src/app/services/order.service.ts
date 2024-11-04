@@ -1,12 +1,21 @@
 import { Injectable } from '@angular/core';
 import { subDays, isWithinInterval } from 'date-fns'; // Use date-fns for easy date handling
 import { IOrder } from '../models/order';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
   private ordersKey = 'cafe_orders';
+  private _enableOrdering = new BehaviorSubject(false);
+
+  public get enableOrdering() {
+    return this._enableOrdering.asObservable();
+  }
+  public setEnableOrdering(value : boolean) {
+    this._enableOrdering.next(value);
+  }
 
   getOrders() : IOrder[] {
     const orders = localStorage.getItem(this.ordersKey);

@@ -1,5 +1,15 @@
+<div class="btns m-3">
+  <button class="px-4 py-2 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600 me-7"
+    (click)="CreateOrder()">
+    new order
+  </button>
+  <button class="px-4 py-2 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600" (click)="cancel()">
+    cancel
+  </button>
+</div>
+
 <div class="flex gap-[15px]">
   @for (item of menuItems; track $index) {
-  <app-menu-item [item]="item"></app-menu-item>
+  <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
   }
 </div>

@@ -10,5 +10,9 @@ import { IMenuItem } from '../../models/menu-item';
 })
 export class MenuItemComponent {
   @Input({required : true}) item! : IMenuItem;
-  
+  @Input() enableOrdering : boolean = false;
+
+  addToOrder(){
+    
+  }
 }
