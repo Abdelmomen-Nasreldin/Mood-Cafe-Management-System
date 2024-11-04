@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { subDays, isWithinInterval } from 'date-fns'; // Use date-fns for easy date handling
 import { calculateItemTotal, IOrder, IOrderItem } from '../models/order';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -42,37 +42,53 @@ export class OrderService {
     this._orderedSidebarItems.next([]);
   }
 
-  // orders
+  // orders ///////////////////////////////////////////////////////////////
+
+  private _allOrders = new BehaviorSubject<IOrder[]>(this.getOrders());
+
+  public getAllOrders(): Observable<IOrder[]> {
+    return this._allOrders.asObservable();
+  }
+
+  // public setAllOrders(value: IOrder[]) {
+  //   this._allOrders.next(value);
+  // }
+
+  private updateOrdersSubject() {
+    this._allOrders.next(this.getOrders());  // Sync the subject with the latest orders from localStorage
+  }
 
   getOrders(): IOrder[] {
     const orders = localStorage.getItem(this.ordersKey);
     return orders ? JSON.parse(orders) : [];
   }
 
+  saveOrdersToLocalStorage(orders : IOrder[]){
+    localStorage.setItem(this.ordersKey, JSON.stringify(orders));
+    this.updateOrdersSubject();
+  }
+
   saveOrder(order: IOrder) {
     const orders = this.getOrders();
     orders.push(order);
-    localStorage.setItem(this.ordersKey, JSON.stringify(orders));
+    this.saveOrdersToLocalStorage(orders);
   }
 
   deleteOrder(orderId: number) {
     let orders = this.getOrders();
     orders = orders.filter((order: IOrder) => order.orderId !== orderId);
-    localStorage.setItem(this.ordersKey, JSON.stringify(orders));
+    this.saveOrdersToLocalStorage(orders);
   }
 
-  updateOrder(updatedOrder: IOrder) {
-    let orders = this.getOrders();
-    const index = orders.findIndex(
-      (order: IOrder) => order.orderId === updatedOrder.orderId
+  // make sure it works fine
+  updateOrder(updatedOrder: IOrder): void {
+    const orders = this.getOrders().map((order: IOrder) =>
+      order.orderId === updatedOrder.orderId ? updatedOrder : order
     );
-    if (index > -1) {
-      orders[index] = updatedOrder;
-      localStorage.setItem(this.ordersKey, JSON.stringify(orders));
-    }
+    this.saveOrdersToLocalStorage(orders);  // Save and notify
   }
 
-  // tracking orders
+  // tracking orders //////////////////////////////////////////////////////
   getWeeklyOrders() {
     const today = new Date();
     const weekAgo = subDays(today, 7);

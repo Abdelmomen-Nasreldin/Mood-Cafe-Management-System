@@ -1,1 +1,6 @@
 <p>orders-page works!</p>
+@for (order of allOrders; track $index) {
+  <div class="m-3 bg-slate-500">
+    <p>{{order.totalAmount}}</p>
+  </div>
+}

@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { IOrder, IOrderItem } from '../../models/order';
+import { OrderService } from '../../services/order.service';
+import { Subject, takeUntil } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-orders-page',
@@ -7,6 +12,21 @@ import { Component } from '@angular/core';
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss'
 })
-export class OrdersPageComponent {
+export class OrdersPageComponent implements OnInit {
+  private destroy$ = new Subject<void>();
 
+  allOrders : IOrder[]= [];
+
+  constructor(private _orderService : OrderService){}
+
+  ngOnInit(): void {
+    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe((orders => {
+      this.allOrders = orders;
+    }))
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }
