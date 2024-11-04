@@ -13,3 +13,11 @@ export interface IOrder {
   totalAmount: number;
   date: Date;
 }
+
+export function calculateItemTotal(item: IOrderItem): number {
+  return item.price * item.quantity;
+}
+
+export function calculateOrderTotal(items: IOrderItem[]): number {
+  return items.reduce((total, item) => total + item.total, 0);
+}

@@ -1,1 +1,42 @@
-<p>order-sidebar works!</p>
+<h2 class="text-xl">Order Details</h2>
+
+<div class="container mx-auto my-4">
+  <table class="min-w-full border-collapse border border-gray-300 text-gray-800">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="px-4 py-2 border border-gray-300 text-left">#</th>
+        <th class="px-4 py-2 border border-gray-300 text-left">Name</th>
+        <th class="px-4 py-2 border border-gray-300 text-left">quantity</th>
+        <th class="px-4 py-2 border border-gray-300 text-left">total price</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of orderedItems; track $index) {
+      <tr class="odd:bg-gray-100 even:bg-white">
+        <td class="px-4 py-2 border border-gray-300">{{$index+1}}</td>
+        <td class="px-4 py-2 border border-gray-300">{{item.itemName}}</td>
+        <td class="px-4 py-2 border border-gray-300">{{item.quantity}}</td>
+        <td class="px-4 py-2 border border-gray-300">{{item.total}}</td>
+      </tr>
+    }
+    </tbody>
+    <tfoot>
+      <tr class="odd:bg-gray-100 even:bg-white">
+        <td class="px-4 py-2 border border-gray-300"></td>
+        <td class="px-4 py-2 border border-gray-300">total</td>
+        <td class="px-4 py-2 border border-gray-300"></td>
+        <td class="px-4 py-2 border border-gray-300">{{OrderTotal}} EGP</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<div class="flex justify-between items-center">
+  <button class="px-4 py-2 rounded-lg font-semibold bg-green-500 text-white hover:bg-green-600" (click)="saveOrder()">
+    Save Order
+  </button>
+
+  <!-- <button class="px-4 py-2 rounded-lg font-semibold bg-yellow-400 text-white hover:bg-yellow-600" (click)="saveOrder()">
+    Print Order
+  </button> -->
+</div>

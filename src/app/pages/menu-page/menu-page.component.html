@@ -3,7 +3,7 @@
     (click)="CreateOrder()">
     new order
   </button>
-  <button class="px-4 py-2 rounded-lg font-semibold bg-blue-500 text-white hover:bg-blue-600" (click)="cancel()">
+  <button class="px-4 py-2 rounded-lg font-semibold bg-red-500 text-white hover:bg-red-600" (click)="cancel()">
     cancel
   </button>
 </div>
@@ -15,6 +15,6 @@
     }
   </div>
   @if (enableOrdering) {
-    <app-order-sidebar class="basis-[250px] block bg-slate-400"></app-order-sidebar>
+    <app-order-sidebar class=" block bg-slate-600 rounded text-white"></app-order-sidebar>
   }
 </div>

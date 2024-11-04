@@ -28,7 +28,8 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   }
 
   cancel() {
-    this._orderService.setEnableOrdering(false)
+    this._orderService.setEnableOrdering(false);
+    this._orderService.resetOrderedSidebarItems();
   }
 
 
