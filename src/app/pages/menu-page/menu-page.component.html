@@ -8,8 +8,13 @@
   </button>
 </div>
 
-<div class="flex gap-[15px]">
-  @for (item of menuItems; track $index) {
-  <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
+<div class="flex justify-between flex-wrap gap-[15px]">
+  <div class="flex gap-[15px]">
+    @for (item of menuItems; track $index) {
+    <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
+    }
+  </div>
+  @if (enableOrdering) {
+    <app-order-sidebar class="basis-[250px] block bg-slate-400"></app-order-sidebar>
   }
 </div>

@@ -4,11 +4,12 @@ import { MenuService } from '../../services/menu.service';
 import { IMenuItem } from '../../models/menu-item';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
+import { OrderSidebarComponent } from "../../components/order-sidebar/order-sidebar.component";
 
 @Component({
   selector: 'app-menu-page',
   standalone: true,
-  imports: [MenuItemComponent],
+  imports: [MenuItemComponent, OrderSidebarComponent],
   templateUrl: './menu-page.component.html',
   styleUrl: './menu-page.component.scss',
 })
@@ -30,7 +31,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     this._orderService.setEnableOrdering(false)
   }
 
-  
+
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
     this._orderService.enableOrdering.pipe(takeUntil(this.destroy$)).subscribe((value) => {
