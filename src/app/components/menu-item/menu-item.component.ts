@@ -31,7 +31,7 @@ export class MenuItemComponent implements OnInit, OnDestroy {
 
   addToOrder(item: IMenuItem) {
     const orderedItem: IOrderItem = {
-      id: +new Date(),
+      id: `${+new Date()}-${Math.floor(Math.random() * 10000)}`,
       itemName: item.name,
       price: item.price,
       quantity: 1,

@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { IOrder, IOrderItem } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 
 
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss'
 })

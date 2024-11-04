@@ -26,7 +26,7 @@ constructor(private _orderService : OrderService){}
   }
   saveOrder(){
     const order : IOrder = {
-      orderId: +new Date(),
+      orderId: `${+new Date()}-${Math.floor(Math.random() * 10000)}`,
       items: [...this.orderedItems],
       totalAmount: this.OrderTotal,
       date: new Date()

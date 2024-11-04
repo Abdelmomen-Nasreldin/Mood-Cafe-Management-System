@@ -10,7 +10,7 @@
 
 <div class="flex justify-between flex-wrap gap-[15px]">
   <div class="flex gap-[15px]">
-    @for (item of menuItems; track $index) {
+    @for (item of menuItems; track item.id) {
     <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
     }
   </div>

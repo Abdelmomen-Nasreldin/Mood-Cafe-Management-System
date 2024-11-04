@@ -11,7 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (item of orderedItems; track $index) {
+      @for (item of orderedItems; track item.id) {
       <tr class="odd:bg-gray-100 even:bg-white">
         <td class="px-4 py-2 border border-gray-300">{{$index+1}}</td>
         <td class="px-4 py-2 border border-gray-300">{{item.itemName}}</td>

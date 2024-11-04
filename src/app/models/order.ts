@@ -1,6 +1,6 @@
 
 export interface IOrderItem {
-  id: number;
+  id: string;
   itemName: string;
   quantity: number;
   price: number;
@@ -8,7 +8,7 @@ export interface IOrderItem {
 }
 
 export interface IOrder {
-  orderId: number;
+  orderId: string;
   items: IOrderItem[];
   totalAmount: number;
   date: Date;

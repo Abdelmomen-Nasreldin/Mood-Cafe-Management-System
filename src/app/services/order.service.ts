@@ -74,7 +74,7 @@ export class OrderService {
     this.saveOrdersToLocalStorage(orders);
   }
 
-  deleteOrder(orderId: number) {
+  deleteOrder(orderId: string) {
     let orders = this.getOrders();
     orders = orders.filter((order: IOrder) => order.orderId !== orderId);
     this.saveOrdersToLocalStorage(orders);
