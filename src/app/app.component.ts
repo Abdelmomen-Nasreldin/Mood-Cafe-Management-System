@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { Router, Event, NavigationEnd } from '@angular/router';
 import { IStaticMethods } from 'preline/preline';
 import { MenuPageComponent } from "./pages/menu-page/menu-page.component";
+import { AsideComponent } from "./components/aside/aside.component";
 declare global {
   interface Window {
     HSStaticMethods: IStaticMethods;
@@ -12,7 +13,7 @@ declare global {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MenuPageComponent],
+  imports: [RouterOutlet, MenuPageComponent, AsideComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
