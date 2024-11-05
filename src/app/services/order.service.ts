@@ -22,6 +22,11 @@ export class OrderService {
   public getOrderedSidebarItems() {
     return this._orderedSidebarItems.asObservable();
   }
+
+  public setOrderedSidebarItems(orders :IOrderItem[]) {
+    this._orderedSidebarItems.next(orders);
+  }
+
   public addOrderedSidebarItems(orderItem: IOrderItem) {
     const currentOrders = this._orderedSidebarItems.getValue();
     const itemIndex = currentOrders.findIndex(

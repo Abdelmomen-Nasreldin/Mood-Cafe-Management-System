@@ -1,8 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IMenuItem } from '../../models/menu-item';
 import { OrderService } from '../../services/order.service';
-import { calculateItemTotal, IOrderItem } from '../../models/order';
-import { Subject, takeUntil } from 'rxjs';
+import { IOrderItem } from '../../models/order';
 
 @Component({
   selector: 'app-menu-item',
@@ -15,18 +14,9 @@ export class MenuItemComponent implements OnInit, OnDestroy {
   @Input({ required: true }) item!: IMenuItem;
   @Input() enableOrdering: boolean = false;
 
-  private destroy$ = new Subject<void>();
-  orderedItems: IOrderItem[] = [];
-
   constructor(private _orderService: OrderService) {}
 
   ngOnInit(): void {
-    this._orderService
-      .getOrderedSidebarItems()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((items) => {
-        this.orderedItems = items;
-      });
   }
 
   addToOrder(item: IMenuItem) {
@@ -42,7 +32,5 @@ export class MenuItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

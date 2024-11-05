@@ -15,6 +15,6 @@
     }
   </div>
   @if (enableOrdering) {
-    <app-order-sidebar class=" block bg-slate-600 rounded text-white"></app-order-sidebar>
+    <app-order-sidebar class=" block bg-slate-600 rounded text-white" (setOrder)="setOrder($event)"></app-order-sidebar>
   }
 </div>

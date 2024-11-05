@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { calculateItemTotal, calculateOrderTotal, IOrder, IOrderItem } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class OrderSidebarComponent implements OnInit, OnDestroy {
 private destroy$ = new Subject<void>();
+@Output() setOrder = new EventEmitter<IOrder>();
 
 orderedItems : IOrderItem[] = []
 OrderTotal = 0;
@@ -23,7 +24,6 @@ constructor(private _orderService : OrderService){}
       this.orderedItems = items;
 
       this.updateOrderTotal();
-      // console.log(this._orderService.getOrders());
     }))
   }
 
@@ -69,9 +69,8 @@ constructor(private _orderService : OrderService){}
       total: this.OrderTotal,
       date: new Date()
     }
-    // console.log(order);
-    this._orderService.saveOrder(order);
-    this._orderService.resetOrderedSidebarItems();
+
+    this.setOrder.emit(order);
   }
 
   ngOnDestroy(): void {
