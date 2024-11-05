@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { calculateItemTotal, calculateOrderTotal, IOrder, IOrderItem } from '../../models/order';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { OrderService } from '../../services/order.service';
 import { CommonModule } from '@angular/common';
 

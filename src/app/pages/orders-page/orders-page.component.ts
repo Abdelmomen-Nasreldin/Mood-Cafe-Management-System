@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IOrder, IOrderItem } from '../../models/order';
+import { IOrder } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
