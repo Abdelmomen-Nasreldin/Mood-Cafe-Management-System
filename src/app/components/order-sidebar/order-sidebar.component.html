@@ -15,7 +15,9 @@
       <tr class="odd:bg-gray-100 even:bg-white">
         <td class="px-4 py-2 border border-gray-300">{{$index+1}}</td>
         <td class="px-4 py-2 border border-gray-300">{{item.itemName}}</td>
-        <td class="px-4 py-2 border border-gray-300">{{item.quantity}}</td>
+        <td class="px-4 py-2 border border-gray-300 flex justify-between items-center">
+          <span>{{item.quantity}}</span> <div class=""> <span  class="block py-1 px-3 mb-1 bg-slate-500 text-white cursor-pointer" (click)="increaseQuantity(item.id)">+</span> <span class="block py-1 px-3 bg-slate-500 text-white cursor-pointer" (click)="decreaseQuantity(item.id)">-</span></div>
+        </td>
         <td class="px-4 py-2 border border-gray-300">{{item.total}}</td>
       </tr>
     }
