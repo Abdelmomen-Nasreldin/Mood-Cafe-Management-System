@@ -38,6 +38,12 @@ export class OrderService {
     this._orderedSidebarItems.next(currentOrders);
   }
 
+  public deleteOrderedSidebarItem(itemId: string): void {
+    const currentOrders = this._orderedSidebarItems.getValue();
+    const filtered = currentOrders.filter(ele => ele.id !== itemId);
+    this._orderedSidebarItems.next(filtered);
+  }
+
   public resetOrderedSidebarItems(){
     this._orderedSidebarItems.next([]);
   }

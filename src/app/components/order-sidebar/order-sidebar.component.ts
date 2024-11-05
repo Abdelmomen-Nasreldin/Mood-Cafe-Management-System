@@ -2,11 +2,12 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { calculateItemTotal, calculateOrderTotal, IOrder, IOrderItem } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-order-sidebar',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './order-sidebar.component.html',
   styleUrl: './order-sidebar.component.scss'
 })
@@ -51,6 +52,11 @@ constructor(private _orderService : OrderService){}
     this.updateQuantity(id, -1);
   }
 
+  deleteItem(id : string){
+     this.orderedItems = this.orderedItems.filter(ele=>ele.id !== id);
+     this._orderService.deleteOrderedSidebarItem(id);
+     this.updateOrderTotal();
+  }
 
   updateOrderTotal(): void {
     this.OrderTotal = calculateOrderTotal(this.orderedItems);
