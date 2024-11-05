@@ -1,5 +1,20 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { calculateItemTotal, calculateOrderTotal, IOrder, IOrderItem } from '../../models/order';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import {
+  calculateItemTotal,
+  calculateOrderTotal,
+  IOrder,
+  IOrderItem,
+} from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -9,26 +24,30 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './order-sidebar.component.html',
-  styleUrl: './order-sidebar.component.scss'
+  styleUrl: './order-sidebar.component.scss',
 })
 export class OrderSidebarComponent implements OnInit, OnDestroy {
-private destroy$ = new Subject<void>();
-@Output() setOrder = new EventEmitter<IOrder>();
+  private destroy$ = new Subject<void>();
+  @Input() updatedOrder : IOrder | undefined;
+  @Output() setOrder = new EventEmitter<IOrder>();
 
-orderedItems : IOrderItem[] = []
-OrderTotal = 0;
-constructor(private _orderService : OrderService){}
+  orderedItems: IOrderItem[] = [];
+  OrderTotal = 0;
+  constructor(private _orderService: OrderService) {}
 
   ngOnInit(): void {
-    this._orderService.getOrderedSidebarItems().pipe(takeUntil(this.destroy$)).subscribe((items => {
-      this.orderedItems = items;
+    this._orderService
+      .getOrderedSidebarItems()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((items) => {
+        this.orderedItems = items;
 
-      this.updateOrderTotal();
-    }))
+        this.updateOrderTotal();
+      });
   }
 
   updateQuantity(id: string, change: number): void {
-    const itemIndex = this.orderedItems.findIndex(ele => ele.id == id);
+    const itemIndex = this.orderedItems.findIndex((ele) => ele.id == id);
     if (itemIndex == -1) {
       return;
     }
@@ -40,7 +59,9 @@ constructor(private _orderService : OrderService){}
       this.orderedItems[itemIndex].quantity = 1;
     }
 
-    this.orderedItems[itemIndex].total = calculateItemTotal(this.orderedItems[itemIndex]);
+    this.orderedItems[itemIndex].total = calculateItemTotal(
+      this.orderedItems[itemIndex]
+    );
     this.updateOrderTotal();
   }
 
@@ -52,25 +73,31 @@ constructor(private _orderService : OrderService){}
     this.updateQuantity(id, -1);
   }
 
-  deleteItem(id : string){
-     this.orderedItems = this.orderedItems.filter(ele=>ele.id !== id);
-     this._orderService.deleteOrderedSidebarItem(id);
-     this.updateOrderTotal();
+  deleteItem(id: string) {
+    this.orderedItems = this.orderedItems.filter((ele) => ele.id !== id);
+    this._orderService.deleteOrderedSidebarItem(id);
+    this.updateOrderTotal();
   }
 
   updateOrderTotal(): void {
     this.OrderTotal = calculateOrderTotal(this.orderedItems);
   }
 
-  saveOrder(){
-    const order : IOrder = {
-      orderId: `${+new Date()}-${Math.floor(Math.random() * 10000)}`,
-      items: [...this.orderedItems],
-      total: this.OrderTotal,
-      date: new Date()
+  saveOrder() {
+    if (this.updatedOrder) {
+      this.updatedOrder.items = [...this.orderedItems];
+      this.updatedOrder.total = this.OrderTotal;
+      this.updatedOrder.date = new Date();
+      this.setOrder.emit(this.updatedOrder);
+    } else {
+      const order: IOrder = {
+        orderId: `${+new Date()}-${Math.floor(Math.random() * 10000)}`,
+        items: [...this.orderedItems],
+        total: this.OrderTotal,
+        date: new Date(),
+      };
+      this.setOrder.emit(order);
     }
-
-    this.setOrder.emit(order);
   }
 
   ngOnDestroy(): void {

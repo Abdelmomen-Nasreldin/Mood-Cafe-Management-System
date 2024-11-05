@@ -1,0 +1,15 @@
+<div class="btns m-3">
+  <button class="px-4 py-2 rounded-lg font-semibold bg-blue-400 text-white hover:bg-red-500" (click)="cancel()">
+    cancel
+  </button>
+</div>
+
+<div class="flex justify-between flex-wrap gap-[15px]">
+  <div class="flex gap-[15px]">
+    @for (item of menuItems; track item.id) {
+    <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
+    }
+  </div>
+  <app-order-sidebar [updatedOrder]="editedOrder" class=" block bg-slate-600 rounded text-white"
+    (setOrder)="setOrder($event)"></app-order-sidebar>
+</div>

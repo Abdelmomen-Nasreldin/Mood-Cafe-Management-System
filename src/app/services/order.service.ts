@@ -69,14 +69,20 @@ export class OrderService {
     this._allOrders.next(this.getOrders());  // Sync the subject with the latest orders from localStorage
   }
 
+  saveOrdersToLocalStorage(orders : IOrder[]){
+    localStorage.setItem(this.ordersKey, JSON.stringify(orders));
+    this.updateOrdersSubject();
+  }
+
   getOrders(): IOrder[] {
     const orders = localStorage.getItem(this.ordersKey);
     return orders ? JSON.parse(orders) : [];
   }
 
-  saveOrdersToLocalStorage(orders : IOrder[]){
-    localStorage.setItem(this.ordersKey, JSON.stringify(orders));
-    this.updateOrdersSubject();
+  getOrderById(orderId : string){
+    const orders = this.getOrders();
+    const wantedOrder = orders.find(ele=>ele.orderId == orderId);
+    return wantedOrder
   }
 
   saveOrder(order: IOrder) {
@@ -96,7 +102,9 @@ export class OrderService {
     const orders = this.getOrders().map((order: IOrder) =>
       order.orderId === updatedOrder.orderId ? updatedOrder : order
     );
-    this.saveOrdersToLocalStorage(orders);  // Save and notify
+    this.saveOrdersToLocalStorage(orders);
+    console.log(updatedOrder,orders);
+     // Save and notify
   }
 
   // tracking orders //////////////////////////////////////////////////////
