@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { subDays, isWithinInterval } from 'date-fns'; // Use date-fns for easy date handling
 import { calculateItemTotal, IOrder, IOrderItem } from '../models/order';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -107,22 +106,5 @@ export class OrderService {
      // Save and notify
   }
 
-  // tracking orders //////////////////////////////////////////////////////
-  getWeeklyOrders() {
-    const today = new Date();
-    const weekAgo = subDays(today, 7);
-    const orders = this.getOrders();
-    return orders.filter((order) =>
-      isWithinInterval(new Date(order.date), { start: weekAgo, end: today })
-    );
-  }
 
-  getMonthlyOrders() {
-    const today = new Date();
-    const monthAgo = subDays(today, 30);
-    const orders = this.getOrders();
-    return orders.filter((order) =>
-      isWithinInterval(new Date(order.date), { start: monthAgo, end: today })
-    );
-  }
 }

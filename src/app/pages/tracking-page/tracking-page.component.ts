@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TrackingService } from '../../services/tracking.service';
 
 @Component({
   selector: 'app-tracking-page',
@@ -7,6 +8,15 @@ import { Component } from '@angular/core';
   templateUrl: './tracking-page.component.html',
   styleUrl: './tracking-page.component.scss'
 })
-export class TrackingPageComponent {
+export class TrackingPageComponent implements OnInit {
+constructor(private _trackingService : TrackingService){
+
+}
+  ngOnInit(): void {
+    console.log(this._trackingService.getTodayOrdersFrom7AM());
+
+   this._trackingService.getWeeklyOrders()
+  }
+
 
 }
