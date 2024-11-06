@@ -8,8 +8,8 @@
   </button>
 </div>
 
-<div class="flex justify-between flex-wrap gap-[15px]">
-  <div class="flex gap-[15px]">
+<div class="flex justify-between flex-wrap md:flex-nowrap gap-[15px]">
+  <div class="flex flex-wrap gap-[15px]">
     @for (item of menuItems; track item.id) {
     <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
     }
