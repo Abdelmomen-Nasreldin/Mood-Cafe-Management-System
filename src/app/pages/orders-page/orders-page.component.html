@@ -1,4 +1,22 @@
-<h2 class="text-2xl my-3">الطلبات</h2>
+<div class="flex justify-between items-center">
+  <h2 class="text-2xl my-3">طلبات اليوم</h2>
+  <div>
+    <span>من الساعة </span>
+    <select class="w-16" name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
+      @for (item of timeArr; track $index) {
+        <option [value]="item">{{item}}</option>
+      }
+    </select>
+  </div>
+  <h3 class="text-xl"> الاجمالي: {{total}} جنيه</h3>
+</div>
+<div>
+  <span>الترتيب </span>
+  <select class="w-16" name="time" id="time" [(ngModel)]="selectedOrder" (change)="onOrderChange()">
+    <option value="new" >الأحدث</option>
+      <option value="old">الأقدم</option>
+  </select>
+</div>
 <div class="flex flex-wrap">
   @for (order of allOrders; track order.orderId) {
   <div class="m-3 bg-white rounded-lg basis-80 flex flex-col">
