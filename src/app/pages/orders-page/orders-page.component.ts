@@ -45,7 +45,6 @@ export class OrdersPageComponent implements OnInit {
 
   onTimeChange(){
     this.loadOrders();
-    this.sortOrders();
   }
 
   sortOrders (){

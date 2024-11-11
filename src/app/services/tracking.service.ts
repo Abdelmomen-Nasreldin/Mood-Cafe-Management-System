@@ -83,6 +83,7 @@ export class TrackingService {
 
   getOrdersForSpecificDayAt7AM(date: Date): IOrder[] {
     // Set the start time of the specific day to 7 AM
+
     const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 7, 0, 0);
 
     // Set the end time to 6:59:59 AM of the next day (just before 7 AM)
@@ -94,7 +95,7 @@ export class TrackingService {
       isWithinInterval(new Date(order.date), { start: startOfDay, end: endOfDay })
     );
   }
-  
+
 }
 
 

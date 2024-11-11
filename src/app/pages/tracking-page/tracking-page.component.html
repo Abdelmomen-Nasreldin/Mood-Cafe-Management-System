@@ -1,1 +1,85 @@
-<p>tracking-page works!</p>
+<div class="flex justify-between items-baseline flex-wrap gap-3">
+  <h2 class="text-2xl my-3">طلبات اليوم</h2>
+  <div class="flex flex-wrap gap-2">
+    <div>
+      <span> من  </span>
+      <select class="w-36" name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
+        @for (item of timeArr; track $index) {
+        <option [value]="item.value">{{item.text}}</option>
+      }
+    </select>
+  </div>
+  @if (showSelectDate) {
+    <div>
+      <!-- select date -->
+      <app-date-picker (dateChanged)="onDateChanged($event)"></app-date-picker>
+      <p>يوم : {{ selectedDate }}</p>  </div>
+    }
+  </div>
+  <h3 class="text-xl"> الاجمالي: {{total}} جنيه</h3>
+</div>
+<div>
+  <span>الترتيب </span>
+  <select class="w-16" name="time" id="time" [(ngModel)]="selectedOrder" (change)="onOrderChange()">
+    <option value="new" >الأحدث</option>
+      <option value="old">الأقدم</option>
+  </select>
+</div>
+<div class="flex flex-wrap">
+  @for (order of allOrders; track order.orderId) {
+  <div class="m-3 bg-white rounded-lg basis-80 flex flex-col">
+    <div class="p-4 md:p-6">
+      <div class="flex justify-between items-center">
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          الصنف
+        </span>
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          السعر
+        </span>
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          الكمية
+        </span>
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          السعر الكلي
+        </span>
+      </div>
+      @for (item of order.items; track item.id) {
+      <div class="flex items-center">
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          {{item.itemName}}
+        </span>
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          {{item.price}}
+        </span>
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          {{item.quantity}}
+        </span>
+        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+          {{item.total}} جنيه
+        </span>
+      </div>
+      }
+      <h3 class="text-xl font-semibold text-gray-800 dark:text-neutral-300 dark:hover:text-white">
+        الاجمالي : {{order.total}} جنيه
+      </h3>
+      <p class="mt-3 text-gray-500 dark:text-neutral-500">
+        التاريخ : {{order.date | date: 'medium'}}
+      </p>
+    </div>
+    <!-- buttons -->
+    <div
+      class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700">
+      <button
+        class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+        طباعة
+      </button>
+      <!-- no edit here in tracking page -->
+    </div>
+  </div>
+
+  }
+</div>
+
+@if (!allOrders.length) {
+<h3 class="text-center text-3xl p-2">No Orders Yet</h3>
+}
