@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { TrackingService } from '../../services/tracking.service';
-import { calculateOrderTotal, IOrder } from '../../models/order';
+import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TRACKING_PERIODS } from '../../defines/defines';
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
+import { calculateOrderTotal } from '../../utils';
 
 @Component({
   selector: 'app-tracking-page',

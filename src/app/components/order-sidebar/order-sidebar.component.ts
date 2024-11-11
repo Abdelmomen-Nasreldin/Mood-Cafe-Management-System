@@ -7,14 +7,13 @@ import {
   Output,
 } from '@angular/core';
 import {
-  calculateItemTotal,
-  calculateOrderTotal,
   IOrder,
   IOrderItem,
 } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { calculateItemTotal, calculateOrderTotal } from '../../utils';
 
 @Component({
   selector: 'app-order-sidebar',

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { calculateItemTotal, IOrder, IOrderItem } from '../models/order';
+import { IOrder, IOrderItem } from '../models/order';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { calculateItemTotal } from '../utils';
 
 @Injectable({
   providedIn: 'root',

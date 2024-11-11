@@ -1,8 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { calculateItemTotal, calculateOrderTotal, IOrder, IOrderItem } from '../../models/order';
+import { IOrder, IOrderItem } from '../../models/order';
 import { Subject } from 'rxjs';
 import { OrderService } from '../../services/order.service';
 import { CommonModule } from '@angular/common';
+import { calculateItemTotal, calculateOrderTotal } from '../../utils';
 
 @Component({
   selector: 'app-order-edit',

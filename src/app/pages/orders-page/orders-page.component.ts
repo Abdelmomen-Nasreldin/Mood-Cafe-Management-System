@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { calculateOrderTotal, IOrder } from '../../models/order';
+import { IOrder } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,7 @@ import { OrderEditComponent } from '../../components/order-edit/order-edit.compo
 import { Router } from '@angular/router';
 import { PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
+import { calculateOrderTotal } from '../../utils';
 @Component({
   selector: 'app-orders-page',
   standalone: true,
