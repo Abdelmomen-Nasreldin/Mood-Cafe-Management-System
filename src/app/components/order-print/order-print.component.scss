@@ -1,0 +1,47 @@
+.receipt {
+  max-width: 58mm; /* Set width for thermal paper (58mm width, common for receipt printers) */
+  margin: 0 auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 12px; /* Adjust font size for small paper */
+}
+
+.items-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.items-list li {
+  margin-bottom: 5px;
+}
+
+h2, h3 {
+  margin: 5px 0;
+}
+
+@media print {
+  /* Ensure only the receipt is visible during printing */
+  body * {
+    visibility: hidden;
+  }
+  .receipt, .receipt * {
+    visibility: visible;
+  }
+
+  /* Hide print button */
+  button {
+    display: none;
+  }
+
+  /* Ensure proper margins for thermal paper */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .receipt {
+    margin: 0;
+    padding: 0;
+  }
+}

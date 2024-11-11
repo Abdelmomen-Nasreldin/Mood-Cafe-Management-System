@@ -3,7 +3,6 @@ import { IOrder } from '../../models/order';
 import { Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
-import { OrderEditComponent } from '../../components/order-edit/order-edit.component';
 import { Router } from '@angular/router';
 import { PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
@@ -11,7 +10,7 @@ import { calculateOrderTotal } from '../../utils';
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrderEditComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })

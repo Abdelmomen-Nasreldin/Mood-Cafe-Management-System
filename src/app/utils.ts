@@ -21,3 +21,19 @@ export function calculateOrderItemQuantity(items: IOrder[]): Record<string, numb
   }, {} as Record<string, number>);
 }
 
+// export function printReceipt() {
+//   const printContents = document.querySelector('.receipt')?.innerHTML;
+
+//   if (printContents) {
+//     const originalContents = document.body.innerHTML;
+
+//     document.body.innerHTML = printContents;
+//     window.print();
+//     document.body.innerHTML = originalContents;
+//     window.location.reload(); // Reload to restore the original content
+//   } else {
+//     console.error('Receipt content not found!');
+//   }
+// }
+
+

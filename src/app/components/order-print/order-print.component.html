@@ -1,0 +1,16 @@
+<div class="receipt">
+  <h2>{{ cafeName }}</h2>
+  <p>Date: {{ currentDate | date:'short' }}</p>
+  <p>Order #{{ order.orderId }}</p>
+
+  <ul class="items-list">
+    <li *ngFor="let orderItem of order.items">
+      {{ orderItem.quantity }} x {{ orderItem.itemName }} - {{ orderItem.price * orderItem.quantity | currency:'EGP':'symbol-narrow' }}
+    </li>
+  </ul>
+
+  <h3>Total: {{ order.total | currency:'EGP':'symbol-narrow' }}</h3>
+  <p>Thank you for your visit!</p>
+</div>
+
+<button (click)="printReceipt()">Print Receipt</button>
