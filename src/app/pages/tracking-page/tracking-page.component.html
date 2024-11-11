@@ -26,6 +26,10 @@
   </select>
 </div>
 
+@if (printedOrder) {
+  <app-order-print [order]="printedOrder"></app-order-print>
+}
+
 <div class="w-full my-4 bg-white rounded-lg shadow-md dark:bg-neutral-800">
   <div class="hs-accordion-group">
     <div class="hs-accordion active" id="hs-basic-heading-one">
@@ -109,6 +113,7 @@
               <div
                 class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700">
                 <button
+                (click)="printReceipt(order.orderId)"
                   class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
                   طباعة
                 </button>

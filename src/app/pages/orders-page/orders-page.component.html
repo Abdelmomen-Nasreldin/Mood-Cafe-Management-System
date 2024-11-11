@@ -2,72 +2,112 @@
   <h2 class="text-2xl my-3">طلبات اليوم</h2>
   <div>
     <span>من الساعة </span>
-    <select class="w-16" name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
+    <select
+      class="w-16"
+      name="time"
+      id="time"
+      [(ngModel)]="selectedTime"
+      (change)="onTimeChange()"
+    >
       @for (item of timeArr; track $index) {
-        <option [value]="item">{{item}}</option>
+      <option [value]="item">{{ item }}</option>
       }
     </select>
   </div>
-  <h3 class="text-xl bg-gray-900 text-white p-1 rounded"> الاجمالي: {{total}} جنيه</h3>
+  <h3 class="text-xl bg-gray-900 text-white p-1 rounded">
+    الاجمالي: {{ total }} جنيه
+  </h3>
 </div>
 <div>
   <span>الترتيب </span>
-  <select class="w-16" name="time" id="time" [(ngModel)]="selectedOrder" (change)="onOrderChange()">
-    <option value="new" >الأحدث</option>
-      <option value="old">الأقدم</option>
+  <select
+    class="w-16"
+    name="time"
+    id="time"
+    [(ngModel)]="selectedOrder"
+    (change)="onOrderChange()"
+  >
+    <option value="new">الأحدث</option>
+    <option value="old">الأقدم</option>
   </select>
 </div>
+
+@if (printedOrder) {
+  <app-order-print [order]="printedOrder"></app-order-print>
+}
+
 <div class="flex flex-wrap">
   @for (order of allOrders; track order.orderId) {
   <div class="m-3 bg-white rounded-lg basis-80 flex flex-col">
     <div class="p-4 md:p-6">
       <div class="flex justify-between items-center">
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
           الصنف
         </span>
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
           السعر
         </span>
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
           الكمية
         </span>
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
           السعر الكلي
         </span>
       </div>
       @for (item of order.items; track item.id) {
       <div class="flex items-center">
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-          {{item.itemName}}
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
+          {{ item.itemName }}
         </span>
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-          {{item.price}}
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
+          {{ item.price }}
         </span>
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-          {{item.quantity}}
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
+          {{ item.quantity }}
         </span>
-        <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-          {{item.total}} جنيه
+        <span
+          class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4"
+        >
+          {{ item.total }} جنيه
         </span>
       </div>
       }
-      <h3 class="text-xl font-semibold text-gray-800 dark:text-neutral-300 dark:hover:text-white">
-        الاجمالي : {{order.total}} جنيه
+      <h3
+        class="text-xl font-semibold text-gray-800 dark:text-neutral-300 dark:hover:text-white"
+      >
+        الاجمالي : {{ order.total }} جنيه
       </h3>
       <p class="mt-3 text-gray-500 dark:text-neutral-500">
-        التاريخ : {{order.date | date: 'medium'}}
+        التاريخ : {{ order.date | date : "medium" }}
       </p>
     </div>
     <!-- buttons -->
     <div
-      class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700">
+      class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700"
+    >
       <button
-        class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+        class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+        (click)="printReceipt(order.orderId)">
         طباعة
       </button>
       <button
         class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
-        (click)="editOrder(order.orderId)">
+        (click)="editOrder(order.orderId)"
+      >
         تعديل
       </button>
     </div>

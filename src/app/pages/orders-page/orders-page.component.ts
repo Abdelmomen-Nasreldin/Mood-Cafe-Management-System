@@ -7,10 +7,14 @@ import { Router } from '@angular/router';
 import { PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal } from '../../utils';
+import { OrderPrintComponent } from "../../components/order-print/order-print.component";
+import { OrderService } from '../../services/order.service';
+import { HSOverlay } from 'preline/preline';
+import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, OrderPrintComponent],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })
@@ -22,9 +26,12 @@ export class OrdersPageComponent implements OnInit {
   timeArr = Array.from({ length: 24 }, (_, i) => i + 1); // Dynamic array from 1 to 24
   selectedTime = 7;  // Default selected time
   selectedOrder = 'old'
+  printedOrder : IOrder | undefined;
   constructor(
     private _trackingService: TrackingService,
-    private _router: Router
+    private _orderService: OrderService,
+    private _router: Router,
+    private _modalService: ModalService,
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +68,12 @@ export class OrdersPageComponent implements OnInit {
     // navigate to the edit page with the id;
     // in the edit page get the order (id from the url) and update it
     this._router.navigate([PAGES.EDIT, orderId]);
+  }
+
+  printReceipt(orderId : string){
+    // open modal that has the order-print component
+    this.printedOrder =  this._orderService.getOrderById(orderId);
+    this._modalService.openModal();
   }
 
   ngOnDestroy(): void {

@@ -1,28 +1,44 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { IOrder, IOrderItem } from '../../models/order';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { OrderService } from '../../services/order.service';
 import { CommonModule } from '@angular/common';
 import { calculateItemTotal, calculateOrderTotal } from '../../utils';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-order-print',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './order-print.component.html',
-  styleUrl: './order-print.component.scss'
+  styleUrl: './order-print.component.scss',
 })
-export class OrderPrintComponent implements OnChanges {
+export class OrderPrintComponent implements OnInit {
   private destroy$ = new Subject<void>();
-  @Input({required : true}) order! : IOrder;
+  @Input({ required: true }) order!: IOrder;
   currentDate = new Date();
   cafeName = 'Moods Cafe';
+  isModalOpen = false;
 
+  constructor(private _modalService: ModalService) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnInit(): void {
+    this._modalService.modalState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isOpen) => {
+        this.isModalOpen = isOpen;
+      });
   }
 
-  constructor(private _orderService : OrderService){}
+  closeModal() {
+    this._modalService.closeModal();
+  }
 
   printReceipt() {
     const printContents = document.querySelector('.receipt')?.innerHTML;
@@ -39,14 +55,8 @@ export class OrderPrintComponent implements OnChanges {
     }
   }
 
-
-    ngOnInit(): void {
-    }
-
-
-
-    ngOnDestroy(): void {
-      this.destroy$.next();
-      this.destroy$.complete();
-    }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

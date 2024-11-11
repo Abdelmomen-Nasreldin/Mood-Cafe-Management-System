@@ -1,3 +1,6 @@
+.overlay{
+  background: rgba(0, 0, 0, .5);
+}
 .receipt {
   max-width: 58mm; /* Set width for thermal paper (58mm width, common for receipt printers) */
   margin: 0 auto;
