@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TRACKING_PERIODS } from '../../defines/defines';
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
-import { calculateOrderTotal } from '../../utils';
+import { calculateOrderItemQuantity, calculateOrderTotal } from '../../utils';
 
 @Component({
   selector: 'app-tracking-page',
@@ -41,7 +41,7 @@ export class TrackingPageComponent implements OnInit {
 
   selectedDate: string = '';
   showSelectDate = false;
-
+  allQuantities!: Record<string, number>
   constructor(private _trackingService: TrackingService) {}
 
   ngOnInit(): void {
@@ -51,6 +51,12 @@ export class TrackingPageComponent implements OnInit {
   onDateChanged(date: string) {
     this.selectedDate = date;  // Handle the date change event
     this.loadOrders(this.selectedTime)
+  }
+
+  calcQuantities(){
+    this.allQuantities = calculateOrderItemQuantity(this.allOrders);
+    console.log(this.allQuantities);
+
   }
 
   loadOrders(period : string){
@@ -73,9 +79,10 @@ export class TrackingPageComponent implements OnInit {
         break;
     }
 
-    this.sortOrders();
 
     this.total = calculateOrderTotal(this.allOrders);
+    this.calcQuantities();
+    this.sortOrders();
   }
 
   onOrderChange() {
