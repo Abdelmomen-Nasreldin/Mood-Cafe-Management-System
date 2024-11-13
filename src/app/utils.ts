@@ -21,6 +21,15 @@ export function calculateOrderItemQuantity(items: IOrder[]): Record<string, numb
   }, {} as Record<string, number>);
 }
 
+export function sortObjectByValues(obj: Record<string, number>) {
+  return Object.entries(obj)
+    .sort(([, valueA], [, valueB]) => valueA - valueB)
+    .reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, any>);
+}
+
 // export function printReceipt() {
 //   const printContents = document.querySelector('.receipt')?.innerHTML;
 

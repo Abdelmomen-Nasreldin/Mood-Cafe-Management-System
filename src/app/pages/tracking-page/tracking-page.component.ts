@@ -3,7 +3,7 @@ import { TrackingService } from '../../services/tracking.service';
 import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TRACKING_PERIODS } from '../../defines/defines';
+import { TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
 import { calculateOrderItemQuantity, calculateOrderTotal } from '../../utils';
 import { ModalService } from '../../services/modal.service';
@@ -22,24 +22,7 @@ export class TrackingPageComponent implements OnInit {
   total = 0;
   selectedOrder = 'old';
   selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
-  timeArr: { text: string; value: string }[] = [
-    {
-      text: 'من أول الشهر',
-      value: TRACKING_PERIODS.FROM_1ST_OF_MONTH,
-    },
-    {
-      text: ' أخر 30 يوم',
-      value: TRACKING_PERIODS.LAST_30_DAYS,
-    },
-    {
-      text: ' أخر 7 أيام',
-      value: TRACKING_PERIODS.LAST_7_DAYS,
-    },
-    {
-      text: 'تاربخ معين',
-      value: TRACKING_PERIODS.CUSTOM_DAY,
-    },
-  ];
+  timeArr = TRACKING_TIME;
 
   selectedDate: string = '';
   showSelectDate = false;
