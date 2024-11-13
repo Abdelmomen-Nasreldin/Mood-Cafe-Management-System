@@ -4,6 +4,8 @@
   </button>
 </div>
 
+<input type="search" name="searchItem" id="searchItem"  (input)="filterItems($event)" class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+
 <div class="flex justify-between flex-wrap md:flex-nowrap gap-[15px]">
   <div class="flex flex-wrap gap-[15px]">
     @for (item of menuItems; track item.id) {

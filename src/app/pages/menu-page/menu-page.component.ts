@@ -4,7 +4,7 @@ import { MenuService } from '../../services/menu.service';
 import { IMenuItem } from '../../models/menu-item';
 import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
-import { OrderSidebarComponent } from "../../components/order-sidebar/order-sidebar.component";
+import { OrderSidebarComponent } from '../../components/order-sidebar/order-sidebar.component';
 import { IOrder } from '../../models/order';
 
 @Component({
@@ -18,6 +18,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   menuItems: IMenuItem[] = [];
+  filteredItems: IMenuItem[] = [];
   enableOrdering = false;
   constructor(
     private _menuService: MenuService,
@@ -25,7 +26,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   ) {}
 
   CreateOrder() {
-    this._orderService.setEnableOrdering(true)
+    this._orderService.setEnableOrdering(true);
   }
 
   cancel() {
@@ -33,23 +34,37 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     this._orderService.resetOrderedSidebarItems();
   }
 
-
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
-    this._orderService.enableOrdering.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.enableOrdering = value;
-    });
+    this.filteredItems = [...this.menuItems];
+    this._orderService.enableOrdering
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.enableOrdering = value;
+      });
   }
 
-  setOrder(order: IOrder){
+  setOrder(order: IOrder) {
     this._orderService.saveOrder(order);
     this._orderService.resetOrderedSidebarItems();
   }
 
-  ngOnDestroy(): void {
-   this.destroy$.next();
-   this.destroy$.complete();
+  filterItems(event: Event) {
+    const input = event.target as HTMLInputElement; // Type assertion
+    const value = input.value;
+    if (value) {
+      this.filteredItems = this.menuItems.filter((item) =>
+        item.name.includes(value)
+      );
+    } else {
+      this.filteredItems = [...this.menuItems]; // Reset to full list if no input
+    }
+  }
 
-   this._orderService.setEnableOrdering(false);
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+
+    this._orderService.setEnableOrdering(false);
   }
 }

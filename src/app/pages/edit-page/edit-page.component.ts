@@ -18,6 +18,7 @@ import { PAGES } from '../../defines/defines';
 export class EditPageComponent {
 
   menuItems: IMenuItem[] = [];
+  filteredItems: IMenuItem[] = [];
   enableOrdering = true;
   orderId = '';
   editedOrder : IOrder | undefined;
@@ -38,6 +39,8 @@ export class EditPageComponent {
 
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
+    this.filteredItems = [...this.menuItems];
+
     // get the orderId from the url
     this._activatedRoute.params.subscribe((data)=>{
       this.orderId = data['orderId'];
@@ -61,4 +64,15 @@ export class EditPageComponent {
     this._router.navigate([PAGES.ORDERS]);
   }
 
+  filterItems(event: Event) {
+    const input = event.target as HTMLInputElement; // Type assertion
+    const value = input.value;
+    if (value) {
+      this.filteredItems = this.menuItems.filter((item) =>
+        item.name.includes(value)
+      );
+    } else {
+      this.filteredItems = [...this.menuItems]; // Reset to full list if no input
+    }
+  }
 }
