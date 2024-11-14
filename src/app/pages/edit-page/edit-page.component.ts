@@ -40,7 +40,6 @@ export class EditPageComponent {
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
     this.filteredItems = [...this.menuItems];
-
     // get the orderId from the url
     this._activatedRoute.params.subscribe((data)=>{
       this.orderId = data['orderId'];
