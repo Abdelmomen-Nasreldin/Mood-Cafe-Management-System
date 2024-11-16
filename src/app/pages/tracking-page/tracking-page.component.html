@@ -18,6 +18,8 @@
   </div>
   <h3 class="text-xl bg-gray-900 text-white p-1 rounded"> الاجمالي: {{total}} جنيه</h3>
 </div>
+<div class="flex flex-wrap justify-between items-baseline">
+
 <div class="my-2">
   <span>الترتيب </span>
   <select class="w-16" name="time" id="time" [(ngModel)]="selectedOrder" (change)="onOrderChange()">
@@ -26,6 +28,9 @@
   </select>
 </div>
 
+<p class="bg-gray-900 text-white p-2 rounded">عدد الطلبات : {{allOrders.length}}</p>
+
+</div>
 @if (printedOrder) {
   <app-order-print [order]="printedOrder"></app-order-print>
 }
@@ -75,9 +80,6 @@
                 <span class="">
                   الاسم : {{order.customerName || 'لا يوجد'}}
                 </span>
-                <!-- <span class="">
-                  اوردر رقم : {{order.orderNo}}
-                </span> -->
               </div>
               <div class="p-4 md:p-6">
                 <div class="flex justify-between items-center">
