@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IOrder } from '../../models/order';
 import { Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -20,8 +20,8 @@ import { ModalService } from '../../services/modal.service';
 })
 export class OrdersPageComponent implements OnInit {
   private destroy$ = new Subject<void>();
-
   allOrders: IOrder[] = [];
+  filteredOrders: IOrder[] = [];
   total = 0;
   timeArr = Array.from({ length: 24 }, (_, i) => i + 1); // Dynamic array from 1 to 24
   selectedTime = 7;  // Default selected time
@@ -47,6 +47,7 @@ export class OrdersPageComponent implements OnInit {
     // }))
     this.sortOrders();
     this.total = calculateOrderTotal(this.allOrders);
+    this.filteredOrders = [...this.allOrders];
   }
 
   onTimeChange(){
@@ -74,6 +75,18 @@ export class OrdersPageComponent implements OnInit {
     // open modal that has the order-print component
     this.printedOrder =  this._orderService.getOrderById(orderId);
     this._modalService.openModal();
+  }
+
+  searchByCustomerName(event: Event){
+    const input = event.target as HTMLInputElement; // Type assertion
+    const value = input.value;
+    if (value) {
+      this.filteredOrders = this.allOrders.filter((order) =>
+        order.customerName.includes(value)
+      );
+    } else {
+      this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
+    }
   }
 
   ngOnDestroy(): void {
