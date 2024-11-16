@@ -55,10 +55,16 @@ export class TrackingService {
 
   // Get orders for today starting from 7 AM
   getTodayOrdersFrom7AM(): IOrder[] {
+    const startHour = 7;
     const today = new Date();
-    const customStartTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 7, 0, 0); // Today at 7 AM
     const now = new Date(); // Current time
-
+    // Create a new Date object for today with the custom start hour
+    let customStartTime: Date
+    if (now.getHours() <= 6) {
+      customStartTime = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, startHour, 0, 0);
+    } else {
+      customStartTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHour, 0, 0);
+    }
     return this.getOrdersWithinRange(customStartTime, now);
   }
 

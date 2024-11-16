@@ -9,6 +9,7 @@ import { calculateOrderItemQuantity, calculateOrderTotal } from '../../utils';
 import { ModalService } from '../../services/modal.service';
 import { OrderService } from '../../services/order.service';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
+import { ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-tracking-page',
@@ -39,7 +40,8 @@ export class TrackingPageComponent implements OnInit {
   constructor(
     private _trackingService: TrackingService,
     private _modalService: ModalService,
-    private _orderService: OrderService
+    private _orderService: OrderService,
+    private _exportService: ExportService,
   ) {}
 
   ngOnInit(): void {
@@ -131,4 +133,7 @@ export class TrackingPageComponent implements OnInit {
     this.calcQuantities();
   }
 
+  exportOrdersToCSV() {
+    this._exportService.exportOrdersToCSV(this.allOrders);
+  }
 }

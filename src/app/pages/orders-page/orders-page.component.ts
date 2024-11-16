@@ -9,7 +9,6 @@ import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal } from '../../utils';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { OrderService } from '../../services/order.service';
-import { HSOverlay } from 'preline/preline';
 import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'app-orders-page',
@@ -25,7 +24,7 @@ export class OrdersPageComponent implements OnInit {
   allOrders: IOrder[] = [];
   filteredOrders: IOrder[] = [];
   total = 0;
-  timeArr = Array.from({ length: 24 }, (_, i) => i + 1); // Dynamic array from 1 to 24
+  timeArr = Array.from({ length: 24 - 7 + 1 }, (_, i) => i + 7); // Dynamic array from 1 to 24
   selectedTime = 7;  // Default selected time
   selectedOrder = 'old'
   printedOrder : IOrder | undefined;
