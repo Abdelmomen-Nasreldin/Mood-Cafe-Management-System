@@ -92,7 +92,7 @@ export class OrderSidebarComponent implements OnInit, OnDestroy {
     if (this.updatedOrder) {
       this.updatedOrder.items = [...this.orderedItems];
       this.updatedOrder.total = this.OrderTotal;
-      // this.updatedOrder.date = new Date();
+      this.updatedOrder.customerName = this.customerName.nativeElement.value.trim() || this.updatedOrder.customerName;
       this.setOrder.emit(this.updatedOrder);
     } else {
       const order: IOrder = {

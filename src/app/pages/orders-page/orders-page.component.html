@@ -41,7 +41,7 @@
   <div class="m-3 bg-white rounded-lg basis-72 flex flex-col">
     <div class="p-2 flex justify-between items-baseline flex-wrap gap-2">
       <span class="">
-        الاسم : {{order.customerName}}
+        الاسم : {{order.customerName || 'لا يوجد'}}
       </span>
       <span class="">
         اوردر رقم : {{order.orderNo}}

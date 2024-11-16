@@ -71,6 +71,14 @@
           <div class="flex flex-wrap">
             @for (order of allOrders; track order.orderId) {
             <div class="m-3 bg-white rounded-lg basis-80 flex flex-col">
+              <div class="p-2 flex justify-between items-baseline flex-wrap gap-2">
+                <span class="">
+                  الاسم : {{order.customerName || 'لا يوجد'}}
+                </span>
+                <!-- <span class="">
+                  اوردر رقم : {{order.orderNo}}
+                </span> -->
+              </div>
               <div class="p-4 md:p-6">
                 <div class="flex justify-between items-center">
                   <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
