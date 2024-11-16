@@ -20,6 +20,8 @@ import { ModalService } from '../../services/modal.service';
 })
 export class OrdersPageComponent implements OnInit {
   private destroy$ = new Subject<void>();
+  @ViewChild('customerNameInput') customerNameInput! : ElementRef<HTMLInputElement>
+
   allOrders: IOrder[] = [];
   filteredOrders: IOrder[] = [];
   total = 0;
@@ -48,6 +50,9 @@ export class OrdersPageComponent implements OnInit {
     this.sortOrders();
     this.total = calculateOrderTotal(this.allOrders);
     this.filteredOrders = [...this.allOrders];
+    if (this.customerNameInput) {
+      this.customerNameInput.nativeElement.value = '';
+    }
   }
 
   onTimeChange(){
@@ -61,6 +66,7 @@ export class OrdersPageComponent implements OnInit {
       this.allOrders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }
   }
+
   onOrderChange(){
     this.sortOrders();
   }

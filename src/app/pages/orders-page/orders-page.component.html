@@ -42,7 +42,7 @@
 
 <div class="flex flex-wrap gap-2 items-center my-2">
   <p>ابحث بأسم العميل :</p>
-  <input type="search" name="searchOrder" id="searchOrder"  (input)="searchByCustomerName($event)" class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+  <input type="search" name="searchOrder" id="searchOrder"  (input)="searchByCustomerName($event)" #customerNameInput class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
 </div>
 
 <div class="flex flex-wrap">
