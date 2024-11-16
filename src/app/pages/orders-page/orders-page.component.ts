@@ -9,7 +9,6 @@ import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal } from '../../utils';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { OrderService } from '../../services/order.service';
-import { HSOverlay } from 'preline/preline';
 import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'app-orders-page',
