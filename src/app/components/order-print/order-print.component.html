@@ -22,6 +22,10 @@
           <h2>{{ cafeName }}</h2>
           <p>Date: {{ currentDate | date:'short' }}</p>
           <p>Order #{{ order.orderId }}</p>
+          @if (order.customerName) {
+            <p>الاسم : {{order.customerName}}
+            </p>
+          }
 
           <ul class="items-list">
             <li *ngFor="let orderItem of order.items">
