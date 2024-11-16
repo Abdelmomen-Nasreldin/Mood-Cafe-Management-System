@@ -34,9 +34,13 @@
 @if (printedOrder) {
   <app-order-print [order]="printedOrder"></app-order-print>
 }
-<div class="flex flex-wrap gap-2 items-center my-2">
-  <p>ابحث بأسم العميل :</p>
-  <input type="search" name="searchOrderTracking" id="searchOrderTracking"  (input)="searchByCustomerName($event)" #customerNameInput class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+<div class="flex flex-wrap gap-2 items-center my-2 justify-between">
+  <div class="flex flex-wrap gap-2 items-center my-2">
+    <p>ابحث بأسم العميل :</p>
+    <input type="search" name="searchOrderTracking" id="searchOrderTracking"  (input)="searchByCustomerName($event)" #customerNameInput class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+  </div>
+  <button class="p-2 bg-green-500 text-white rounded" (click)="exportOrdersToCSV()">export Orders To CSV</button>
+
 </div>
 
 <div class="w-full my-4 bg-white rounded-lg shadow-md dark:bg-neutral-800">
