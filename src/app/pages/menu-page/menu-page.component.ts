@@ -51,7 +51,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
 
   filterItems(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const value = input.value;
+    const value = input.value.trim();
     if (value) {
       this.filteredItems = this.menuItems.filter((item) =>
         item.name.includes(value)
