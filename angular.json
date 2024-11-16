@@ -20,6 +20,7 @@
             "outputPath": "dist/moods-cafe",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "baseHref": "/moods-cafe/",
             "polyfills": [
               "zone.js"
             ],
