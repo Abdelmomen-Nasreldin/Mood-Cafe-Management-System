@@ -25,7 +25,7 @@ export class OrdersPageComponent implements OnInit {
   allOrders: IOrder[] = [];
   filteredOrders: IOrder[] = [];
   total = 0;
-  timeArr = Array.from({ length: 24 }, (_, i) => i + 1); // Dynamic array from 1 to 24
+  timeArr = Array.from({ length: 24 - 7 + 1 }, (_, i) => i + 7); // Dynamic array from 1 to 24
   selectedTime = 7;  // Default selected time
   selectedOrder = 'old'
   printedOrder : IOrder | undefined;
