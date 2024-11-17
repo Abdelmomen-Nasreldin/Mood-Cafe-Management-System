@@ -9,8 +9,8 @@ import { saveAs } from 'file-saver';
 export class ExportService {
   // Export orders to CSV
   exportOrdersToCSV(orders: IOrder[]): void {
-    // Create an object to aggregate items by their name
-    const aggregatedItems: { [key: string]: { totalQuantity: number, totalPrice: number } } = {};
+    // Create an object to aggregate items by their English name
+    const aggregatedItems: { [key: string]: { totalQuantity: number, totalPrice: number, itemName: string } } = {};
 
     // Loop through all orders and their items
     orders.forEach(order => {
@@ -23,17 +23,19 @@ export class ExportService {
           // Otherwise, initialize the aggregated item
           aggregatedItems[item.itemEnglishName] = {
             totalQuantity: item.quantity,
-            totalPrice: item.total
+            totalPrice: item.total,
+            itemName: item.itemName // Store both itemName and itemEnglishName
           };
         }
       });
     });
 
     // Convert the aggregated items object to an array for CSV export
-    const aggregatedData = Object.keys(aggregatedItems).map(itemName => ({
-      ItemName: itemName,
-      TotalQuantity: aggregatedItems[itemName].totalQuantity,
-      TotalPrice: aggregatedItems[itemName].totalPrice
+    const aggregatedData = Object.keys(aggregatedItems).map(itemEnglishName => ({
+      ItemName: aggregatedItems[itemEnglishName].itemName, // Original item name
+      ItemEnglishName: itemEnglishName,  // English name of the item
+      TotalQuantity: aggregatedItems[itemEnglishName].totalQuantity,
+      TotalPrice: aggregatedItems[itemEnglishName].totalPrice
     }));
 
     // Generate CSV using PapaParse
