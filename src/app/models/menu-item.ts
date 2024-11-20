@@ -4,6 +4,6 @@ export interface IMenuItem {
   english_name: string;
   price: number;
   image? : string,
-  selected?:boolean,
+  isSelected?:boolean,
   category?:string
 }
