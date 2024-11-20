@@ -1,53 +1,67 @@
-<h2 class="text-xl">Order Details</h2>
+<div class="order-details-container xl:rounded bg-secondary p-5 shadow-md sm:fixed left-[-400px] xl:left-[20px] top-[5rem] h-100 xl:show min-w-[400px]" [ngClass]="{'show': showOrderDetails}">
+  <button class="text-beige absolute top-[10px] left-[10px] border-0 cursor-pointer xl:hidden" (click)="closeOrderDetails()">X</button>
 
+<h2 class="text-xl text-white font-bold">Order Details</h2>
+@if(orderedItems.length==0){
+  <svg class="icon icon-illustration-empty-cart mt-4" ><use xlink:href="#icon-illustration-empty-cart"></use></svg>
+  <p class="text-center text-beige">Your added items will appear here</p>
+}
+@else{
 <div class="container mx-auto my-4">
   <div>
-    <p>ادخل الاسم</p>
+    <p class="font-semibold text-beige">ادخل الاسم</p>
     <input type="text" name="customerName" id="customerName" class="text-gray-800 p-2 my-2 rounded w-full" #customerName >
   </div>
-  <table class="min-w-full border-collapse border border-gray-300 text-gray-800">
-    <thead>
-      <tr class="bg-gray-200">
-        <th class="px-4 py-2 border border-gray-300 text-left">#</th>
-        <th class="px-4 py-2 border border-gray-300 text-left">Name</th>
-        <th class="px-4 py-2 border border-gray-300 text-left">quantity</th>
-        <th class="px-4 py-2 border border-gray-300 text-left">total price</th>
-        <th class="px-4 py-2 border border-gray-300 text-left">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (item of orderedItems; track item.id) {
-      <tr class="odd:bg-gray-100 even:bg-white">
-        <td class="px-4 py-2 border border-gray-300">{{$index+1}}</td>
-        <td class="px-4 py-2 border border-gray-300">{{item.itemName}}</td>
-        <td class="px-4 py-2 border border-gray-300 flex justify-between items-center">
-          <span>{{item.quantity}}</span> <div class=""> <span  class="block py-1 px-3 mb-1 bg-slate-500 text-white cursor-pointer" (click)="increaseQuantity(item.id)">+</span> <span class="block py-1 px-3 bg-slate-500 text-white cursor-pointer" (click)="decreaseQuantity(item.id)">-</span></div>
-        </td>
-        <td class="px-4 py-2 border border-gray-300">{{item.total}}</td>
-        <td class="px-4 py-2 border border-gray-300 cursor-pointer hover:bg-red-400" (click)="deleteItem(item.id)"> <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 24 24" fill="none">
-          <path d="M3 6.38597C3 5.90152 3.34538 5.50879 3.77143 5.50879L6.43567 5.50832C6.96502 5.49306 7.43202 5.11033 7.61214 4.54412C7.61688 4.52923 7.62232 4.51087 7.64185 4.44424L7.75665 4.05256C7.8269 3.81241 7.8881 3.60318 7.97375 3.41617C8.31209 2.67736 8.93808 2.16432 9.66147 2.03297C9.84457 1.99972 10.0385 1.99986 10.2611 2.00002H13.7391C13.9617 1.99986 14.1556 1.99972 14.3387 2.03297C15.0621 2.16432 15.6881 2.67736 16.0264 3.41617C16.1121 3.60318 16.1733 3.81241 16.2435 4.05256L16.3583 4.44424C16.3778 4.51087 16.3833 4.52923 16.388 4.54412C16.5682 5.11033 17.1278 5.49353 17.6571 5.50879H20.2286C20.6546 5.50879 21 5.90152 21 6.38597C21 6.87043 20.6546 7.26316 20.2286 7.26316H3.77143C3.34538 7.26316 3 6.87043 3 6.38597Z" fill="#1C274C"/>
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5956 22.0001H12.4044C15.1871 22.0001 16.5785 22.0001 17.4831 21.1142C18.3878 20.2283 18.4803 18.7751 18.6654 15.8686L18.9321 11.6807C19.0326 10.1037 19.0828 9.31524 18.6289 8.81558C18.1751 8.31592 17.4087 8.31592 15.876 8.31592H8.12404C6.59127 8.31592 5.82488 8.31592 5.37105 8.81558C4.91722 9.31524 4.96744 10.1037 5.06788 11.6807L5.33459 15.8686C5.5197 18.7751 5.61225 20.2283 6.51689 21.1142C7.42153 22.0001 8.81289 22.0001 11.5956 22.0001ZM10.2463 12.1886C10.2051 11.7548 9.83753 11.4382 9.42537 11.4816C9.01321 11.525 8.71251 11.9119 8.75372 12.3457L9.25372 17.6089C9.29494 18.0427 9.66247 18.3593 10.0746 18.3159C10.4868 18.2725 10.7875 17.8856 10.7463 17.4518L10.2463 12.1886ZM14.5746 11.4816C14.9868 11.525 15.2875 11.9119 15.2463 12.3457L14.7463 17.6089C14.7051 18.0427 14.3375 18.3593 13.9254 18.3159C13.5132 18.2725 13.2125 17.8856 13.2537 17.4518L13.7537 12.1886C13.7949 11.7548 14.1625 11.4382 14.5746 11.4816Z" fill="#1C274C"/>
-          </svg></td>
-      </tr>
+<div class="overflow-y-auto max-h-[400px] px-2 order-details" >
+  @for (item of orderedItems; track item.id) {
+    <div class="mb-[30px]">
+      <h3 class="m-0 font-bold"> {{item.itemName}}</h3>
+      <div class="px-4 flex justify-between items-center">
+      <div class="flex justify-between items-center min-w-[40%]">
+        <span class="text-roseLight1">{{'x' + item.quantity}}</span>
+        <div>
+          <span class="mx-1 text-roseLight2">{{item.price +'@'}}</span>
+          <span class="text-beige font-bold mx-2">{{item.total}} جنيه</span>
+        </div>
+      </div>
+      <div class="flex justify-between bg-beige  rounded-full "> <span  class="block px-2 me-8 shadow-md rounded-full text-secondary border-2 border-secondary cursor-pointer  font-bold hover:bg-secondary hover:text-beige" (click)="increaseQuantity(item.id)">+</span> <span class="block shadow-md   px-2 rounded-full text-secondary border-2 border-secondary  font-bold cursor-pointer hover:bg-secondary hover:text-beige" (click)="decreaseQuantity(item.id)">-</span></div>
+
+      <div class="py-0 my-2 px-2 border border-cream text-beige rounded-full cursor-pointer hover:text-beige" (click)="deleteItem(item.id)">
+          x
+        </div>
+      </div>
+      <hr class="mt-2">
+      </div>
     }
-    </tbody>
-    <tfoot>
-      <tr class="odd:bg-gray-100 even:bg-white">
-        <td class="px-4 py-2 border border-gray-300"></td>
-        <td class="px-4 py-2 border border-gray-300">total</td>
-        <td class="px-4 py-2 border border-gray-300"></td>
-        <td class="px-4 py-2 border border-gray-300">{{OrderTotal}} جنيه</td>
-      </tr>
-    </tfoot>
-  </table>
+    </div>
+
+    <div class="flex justify-between">
+      <h3 class="px-4 py-2 text-beige">الاجمالي</h3>
+      <p class="text-white text-3xl">{{OrderTotal}} جنيه</p>
+    </div>
 </div>
 
 <div class="flex justify-between items-center">
-  <button class="px-4 py-2 rounded-lg font-semibold text-white" [ngClass]="{ 'bg-gray-500 cursor-not-allowed': !orderedItems.length, 'bg-green-500': orderedItems.length }" (click)="saveOrder()" [disabled]="!orderedItems.length">
-    Save Order
+  <button class="px-4 py-2 rounded-full w-full font-semibold text-secondary" [ngClass]="{ 'bg-gray-500 cursor-not-allowed': !orderedItems.length, 'bg-beige': orderedItems.length }" (click)="saveOrder()" [disabled]="!orderedItems.length">
+    حفظ الطلب
   </button>
 
   <!-- <button class="px-4 py-2 rounded-lg font-semibold bg-yellow-400 text-white hover:bg-yellow-600" (click)="saveOrder()">
     Print Order
   </button> -->
 </div>
+}
+</div>
+
+<svg class="hidden">
+  <symbol id="icon-illustration-empty-cart" viewBox="0 0 32 32">
+    <path fill="#260f08" style="fill: var(--color1, #260f08)" opacity="0.15" d="M2.109 27.602c0 0.265 1.159 0.52 3.222 0.707s4.861 0.293 7.778 0.293c2.917 0 5.715-0.105 7.778-0.293s3.222-0.442 3.222-0.707-1.159-0.52-3.222-0.707c-2.063-0.188-4.861-0.293-7.778-0.293s-5.715 0.105-7.778 0.293c-2.063 0.188-3.222 0.442-3.222 0.707z"></path>
+    <path fill="#87635a" style="fill: var(--color2, #87635a)" d="M29.996 6.055l-11.787 1.44 1.080 8.84 11.193-1.367c0.243-0.029 0.439-0.202 0.503-0.429l0.001-0.004c0.021-0.076 0.026-0.155 0.016-0.233l-1.006-8.246z"></path>
+    <path fill="#ad8a85" style="fill: var(--color3, #ad8a85)" d="M18.64 11.036l11.787-1.438 0.359 2.944-11.785 1.44-0.36-2.945z"></path>
+    <path fill="#caafa7" style="fill: var(--color4, #caafa7)" d="M21.409 9.195c-0.042-0.294-0.292-0.518-0.594-0.518-0.026 0-0.051 0.002-0.075 0.005l0.003-0c-0.294 0.039-0.518 0.288-0.518 0.589 0 0.027 0.002 0.054 0.005 0.081l-0-0.003 0.073 0.587c0 0.010 0.001 0.021 0.001 0.032 0 0.493-0.4 0.893-0.893 0.893-0.427 0-0.784-0.3-0.872-0.7l-0.001-0.006-0.327-2.667 3.62-4.22c4.813-0.173 8.533 0.9 8.753 2.7l0.32 2.633c0.001 0.011 0.002 0.024 0.002 0.037 0 0.162-0.131 0.293-0.293 0.293-0.015 0-0.030-0.001-0.044-0.003l0.002 0c-0.503-0.098-0.886-0.507-0.946-1.014l-0.001-0.006c-0.038-0.295-0.288-0.521-0.59-0.521-0.328 0-0.595 0.266-0.595 0.595 0 0.026 0.002 0.051 0.005 0.076l-0-0.003 0.073 0.587c0.003 0.022 0.004 0.047 0.004 0.073 0 0.139-0.047 0.266-0.126 0.367l0.001-0.001c-0.095 0.121-0.234 0.204-0.393 0.224l-0.003 0c-0.022 0.003-0.047 0.005-0.073 0.005-0.138 0-0.266-0.047-0.367-0.126l0.001 0.001c-0.121-0.095-0.204-0.234-0.224-0.393l-0-0.003c-0.029-0.241-0.199-0.436-0.425-0.501l-0.004-0.001c-0.048-0.014-0.104-0.022-0.161-0.022-0.189 0-0.357 0.088-0.466 0.225l-0.001 0.001c-0.079 0.1-0.127 0.228-0.127 0.367 0 0.025 0.002 0.049 0.004 0.073l-0-0.003 0.073 0.593c0.006 0.043 0.009 0.094 0.009 0.144 0 0.656-0.532 1.188-1.188 1.188-0.278 0-0.534-0.095-0.736-0.255l0.003 0.002c-0.242-0.191-0.407-0.469-0.446-0.787l-0.001-0.006-0.107-0.887c-0.035-0.294-0.282-0.519-0.583-0.519-0.030 0-0.059 0.002-0.087 0.006l0.003-0c-0.297 0.039-0.524 0.291-0.524 0.595 0 0.025 0.002 0.050 0.005 0.074l-0-0.003 0.040 0.293c0.003 0.022 0.005 0.047 0.005 0.073 0 0.328-0.266 0.595-0.595 0.595-0.302 0-0.552-0.226-0.59-0.518l-0-0.003-0.027-0.32z"></path>
+    <path fill="#87635a" style="fill: var(--color2, #87635a)" d="M1.863 12.948c-0.24 2.12 4.186 4.36 9.867 4.987s10.52-0.54 10.76-2.667l-0.987 8.873c-0.24 2.12-5.060 3.334-10.76 2.667s-10.127-2.873-9.886-5.013l1.006-8.847z"></path>
+    <path fill="#ad8a85" style="fill: var(--color3, #ad8a85)" d="M1.456 16.488c-0.24 2.113 4.186 4.36 9.893 5.007s10.513-0.547 10.753-2.667l-0.333 2.947c-0.24 2.12-5.060 3.333-10.76 2.666s-10.127-2.887-9.886-5.006l0.333-2.947z"></path>
+  <path fill="#caafa7" style="fill: var(--color4, #caafa7)" d="M15.209 10.695c-0.673-0.147-1.554-0.29-2.447-0.394l-0.14-0.013c-6-0.667-11.113 0.473-11.333 2.593l-0.533 4.72c-0.005 0.034-0.007 0.074-0.007 0.114 0 0.491 0.398 0.889 0.889 0.889 0.461 0 0.839-0.35 0.884-0.799l0-0.004c0.030-0.469 0.418-0.838 0.892-0.838 0.493 0 0.894 0.4 0.894 0.893 0 0.051-0.004 0.101-0.013 0.15l0.001-0.005-0.2 1.773c-0.006 0.050-0.009 0.108-0.009 0.167 0 0.819 0.664 1.483 1.483 1.483 0.76 0 1.387-0.572 1.473-1.309l0.001-0.007c0.052-0.446 0.428-0.789 0.883-0.789 0.491 0 0.889 0.398 0.889 0.889 0 0.035-0.002 0.070-0.006 0.104l0-0.004-0.067 0.587c-0.002 0.022-0.003 0.047-0.003 0.073 0 0.493 0.4 0.893 0.893 0.893 0.446 0 0.816-0.327 0.883-0.755l0.001-0.005 0.033-0.3c0.088-0.743 0.714-1.313 1.473-1.313 0.819 0 1.483 0.664 1.483 1.483 0 0.060-0.004 0.119-0.010 0.177l0.001-0.007-0.1 0.88c-0.002 0.021-0.003 0.046-0.003 0.070 0 0.493 0.4 0.893 0.893 0.893 0.445 0 0.814-0.326 0.882-0.752l0.001-0.005 0.233-2.067c0.030-0.132 0.147-0.229 0.286-0.229 0.014 0 0.028 0.001 0.042 0.003l-0.002-0c0.148 0.013 0.263 0.136 0.263 0.286 0 0.014-0.001 0.029-0.003 0.043l0-0.002c-0.003 0.036-0.005 0.078-0.005 0.12 0 0.821 0.666 1.487 1.487 1.487 0.746 0 1.363-0.549 1.47-1.265l0.001-0.008 0.134-1.18c0.058-0.44 0.431-0.775 0.882-0.775 0.491 0 0.889 0.398 0.889 0.889 0 0.030-0.002 0.060-0.005 0.090l0-0.004c-0.002 0.022-0.003 0.047-0.003 0.073 0 0.493 0.4 0.893 0.893 0.893 0.446 0 0.816-0.327 0.883-0.755l0.001-0.005 0.447-3.886c0.003-0.023 0.005-0.050 0.005-0.077 0-0.304-0.228-0.554-0.522-0.589l-0.003-0-11.507-1.333 4.173-3.24z"></path>
+  <path fill="#87635a" style="fill: var(--color2, #87635a)" d="M14.789 14.415l0.42-3.72-4.207 3.293 3.787 0.427z"></path>
+</symbol>
+</svg>
