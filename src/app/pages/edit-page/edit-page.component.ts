@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { IOrder } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { MenuService } from '../../services/menu.service';
@@ -19,9 +19,13 @@ export class EditPageComponent {
 
   menuItems: IMenuItem[] = [];
   filteredItems: IMenuItem[] = [];
+
   enableOrdering = true;
   orderId = '';
   editedOrder : IOrder | undefined;
+  menuCategories: string[] = [];
+  selectedCategory = 'الجميع';
+  @ViewChild('searchInput') searchInputElement!:ElementRef;
 
   constructor(
     private _menuService: MenuService,
@@ -39,13 +43,18 @@ export class EditPageComponent {
 
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
+    this.menuCategories = this._menuService.categories;
     this.filteredItems = [...this.menuItems];
     // get the orderId from the url
     this._activatedRoute.params.subscribe((data)=>{
       this.orderId = data['orderId'];
        this.editedOrder = this._orderService.getOrderById(this.orderId);
+       this.editedOrder?.items.forEach(item=>{
+        this._menuService.setSelectedItems(item.itemEnglishName,true);
+       })
       if (!this.editedOrder) {
-        this._router.navigate(['/'])
+        this._menuService.resetSelectedItems()
+        this._router.navigate(['/']);
         return;
       }
       // set the orderSidebarItems to be the wanted order
@@ -55,23 +64,39 @@ export class EditPageComponent {
   }
 
   setOrder(order: IOrder){
-    console.log(order);
-
+    order.items.forEach(item=>{
+      this._menuService.setSelectedItems(item.itemEnglishName,true)
+    })
     this._orderService.updateOrder(order);
     this._orderService.resetOrderedSidebarItems();
     // navigate to orders page
     this._router.navigate([PAGES.ORDERS]);
   }
 
-  filterItems(event: Event) {
+  searchMenuItems(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
     const value = input.value;
     if (value) {
-      this.filteredItems = this.menuItems.filter((item) =>
-        item.name.includes(value)
+      this.filteredItems = this.menuItems.filter(item =>
+        ((item.category === this.selectedCategory) || this.selectedCategory )&&
+        item.name.toLowerCase().includes(value)
       );
+
     } else {
-      this.filteredItems = [...this.menuItems]; // Reset to full list if no input
+      this.filterItemsByCategory(this.selectedCategory);
+    }
+  }
+
+
+  filterItemsByCategory(category: string) {
+    this.selectedCategory = category;
+    this.searchInputElement.nativeElement.value = "";
+    if (category === 'الجميع') {
+      this.filteredItems = [...this.menuItems];
+    } else {
+      this.filteredItems = this.menuItems.filter(
+        (item) => item.category === category
+      );
     }
   }
 }
