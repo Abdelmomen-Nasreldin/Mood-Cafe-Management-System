@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TrackingService } from '../../services/tracking.service';
 import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
@@ -9,16 +9,24 @@ import { calculateOrderItemQuantity, calculateOrderTotal } from '../../utils';
 import { ModalService } from '../../services/modal.service';
 import { OrderService } from '../../services/order.service';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
+import { ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-tracking-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePickerComponent, OrderPrintComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DatePickerComponent,
+    OrderPrintComponent,
+  ],
   templateUrl: './tracking-page.component.html',
   styleUrl: './tracking-page.component.scss',
 })
 export class TrackingPageComponent implements OnInit {
+  @ViewChild('customerNameInput') customerNameInput! : ElementRef<HTMLInputElement>
   allOrders: IOrder[] = [];
+  filteredOrders: IOrder[] = [];
   total = 0;
   selectedOrder = 'old';
   selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
@@ -33,6 +41,7 @@ export class TrackingPageComponent implements OnInit {
     private _trackingService: TrackingService,
     private _modalService: ModalService,
     private _orderService: OrderService,
+    private _exportService: ExportService,
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +54,7 @@ export class TrackingPageComponent implements OnInit {
   }
 
   calcQuantities() {
-    this.allQuantities = calculateOrderItemQuantity(this.allOrders);
+    this.allQuantities = calculateOrderItemQuantity(this.filteredOrders);
   }
 
   loadOrders(period: string) {
@@ -71,8 +80,12 @@ export class TrackingPageComponent implements OnInit {
     }
 
     this.total = calculateOrderTotal(this.allOrders);
+    this.filteredOrders = [...this.allOrders];
     this.calcQuantities();
     this.sortOrders();
+    if (this.customerNameInput) {
+      this.customerNameInput.nativeElement.value = ''
+    }
   }
 
   onOrderChange() {
@@ -91,11 +104,11 @@ export class TrackingPageComponent implements OnInit {
 
   sortOrders() {
     if (this.selectedOrder == 'new') {
-      this.allOrders.sort(
+      this.filteredOrders.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );
     } else {
-      this.allOrders.sort(
+      this.filteredOrders.sort(
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
     }
@@ -105,5 +118,22 @@ export class TrackingPageComponent implements OnInit {
     // open modal that has the order-print component
     this.printedOrder = this._orderService.getOrderById(orderId);
     this._modalService.openModal();
+  }
+
+  searchByCustomerName(event: Event) {
+    const input = event.target as HTMLInputElement; // Type assertion
+    const value = input.value.trim();
+    if (value) {
+      this.filteredOrders = this.allOrders.filter((order) =>
+        order.customerName?.includes(value)
+      );
+    } else {
+      this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
+    }
+    this.calcQuantities();
+  }
+
+  exportOrdersToCSV() {
+    this._exportService.exportOrdersToCSV(this.allOrders);
   }
 }

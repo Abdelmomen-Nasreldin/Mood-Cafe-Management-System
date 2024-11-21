@@ -18,6 +18,7 @@
     الاجمالي: {{ total }} جنيه
   </h3>
 </div>
+<div class="flex flex-wrap justify-between items-baseline">
 <div>
   <span>الترتيب </span>
   <select
@@ -32,13 +33,29 @@
   </select>
 </div>
 
+<p class="bg-gray-900 text-white p-2 rounded">عدد الطلبات : {{allOrders.length}}</p>
+
+</div>
 @if (printedOrder) {
   <app-order-print [order]="printedOrder"></app-order-print>
 }
 
+<div class="flex flex-wrap gap-2 items-center my-2">
+  <p>ابحث بأسم العميل :</p>
+  <input type="search" name="searchOrder" id="searchOrder"  (input)="searchByCustomerName($event)" #customerNameInput class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+</div>
+
 <div class="flex flex-wrap">
-  @for (order of allOrders; track order.orderId) {
-  <div class="m-3 bg-white rounded-lg basis-80 flex flex-col">
+  @for (order of filteredOrders; track order.orderId) {
+  <div class="m-3 bg-white rounded-lg basis-72 flex flex-col">
+    <div class="p-2 flex justify-between items-baseline flex-wrap gap-2">
+      <span class="">
+        الاسم : {{order.customerName || 'لا يوجد'}}
+      </span>
+      <span class="">
+        اوردر رقم : {{order.orderNo}}
+      </span>
+    </div>
     <div class="p-4 md:p-6">
       <div class="flex justify-between items-center">
         <span

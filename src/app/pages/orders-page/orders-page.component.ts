@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IOrder } from '../../models/order';
 import { Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,6 @@ import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal } from '../../utils';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { OrderService } from '../../services/order.service';
-import { HSOverlay } from 'preline/preline';
 import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'app-orders-page',
@@ -20,10 +19,12 @@ import { ModalService } from '../../services/modal.service';
 })
 export class OrdersPageComponent implements OnInit {
   private destroy$ = new Subject<void>();
+  @ViewChild('customerNameInput') customerNameInput! : ElementRef<HTMLInputElement>
 
   allOrders: IOrder[] = [];
+  filteredOrders: IOrder[] = [];
   total = 0;
-  timeArr = Array.from({ length: 24 }, (_, i) => i + 1); // Dynamic array from 1 to 24
+  timeArr = Array.from({ length: 24 - 7 + 1 }, (_, i) => i + 7); // Dynamic array from 1 to 24
   selectedTime = 7;  // Default selected time
   selectedOrder = 'old'
   printedOrder : IOrder | undefined;
@@ -45,8 +46,12 @@ export class OrdersPageComponent implements OnInit {
     // .pipe(takeUntil(this.destroy$)).subscribe((orders => {
     //   this.allOrders = orders;
     // }))
+    this.filteredOrders = [...this.allOrders];
     this.sortOrders();
     this.total = calculateOrderTotal(this.allOrders);
+    if (this.customerNameInput) {
+      this.customerNameInput.nativeElement.value = '';
+    }
   }
 
   onTimeChange(){
@@ -55,11 +60,12 @@ export class OrdersPageComponent implements OnInit {
 
   sortOrders (){
     if(this.selectedOrder == 'new'){
-      this.allOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      this.filteredOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } else {
-      this.allOrders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      this.filteredOrders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }
   }
+
   onOrderChange(){
     this.sortOrders();
   }
@@ -74,6 +80,18 @@ export class OrdersPageComponent implements OnInit {
     // open modal that has the order-print component
     this.printedOrder =  this._orderService.getOrderById(orderId);
     this._modalService.openModal();
+  }
+
+  searchByCustomerName(event: Event){
+    const input = event.target as HTMLInputElement; // Type assertion
+    const value = input.value.trim();
+    if (value) {
+      this.filteredOrders = this.allOrders.filter((order) =>
+        order.customerName?.includes(value)
+      );
+    } else {
+      this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
+    }
   }
 
   ngOnDestroy(): void {

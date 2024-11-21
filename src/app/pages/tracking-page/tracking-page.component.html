@@ -18,6 +18,8 @@
   </div>
   <h3 class="text-xl bg-gray-900 text-white p-1 rounded"> الاجمالي: {{total}} جنيه</h3>
 </div>
+<div class="flex flex-wrap justify-between items-baseline">
+
 <div class="my-2">
   <span>الترتيب </span>
   <select class="w-16" name="time" id="time" [(ngModel)]="selectedOrder" (change)="onOrderChange()">
@@ -26,9 +28,20 @@
   </select>
 </div>
 
+<p class="bg-gray-900 text-white p-2 rounded">عدد الطلبات : {{allOrders.length}}</p>
+
+</div>
 @if (printedOrder) {
   <app-order-print [order]="printedOrder"></app-order-print>
 }
+<div class="flex flex-wrap gap-2 items-center my-2 justify-between">
+  <div class="flex flex-wrap gap-2 items-center my-2">
+    <p>ابحث بأسم العميل :</p>
+    <input type="search" name="searchOrderTracking" id="searchOrderTracking"  (input)="searchByCustomerName($event)" #customerNameInput class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+  </div>
+  <button class="p-2 bg-green-500 text-white rounded" (click)="exportOrdersToCSV()">export Orders To CSV</button>
+
+</div>
 
 <div class="w-full my-4 bg-white rounded-lg shadow-md dark:bg-neutral-800">
   <div class="hs-accordion-group">
@@ -69,8 +82,13 @@
       <div id="hs-basic-collapse-two" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" role="region" aria-labelledby="hs-basic-heading-two">
         <div class="pb-4 bg-gray-200">
           <div class="flex flex-wrap">
-            @for (order of allOrders; track order.orderId) {
+            @for (order of filteredOrders; track order.orderId) {
             <div class="m-3 bg-white rounded-lg basis-80 flex flex-col">
+              <div class="p-2 flex justify-between items-baseline flex-wrap gap-2">
+                <span class="">
+                  الاسم : {{order.customerName || 'لا يوجد'}}
+                </span>
+              </div>
               <div class="p-4 md:p-6">
                 <div class="flex justify-between items-center">
                   <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">

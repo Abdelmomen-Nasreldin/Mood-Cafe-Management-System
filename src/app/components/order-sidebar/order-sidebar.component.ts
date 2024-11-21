@@ -1,10 +1,13 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import {
   IOrder,
@@ -14,6 +17,7 @@ import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { calculateItemTotal, calculateOrderTotal } from '../../utils';
+import { TrackingService } from '../../services/tracking.service';
 
 @Component({
   selector: 'app-order-sidebar',
@@ -22,14 +26,19 @@ import { calculateItemTotal, calculateOrderTotal } from '../../utils';
   templateUrl: './order-sidebar.component.html',
   styleUrl: './order-sidebar.component.scss',
 })
-export class OrderSidebarComponent implements OnInit, OnDestroy {
+export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy {
   private destroy$ = new Subject<void>();
   @Input() updatedOrder : IOrder | undefined;
   @Output() setOrder = new EventEmitter<IOrder>();
-
+  @ViewChild('customerName') customerName! : ElementRef<HTMLInputElement>;
   orderedItems: IOrderItem[] = [];
+  orders: IOrder[] = [];
   OrderTotal = 0;
-  constructor(private _orderService: OrderService) {}
+  constructor(
+    private _orderService: OrderService,
+    private _trackingService: TrackingService
+
+  ) {}
 
   ngOnInit(): void {
     this._orderService
@@ -40,6 +49,13 @@ export class OrderSidebarComponent implements OnInit, OnDestroy {
 
         this.updateOrderTotal();
       });
+      this.orders = this._trackingService.getTodayOrdersFrom7AM();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.updatedOrder) {
+      this.customerName.nativeElement.value = this.updatedOrder.customerName || '';
+    }
   }
 
   updateQuantity(id: string, change: number): void {
@@ -83,7 +99,7 @@ export class OrderSidebarComponent implements OnInit, OnDestroy {
     if (this.updatedOrder) {
       this.updatedOrder.items = [...this.orderedItems];
       this.updatedOrder.total = this.OrderTotal;
-      this.updatedOrder.date = new Date();
+      this.updatedOrder.customerName = this.customerName.nativeElement.value.trim() || this.updatedOrder.customerName;
       this.setOrder.emit(this.updatedOrder);
     } else {
       const order: IOrder = {
@@ -91,9 +107,12 @@ export class OrderSidebarComponent implements OnInit, OnDestroy {
         items: [...this.orderedItems],
         total: this.OrderTotal,
         date: new Date(),
+        orderNo : this.orders.length + 1,
+        customerName : this.customerName.nativeElement.value || ''
       };
       this.setOrder.emit(order);
     }
+    this.customerName.nativeElement.value = '';
   }
 
   ngOnDestroy(): void {
