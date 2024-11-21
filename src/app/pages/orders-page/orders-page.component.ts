@@ -46,9 +46,9 @@ export class OrdersPageComponent implements OnInit {
     // .pipe(takeUntil(this.destroy$)).subscribe((orders => {
     //   this.allOrders = orders;
     // }))
+    this.filteredOrders = [...this.allOrders];
     this.sortOrders();
     this.total = calculateOrderTotal(this.allOrders);
-    this.filteredOrders = [...this.allOrders];
     if (this.customerNameInput) {
       this.customerNameInput.nativeElement.value = '';
     }
@@ -60,9 +60,9 @@ export class OrdersPageComponent implements OnInit {
 
   sortOrders (){
     if(this.selectedOrder == 'new'){
-      this.allOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      this.filteredOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } else {
-      this.allOrders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      this.filteredOrders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }
   }
 
