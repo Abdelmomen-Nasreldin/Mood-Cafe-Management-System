@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -25,7 +26,7 @@ import { TrackingService } from '../../services/tracking.service';
   templateUrl: './order-sidebar.component.html',
   styleUrl: './order-sidebar.component.scss',
 })
-export class OrderSidebarComponent implements OnInit, OnDestroy {
+export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy {
   private destroy$ = new Subject<void>();
   @Input() updatedOrder : IOrder | undefined;
   @Output() setOrder = new EventEmitter<IOrder>();
@@ -48,7 +49,13 @@ export class OrderSidebarComponent implements OnInit, OnDestroy {
 
         this.updateOrderTotal();
       });
-      this.orders = this._trackingService.getTodayOrdersFrom7AM()
+      this.orders = this._trackingService.getTodayOrdersFrom7AM();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.updatedOrder) {
+      this.customerName.nativeElement.value = this.updatedOrder.customerName || '';
+    }
   }
 
   updateQuantity(id: string, change: number): void {
@@ -105,6 +112,7 @@ export class OrderSidebarComponent implements OnInit, OnDestroy {
       };
       this.setOrder.emit(order);
     }
+    this.customerName.nativeElement.value = '';
   }
 
   ngOnDestroy(): void {
