@@ -87,7 +87,7 @@ export class OrdersPageComponent implements OnInit {
     const value = input.value.trim();
     if (value) {
       this.filteredOrders = this.allOrders.filter((order) =>
-        order.customerName?.includes(value)
+        order.customerName?.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.filteredOrders = [...this.allOrders]; // Reset to full list if no input

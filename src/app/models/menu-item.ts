@@ -3,5 +3,7 @@ export interface IMenuItem {
   name: string;
   english_name: string;
   price: number;
-  image? : string
+  image? : string,
+  isSelected?:boolean,
+  category?:string
 }
