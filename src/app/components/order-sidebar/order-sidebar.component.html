@@ -1,5 +1,5 @@
 <div class="order-details-container xl:rounded bg-secondary p-5 shadow-md sm:fixed left-[-400px] xl:left-[20px] top-[5rem] h-100 xl:show min-w-[400px]" [ngClass]="{'show': showOrderDetails}">
-  <button class="text-beige absolute top-[10px] left-[10px] border-0 cursor-pointer xl:hidden" (click)="closeOrderDetails()">X</button>
+  <button class="text-beige py-1 px-2 absolute top-[10px] left-[10px] border-0 cursor-pointer xl:hidden hover:bg-red-500" (click)="closeOrderDetails()">X</button>
 
 <h2 class="text-xl text-white font-bold">Order Details</h2>
 @if(orderedItems.length==0){
@@ -14,8 +14,8 @@
   </div>
 <div class="overflow-y-auto max-h-[400px] px-2 order-details" >
   @for (item of orderedItems; track item.id) {
-    <div class="mb-[30px]">
-      <h3 class="m-0 font-bold"> {{item.itemName}}</h3>
+    <div class="mb-4">
+      <h3 class="m-0 font-bold text-white"> {{item.itemName}}</h3>
       <div class="px-4 flex justify-between items-center">
       <div class="flex justify-between items-center min-w-[40%]">
         <span class="text-roseLight1">{{'x' + item.quantity}}</span>
@@ -24,9 +24,17 @@
           <span class="text-beige font-bold mx-2">{{item.total}} جنيه</span>
         </div>
       </div>
-      <div class="flex justify-between bg-beige  rounded-full "> <span  class="block px-2 me-8 shadow-md rounded-full text-secondary border-2 border-secondary cursor-pointer  font-bold hover:bg-secondary hover:text-beige" (click)="increaseQuantity(item.id)">+</span> <span class="block shadow-md   px-2 rounded-full text-secondary border-2 border-secondary  font-bold cursor-pointer hover:bg-secondary hover:text-beige" (click)="decreaseQuantity(item.id)">-</span></div>
+      <div class="flex justify-between bg-beige  rounded-full ">
+        <span
+          class="block px-2 shadow-md rounded-full text-secondary border-2 border-secondary cursor-pointer  font-bold hover:bg-secondary hover:text-beige"
+          (click)="increaseQuantity(item.id)">+</span>
+          <span class="w-7 text-center">{{item.quantity}}</span>
+        <span
+          class="block shadow-md px-2 rounded-full text-secondary border-2 border-secondary  font-bold cursor-pointer hover:bg-secondary hover:text-beige"
+          (click)="decreaseQuantity(item.id)">-</span>
+      </div>
 
-      <div class="py-0 my-2 px-2 border border-cream text-beige rounded-full cursor-pointer hover:text-beige" (click)="deleteItem(item.id)">
+      <div class="py-0 my-2 px-2 border border-cream text-beige rounded-full cursor-pointer hover:text-beige hover:bg-red-500" (click)="deleteItem(item.id)">
           x
         </div>
       </div>
