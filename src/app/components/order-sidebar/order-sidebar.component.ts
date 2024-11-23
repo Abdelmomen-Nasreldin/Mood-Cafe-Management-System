@@ -18,6 +18,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { calculateItemTotal, calculateOrderTotal } from '../../utils';
 import { TrackingService } from '../../services/tracking.service';
+import { MenuService } from '../../services/menu.service';
 
 @Component({
   selector: 'app-order-sidebar',
@@ -34,9 +35,11 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
   orderedItems: IOrderItem[] = [];
   orders: IOrder[] = [];
   OrderTotal = 0;
+  showOrderDetails = false;
   constructor(
     private _orderService: OrderService,
-    private _trackingService: TrackingService
+    private _trackingService: TrackingService,
+    private _menuService:MenuService
 
   ) {}
 
@@ -46,7 +49,6 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
       .pipe(takeUntil(this.destroy$))
       .subscribe((items) => {
         this.orderedItems = items;
-
         this.updateOrderTotal();
       });
       this.orders = this._trackingService.getTodayOrdersFrom7AM();
@@ -71,10 +73,12 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
       this.orderedItems[itemIndex].quantity = 1;
     }
 
-    this.orderedItems[itemIndex].total = calculateItemTotal(
-      this.orderedItems[itemIndex]
-    );
-    this.updateOrderTotal();
+if(this.orderedItems[itemIndex]){
+  this.orderedItems[itemIndex].total = calculateItemTotal(
+    this.orderedItems[itemIndex]
+  );
+  this.updateOrderTotal();
+}
   }
 
   increaseQuantity(id: string): void {
@@ -86,13 +90,15 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
   }
 
   deleteItem(id: string) {
+    let itemIndex =  this.orderedItems.findIndex((ele) => ele.id == id);
+    this._menuService.setSelectedItems(this.orderedItems[itemIndex].itemEnglishName,false);
     this.orderedItems = this.orderedItems.filter((ele) => ele.id !== id);
     this._orderService.deleteOrderedSidebarItem(id);
     this.updateOrderTotal();
   }
 
   updateOrderTotal(): void {
-    this.OrderTotal = calculateOrderTotal(this.orderedItems);
+    this.OrderTotal = calculateOrderTotal(this.orderedItems)
   }
 
   saveOrder() {
@@ -112,7 +118,15 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
       };
       this.setOrder.emit(order);
     }
-    this.customerName.nativeElement.value = '';
+    this._menuService.resetSelectedItems()
+  }
+
+  toggleOrderDetails() {
+    this.showOrderDetails = !this.showOrderDetails;
+  }
+
+  closeOrderDetails() {
+    this.showOrderDetails = false;
   }
 
   ngOnDestroy(): void {

@@ -12,11 +12,11 @@ import {RouterModule} from '@angular/router';
 export class AsideComponent {
   pages = [
     {
-      name: 'menu',
+      name: 'المنيو',
       path: PAGES.MENU
     },
     {
-      name: 'orders',
+      name: 'طلبات اليوم',
       path: PAGES.ORDERS
     },
     {
