@@ -1,6 +1,6 @@
-:host {
-  padding: 1rem;
-}
+// :host {
+//   // padding: 1rem;
+// }
 
 .order-details-container {
   transition: left 0.3s ease-in-out;
@@ -9,4 +9,8 @@
 
 .order-details-container.show {
   left: 0;
+}
+
+.order-details{
+  max-height: calc(100vh - 230px - 5rem);
 }
