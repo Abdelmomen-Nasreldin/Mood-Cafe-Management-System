@@ -30,7 +30,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   ) {}
 
   CreateOrder() {
-    this._orderService.setEnableOrdering(true);
+    // this._orderService.setEnableOrdering(true);
   }
 
   cancel() {
