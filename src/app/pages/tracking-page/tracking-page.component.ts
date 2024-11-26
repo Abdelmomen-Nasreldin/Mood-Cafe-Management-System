@@ -10,6 +10,7 @@ import { ModalService } from '../../services/modal.service';
 import { OrderService } from '../../services/order.service';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { ExportService } from '../../services/export.service';
+import { OrderBoxComponent } from "../../components/order-box/order-box.component";
 
 @Component({
   selector: 'app-tracking-page',
@@ -19,7 +20,8 @@ import { ExportService } from '../../services/export.service';
     FormsModule,
     DatePickerComponent,
     OrderPrintComponent,
-  ],
+    OrderBoxComponent
+],
   templateUrl: './tracking-page.component.html',
   styleUrl: './tracking-page.component.scss',
 })
