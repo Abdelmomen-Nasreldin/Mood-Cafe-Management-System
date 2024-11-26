@@ -14,15 +14,11 @@ import { CommonModule } from '@angular/common';
 export class OrderBoxComponent {
 
   @Input({required : true}) order! : IOrder;
+  @Input() isEditAllowed = false;
   @Output() printOrder = new EventEmitter<string>()
   @Output() editOrder = new EventEmitter<string>()
 
-  constructor(
-    // private _trackingService: TrackingService,
-    // private _orderService: OrderService,
-    // private _router: Router,
-    // private _modalService: ModalService,
-  ) {}
+  constructor() {}
 
   onEditOrder(orderID : string){
     this.editOrder.emit(orderID)
