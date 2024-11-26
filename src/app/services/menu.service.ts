@@ -79,7 +79,7 @@ export class MenuService {
     { id: 69, name: 'كوكتيل مودز', price: 60, english_name: 'Cocktail moods', category: 'مشروبات بارده' },
     { id: 70, name: 'كنتالوب', price: 40, english_name: 'Cantaloupe', category: 'مشروبات بارده' },
     { id: 71, name: 'ساقع دوم', price: 25, english_name: 'Cold DOM', category: 'مشروبات بارده' },
-    { id: 72, name: 'حليب دوم', price: 35, english_name: 'Cold DOM', category: 'مشروبات بارده' },
+    { id: 72, name: 'حليب دوم', price: 35, english_name: 'Milk DOM', category: 'مشروبات بارده' },
   ] ;
   categories: string[] = ['الجميع', 'مشروبات ساخنه', 'مشروبات بارده', 'حلويات','أخرى'];
   constructor() {}
