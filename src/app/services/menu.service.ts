@@ -26,7 +26,7 @@ export class MenuService {
     { id: 16, name: 'حلبة حليب', price: 25, english_name: 'HELBA MILK', category: 'مشروبات ساخنه' },
     { id: 17, name: 'كاكاو', price: 15, english_name: 'COCOA', category: 'مشروبات ساخنه' },
     { id: 18, name: 'كاكاو حليب', price: 25, english_name: 'COCOA MILK', category: 'مشروبات ساخنه' },
-    { id: 19, name: 'دوم', price: 15, english_name: 'DOM', category: 'مشروبات بارده' },
+    { id: 19, name: 'دوم', price: 15, english_name: 'DOM', category: 'مشروبات ساخنه' },
     { id: 20, name: 'خلطة', price: 12, english_name: 'MIXHERPS', category: 'مشروبات ساخنه' },
     { id: 21, name: 'سحلب', price: 25, english_name: 'SAHLAB', category: 'مشروبات ساخنه' },
     { id: 22, name: 'سحلب فواكة', price: 35, english_name: 'SAHLAB FRUIT', category: 'مشروبات بارده' },
@@ -77,6 +77,9 @@ export class MenuService {
     { id: 67, name: 'مياه معدنية كبيرة', price: 14, english_name: 'BIG WATER', category: 'مشروبات بارده' },
     { id: 68, name: 'موخيتو', price: 35, english_name: 'MOJITO', category: 'مشروبات بارده' },
     { id: 69, name: 'كوكتيل مودز', price: 60, english_name: 'Cocktail moods', category: 'مشروبات بارده' },
+    { id: 70, name: 'كنتالوب', price: 40, english_name: 'Cantaloupe', category: 'مشروبات بارده' },
+    { id: 71, name: 'ساقع دوم', price: 25, english_name: 'Cold DOM', category: 'مشروبات بارده' },
+    { id: 72, name: 'حليب دوم', price: 35, english_name: 'Cold DOM', category: 'مشروبات بارده' },
   ] ;
   categories: string[] = ['الجميع', 'مشروبات ساخنه', 'مشروبات بارده', 'حلويات','أخرى'];
   constructor() {}
