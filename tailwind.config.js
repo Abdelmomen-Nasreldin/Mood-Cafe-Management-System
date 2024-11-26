@@ -7,17 +7,20 @@ module.exports = {
   theme: {
       extend: {
         colors: {
-          beige: '#f7ecd8',
-          cream: '#c9aea6',
-          secondary: '#815238',
-          grey: '#4f4e4e',
-          roseLight1: '#f4edeb',
-          roseLight2: '#dcceb7',
-          roseLight3: '#f4edeb',
-          roseLight4: '#c9aea6',
-          roseMedium1: '#ad8985',
-          roseMedium2: '#87635a',
-          'roseDark-100': '#412b1a'
+        // Core Palette
+        beige: '#f7ecd8', // Backgrounds
+        cream: '#c9aea6', // Subtle Highlights
+        secondary: '#815238', // Primary Accent
+        grey: '#4f4e4e', // Neutral Text
+
+        // Rose Shades
+        roseLight1: '#f4edeb', // Light Rose (Backgrounds)
+        roseLight2: '#dcceb7',
+        roseLight3: '#f4edeb',
+        roseLight4: '#c9aea6',
+        roseMedium1: '#ad8985', // Medium Rose (Borders/Accents)
+        roseMedium2: '#87635a',
+        'roseDark-100': '#412b1a', // Dark Rose (Primary Text)
         },
       }
   },

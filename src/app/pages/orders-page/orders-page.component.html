@@ -1,6 +1,8 @@
 <div class="bg-white rounded p-3 shadow-sm">
   <div class="flex justify-between items-center">
-    <h2 class="text-2xl my-3 text-secondary font-bold"> {{ 'طلبات اليوم' + ' (' + allOrders.length +')'  }} </h2>
+    <h2 class="text-2xl my-3 text-secondary font-bold">
+      {{ "طلبات اليوم" + " (" + allOrders.length + ")" }}
+    </h2>
     <h3 class="text-xl text-secondary font-bold">الاجمالي: {{ total }} جنيه</h3>
   </div>
 
@@ -9,11 +11,7 @@
       <span class="font-bold text-roseDark-100">من الساعة </span>
       <select
         class="rounded bg-beige w-[120px] px-3 py-2 border-2 border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
-        name="time"
-        id="time"
-        [(ngModel)]="selectedTime"
-        (change)="onTimeChange()"
-      >
+        name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
         @for (item of timeArr; track $index) {
         <option class="hover:bg-roseLight1 bg-beige" [value]="item">
           {{ item }}
@@ -25,13 +23,8 @@
     <div>
       <span class="font-bold text-roseDark-100">الترتيب </span>
 
-      <select
-        class="rounded w-[120px] px-3 py-2 border-2 bg-beige border-cream text-roseDark-100"
-        name="time"
-        id="time"
-        [(ngModel)]="selectedOrder"
-        (change)="onOrderChange()"
-      >
+      <select class="rounded w-[120px] px-3 py-2 border-2 bg-beige border-cream text-roseDark-100" name="time" id="time"
+        [(ngModel)]="selectedOrder" (change)="onOrderChange()">
         <option class="hover:bg-roseLight1" value="new">الأحدث</option>
         <option class="hover:bg-roseLight1" value="old">الأقدم</option>
       </select>
@@ -44,66 +37,13 @@
 
   <div class="flex flex-wrap gap-2 items-center my-2">
     <p>ابحث بأسم العميل :</p>
-    <input type="search" name="searchOrder" id="searchOrder"  (input)="searchByCustomerName($event)" #customerNameInput class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+    <input type="search" name="searchOrder" id="searchOrder" (input)="searchByCustomerName($event)" #customerNameInput
+      class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث" />
   </div>
 
-  <div class="flex flex-wrap my-5 justify-center">
+  <div class="flex flex-wrap my-5 justify-center gap-3">
     @for (order of filteredOrders; track order.orderId) {
-    <div class="m-3 bg-beige rounded-lg basis-72 flex flex-col">
-      <div class="p-3 flex justify-between items-baseline flex-wrap gap-2 shadow-sm">
-        <span class="">
-          الاسم : {{order.customerName || 'لا يوجد'}}
-        </span>
-        <span class="">
-          <span class="font-bold text-roseDark-100"> اوردر رقم : </span>
-          {{ order.orderNo }}
-        </span>
-      </div>
-      <div class="px-3 py-2">
-        @for (item of order.items; track item.id) {
-
-        <div class="mb-3">
-          <h3 class="m-0 font-bold text-secondary">{{ item.itemName }}</h3>
-            <div class="flex justify-between items-center w-full">
-              <span class="text-roseDark-100 ">{{ item.quantity + "x" }}</span>
-              <span class="mx-1 text-roseMedium2">{{
-                item.price + "@"
-              }}</span>
-              <span class="text-roseMedium2 font-bold mx-2 justify-end"
-              >{{ item.total }} جنيه</span>
-            </div>
-          <hr class="mt-2" />
-        </div>
-
-        }
-        <h3
-          class="text-xl font-semibold text-roseDark-100 my-3"
-        >
-          الاجمالي : {{ order.total }} جنيه
-        </h3>
-        <p class="my-3 text-gray-500">
-          التاريخ : {{ order.date | date : "medium" }}
-        </p>
-      </div>
-      <!-- buttons -->
-      <div
-        class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700"
-      >
-        <button
-          class=" w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl shadow-sm bg-secondary text-white focus:outline-none disabled:opacity-50 disabled:pointer-events-none  "
-          (click)="printReceipt(order.orderId)"
-        >
-          طباعة
-        </button>
-        <button
-          class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl shadow-sm  bg-white text-secondary focus:outline-none  disabled:opacity-50 disabled:pointer-events-none"
-          (click)="editOrder(order.orderId)"
-        >
-          تعديل
-        </button>
-      </div>
-    </div>
-
+    <app-order-box [order]="order" [isEditAllowed]="true" (editOrder)="editOrder($event)" (printOrder)="printReceipt($event)"></app-order-box>
     }
   </div>
 

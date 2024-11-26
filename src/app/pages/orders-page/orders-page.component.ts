@@ -10,10 +10,11 @@ import { calculateOrderTotal } from '../../utils';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
+import { OrderBoxComponent } from "../../components/order-box/order-box.component";
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrderPrintComponent],
+  imports: [CommonModule, FormsModule, OrderPrintComponent, OrderBoxComponent],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })

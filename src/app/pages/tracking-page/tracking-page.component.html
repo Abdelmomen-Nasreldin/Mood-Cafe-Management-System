@@ -61,10 +61,22 @@
   <div class="flex flex-wrap gap-2 items-center my-2 justify-between">
     <div class="flex flex-wrap gap-2 items-center my-2">
       <p>ابحث بأسم العميل :</p>
-      <input type="search" name="searchOrderTracking" id="searchOrderTracking"  (input)="searchByCustomerName($event)" #customerNameInput class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
+      <input
+        type="search"
+        name="searchOrderTracking"
+        id="searchOrderTracking"
+        (input)="searchByCustomerName($event)"
+        #customerNameInput
+        class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700"
+        placeholder="ابحث"
+      />
     </div>
-    <button class="p-2 bg-green-500 text-white rounded" (click)="exportOrdersToCSV()">export Orders To CSV</button>
-
+    <button
+      class="p-2 bg-green-500 text-white rounded"
+      (click)="exportOrdersToCSV()"
+    >
+      export Orders To CSV
+    </button>
   </div>
 
   <div class="w-full my-4 bg-white rounded-lg shadow-md dark:bg-neutral-800">
@@ -180,59 +192,9 @@
           aria-labelledby="hs-basic-heading-two"
         >
           <div class="pb-4 bg-white">
-            <div class="flex flex-wrap justify-center">
+            <div class="flex flex-wrap my-5 justify-center gap-3">
               @for (order of filteredOrders; track order.orderId) {
-              <div
-                class="m-3 bg-beige shadow-md rounded-lg basis-80 flex flex-col"
-              >
-              <div class="p-2 flex justify-between items-baseline flex-wrap gap-2">
-                <span class="">
-                  الاسم : {{order.customerName || 'لا يوجد'}}
-                </span>
-              </div>
-                <div class="px-3 py-2">
-                  @for (item of order.items; track item.id) {
-                  <div class="mb-3">
-                    <h3 class="m-0 font-bold text-secondary">
-                      {{ item.itemName }}
-                    </h3>
-                    <div class="flex justify-between items-center w-full">
-                      <span class="text-roseDark-100">{{
-                        item.quantity + "x"
-                      }}</span>
-                      <span class="mx-1 text-roseMedium2">{{
-                        item.price + "@"
-                      }}</span>
-                      <span class="text-roseMedium2 font-bold mx-2 justify-end"
-                        >{{ item.total }} جنيه</span
-                      >
-                    </div>
-                    <hr class="mt-2" />
-                  </div>
-
-                  }
-                  <h3 class="text-xl font-semibold text-roseDark-100 my-3">
-                    الاجمالي : {{ order.total }} جنيه
-                  </h3>
-                  <p class="my-3 text-roseMedium2">
-                    التاريخ : {{ order.date | date : "medium" }}
-                  </p>
-                </div>
-
-                <!-- buttons -->
-                <div
-                  class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200"
-                >
-                  <button
-                    (click)="printReceipt(order.orderId)"
-                    class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl rounded-ee-xl shadow-sm hover:bg-white hover:text-secondary focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none bg-secondary text-white focus:text-secondary"
-                  >
-                    طباعة
-                  </button>
-                  <!-- no edit here in tracking page -->
-                </div>
-              </div>
-
+              <app-order-box [order]="order" (printOrder)="printReceipt($event)"></app-order-box>
               }
             </div>
             @if (!allOrders.length) {

@@ -1,0 +1,44 @@
+<div class="p-3 flex justify-between items-baseline flex-wrap gap-2 shadow-sm">
+  <span class=""> الاسم : {{ order.customerName || "لا يوجد" }} </span>
+  <span class="">
+    <span class="font-bold text-roseDark-100"> اوردر رقم : </span>
+    {{ order.orderNo }}
+  </span>
+</div>
+<div class="px-3 py-2">
+  @for (item of order.items; track item.id) {
+
+  <div class="mb-3">
+    <h3 class="m-0 font-bold text-secondary">{{ item.itemName }}</h3>
+    <div class="flex justify-between items-center w-full">
+      <span class="text-roseDark-100">{{ item.quantity + "x" }}</span>
+      <span class="mx-1 text-roseMedium2">{{ item.price + "@" }}</span>
+      <span class="text-roseMedium2 font-bold mx-2 justify-end">{{ item.total }} جنيه</span>
+    </div>
+    <hr class="mt-2" />
+  </div>
+
+  }
+  <h3 class="text-xl font-semibold text-roseDark-100 my-3">
+    الاجمالي : {{ order.total }} جنيه
+  </h3>
+  <p class="my-3 text-gray-500">
+    التاريخ : {{ order.date | date : "medium" }}
+  </p>
+</div>
+<!-- buttons -->
+<div
+  class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700">
+  <button
+    class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl shadow-sm bg-secondary text-white focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
+    (click)="onPrintOrder(order.orderId)">
+    طباعة
+  </button>
+  @if (isEditAllowed) {
+    <button
+    class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-ee-xl shadow-sm bg-white text-secondary focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
+    (click)="onEditOrder(order.orderId)">
+    تعديل
+  </button>
+}
+</div>
