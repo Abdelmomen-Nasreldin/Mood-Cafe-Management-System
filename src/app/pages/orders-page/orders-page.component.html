@@ -52,8 +52,7 @@
     <div class="m-3 bg-beige rounded-lg basis-72 flex flex-col">
       <div class="p-3 flex justify-between items-baseline flex-wrap gap-2 shadow-sm">
         <span class="">
-          <span class="font-bold text-roseDark-100"> الاسم : </span>
-          {{ order.customerName }}
+          الاسم : {{order.customerName || 'لا يوجد'}}
         </span>
         <span class="">
           <span class="font-bold text-roseDark-100"> اوردر رقم : </span>
