@@ -31,9 +31,9 @@
     </div>
   </div>
 
-  @if (printedOrder) {
+  <!-- @if (printedOrder) {
   <app-order-print [order]="printedOrder"></app-order-print>
-  }
+  } -->
 
   <div class="flex flex-wrap gap-2 items-center my-2">
     <p>ابحث بأسم العميل :</p>
@@ -41,7 +41,7 @@
       class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث" />
   </div>
 
-  <div class="flex flex-wrap my-5 justify-center gap-3">
+  <!-- <div class="flex flex-wrap my-5 justify-center gap-3">
     @for (order of filteredOrders; track order.orderId) {
     <app-order-box [order]="order" [isEditAllowed]="true" (editOrder)="editOrder($event)" (printOrder)="printReceipt($event)"></app-order-box>
     }
@@ -49,5 +49,7 @@
 
   @if (!allOrders.length) {
   <h3 class="text-center text-3xl p-2 m-5 text-roseDark-100">لا يوجد طلبات</h3>
-  }
+  } -->
+  <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders" [isEditAllowed]="true" (editOrder)="editOrder($event)"></app-orders-wrapper>
+
 </div>

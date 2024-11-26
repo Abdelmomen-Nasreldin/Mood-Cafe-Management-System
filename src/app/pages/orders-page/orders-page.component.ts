@@ -11,10 +11,11 @@ import { OrderPrintComponent } from "../../components/order-print/order-print.co
 import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
 import { OrderBoxComponent } from "../../components/order-box/order-box.component";
+import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrderPrintComponent, OrderBoxComponent],
+  imports: [CommonModule, FormsModule, OrderPrintComponent, OrderBoxComponent, OrdersWrapperComponent],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })

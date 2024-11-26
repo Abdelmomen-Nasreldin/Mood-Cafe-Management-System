@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { OrderBoxComponent } from "../order-box/order-box.component";
 import { IOrder } from '../../models/order';
 import { OrderService } from '../../services/order.service';
@@ -15,6 +15,8 @@ import { OrderPrintComponent } from "../order-print/order-print.component";
 export class OrdersWrapperComponent {
   @Input() allOrders: IOrder[] = [];
   @Input() filteredOrders: IOrder[] = [];
+  @Input() isEditAllowed = false;
+  @Output() editOrder = new EventEmitter<string>();
 
   printedOrder: IOrder | undefined;
 
@@ -22,6 +24,10 @@ export class OrdersWrapperComponent {
     private _modalService: ModalService,
     private _orderService: OrderService,
   ) {}
+
+  onEditOrder(orderID : string){
+    this.editOrder.emit(orderID)
+  }
 
   printReceipt(orderId: string) {
     // open modal that has the order-print component

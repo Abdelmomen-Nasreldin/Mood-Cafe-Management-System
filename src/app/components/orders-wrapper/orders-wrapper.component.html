@@ -1,11 +1,11 @@
 @if (printedOrder) {
-  <app-order-print [order]="printedOrder"></app-order-print>
-  }
+<app-order-print [order]="printedOrder"></app-order-print>
+}
 
 <div class="pb-4 bg-white">
   <div class="flex flex-wrap my-5 justify-center gap-3">
     @for (order of filteredOrders; track order.orderId) {
-    <app-order-box [order]="order" (printOrder)="printReceipt($event)"></app-order-box>
+    <app-order-box [order]="order" (printOrder)="printReceipt($event)" (editOrder)="onEditOrder($event)" [isEditAllowed]="isEditAllowed"></app-order-box>
     }
   </div>
   @if (!allOrders.length) {

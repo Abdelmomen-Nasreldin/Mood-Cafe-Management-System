@@ -54,10 +54,6 @@
     </div>
   </div>
 
-  @if (printedOrder) {
-  <app-order-print [order]="printedOrder"></app-order-print>
-  }
-
   <div class="flex flex-wrap gap-2 items-center my-2 justify-between">
     <div class="flex flex-wrap gap-2 items-center my-2">
       <p>ابحث بأسم العميل :</p>
@@ -191,21 +187,7 @@
           role="region"
           aria-labelledby="hs-basic-heading-two"
         >
-          <div class="pb-4 bg-white">
-            <div class="flex flex-wrap my-5 justify-center gap-3">
-              @for (order of filteredOrders; track order.orderId) {
-              <app-order-box [order]="order" (printOrder)="printReceipt($event)"></app-order-box>
-              }
-            </div>
-            @if (!allOrders.length) {
-            <div class="flex flex-col justify-center items-center">
-              <svg class="icon icon-illustration-empty-cart mt-4">
-                <use xlink:href="#icon-illustration-empty-cart"></use>
-              </svg>
-              <h3 class="text-center text-3xl p-2">لا يوجد طلبات</h3>
-            </div>
-            }
-          </div>
+          <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
         </div>
       </div>
     </div>

@@ -6,11 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
 import { calculateOrderItemQuantity, calculateOrderTotal } from '../../utils';
-import { ModalService } from '../../services/modal.service';
-import { OrderService } from '../../services/order.service';
-import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { ExportService } from '../../services/export.service';
-import { OrderBoxComponent } from "../../components/order-box/order-box.component";
+import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 
 @Component({
   selector: 'app-tracking-page',
@@ -19,8 +16,7 @@ import { OrderBoxComponent } from "../../components/order-box/order-box.componen
     CommonModule,
     FormsModule,
     DatePickerComponent,
-    OrderPrintComponent,
-    OrderBoxComponent
+    OrdersWrapperComponent
 ],
   templateUrl: './tracking-page.component.html',
   styleUrl: './tracking-page.component.scss',
@@ -41,8 +37,6 @@ export class TrackingPageComponent implements OnInit {
 
   constructor(
     private _trackingService: TrackingService,
-    private _modalService: ModalService,
-    private _orderService: OrderService,
     private _exportService: ExportService,
   ) {}
 
@@ -114,12 +108,6 @@ export class TrackingPageComponent implements OnInit {
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
     }
-  }
-
-  printReceipt(orderId: string) {
-    // open modal that has the order-print component
-    this.printedOrder = this._orderService.getOrderById(orderId);
-    this._modalService.openModal();
   }
 
   searchByCustomerName(event: Event) {
