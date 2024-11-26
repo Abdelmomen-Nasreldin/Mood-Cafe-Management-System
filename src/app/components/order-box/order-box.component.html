@@ -1,9 +1,11 @@
 <div class="p-3 flex justify-between items-baseline flex-wrap gap-2 shadow-sm">
   <span class=""> الاسم : {{ order.customerName || "لا يوجد" }} </span>
-  <span class="">
-    <span class="font-bold text-roseDark-100"> اوردر رقم : </span>
-    {{ order.orderNo }}
-  </span>
+  @if (isEditAllowed) {
+    <span class="">
+      <span class="font-bold text-roseDark-100"> اوردر رقم : </span>
+      {{ order.orderNo }}
+    </span>
+  }
 </div>
 <div class="px-3 py-2">
   @for (item of order.items; track item.id) {
