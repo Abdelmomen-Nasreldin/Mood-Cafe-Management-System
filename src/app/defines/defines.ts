@@ -31,9 +31,16 @@ export const PAGES = {
   },
 ];
 
-export const ORDER_STATUS = {
-  PENDING : 'pending',
-  PAID : 'paid',
-  POSTPONED : 'delivered',
-  CANCELLED : 'cancelled',
- } as const;
+export enum OrderStatus {
+  PENDING = 'pending',
+  PAID = 'paid',
+  POSTPONED = 'postponed',
+  CANCELLED = 'cancelled',
+}
+
+export const OrderStatusTranslations = {
+  [OrderStatus.PENDING]: { en: OrderStatus.PENDING, ar: 'قيد الانتظار' },
+  [OrderStatus.PAID]: { en: OrderStatus.PAID, ar: 'مدفوع' },
+  [OrderStatus.POSTPONED]: { en: OrderStatus.POSTPONED, ar: 'تم تأجيله' },
+  [OrderStatus.CANCELLED]: { en: OrderStatus.CANCELLED, ar: 'ملغى' }
+} as const;

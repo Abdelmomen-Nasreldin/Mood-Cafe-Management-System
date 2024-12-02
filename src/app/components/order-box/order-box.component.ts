@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
-import { ORDER_STATUS } from '../../defines/defines';
+import { OrderStatus, OrderStatusTranslations } from '../../defines/defines';
 // import { OrderService } from '../../services/order.service';
 // import { ModalService } from '../../services/modal.service';
 
@@ -18,7 +18,8 @@ export class OrderBoxComponent {
   @Input() isEditAllowed = false;
   @Output() printOrder = new EventEmitter<string>()
   @Output() editOrder = new EventEmitter<string>()
-  orderStatus = ORDER_STATUS;
+  orderStatus = Object.values(OrderStatus);
+  OrderStatusTranslations = Object.values(OrderStatusTranslations);
   constructor() {}
 
   onEditOrder(orderID : string){
@@ -29,7 +30,7 @@ export class OrderBoxComponent {
     this.printOrder.emit(orderId)
   }
 
-  onOrderStatus(orderId: string) {
-
+  onOrderStatus(orderId: string, OrderStatus: string) {
+    console.log(orderId, OrderStatus);
   }
 }
