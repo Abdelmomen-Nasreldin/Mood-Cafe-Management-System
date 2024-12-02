@@ -30,3 +30,10 @@ export const PAGES = {
     value: TRACKING_PERIODS.CUSTOM_DAY,
   },
 ];
+
+export const ORDER_STATUS = {
+  PENDING : 'pending',
+  PAID : 'paid',
+  POSTPONED : 'delivered',
+  CANCELLED : 'cancelled',
+ } as const;

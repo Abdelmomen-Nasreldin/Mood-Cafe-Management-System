@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
 import { calculateItemTotal, calculateOrderTotal } from '../../utils';
 import { TrackingService } from '../../services/tracking.service';
 import { MenuService } from '../../services/menu.service';
+import { ORDER_STATUS } from '../../defines/defines';
 
 @Component({
   selector: 'app-order-sidebar',
@@ -36,6 +37,7 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
   orders: IOrder[] = [];
   OrderTotal = 0;
   showOrderDetails = false;
+  orderStatus = ORDER_STATUS
   constructor(
     private _orderService: OrderService,
     private _trackingService: TrackingService,
@@ -114,7 +116,8 @@ if(this.orderedItems[itemIndex]){
         total: this.OrderTotal,
         date: new Date(),
         orderNo : this.orders.length + 1,
-        customerName : this.customerName.nativeElement.value || ''
+        customerName: this.customerName.nativeElement.value || '',
+        status: ORDER_STATUS.PENDING,
       };
       this.setOrder.emit(order);
     }

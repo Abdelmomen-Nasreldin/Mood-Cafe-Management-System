@@ -13,7 +13,8 @@ export interface IOrder {
   total: number;
   date: Date;
   orderNo : number;
-  customerName : string
+  customerName: string,
+  status: 'pending' | 'paid' | 'postponed' | 'cancelled';
 }
 
 
