@@ -3,6 +3,9 @@ export const PAGES = {
   ORDERS : 'orders',
   TRACKING : 'tracking',
   EDIT : 'edit',
+  PAID : 'paid',
+  POSTPONED : 'postponed',
+  CANCELLED : 'cancelled',
  } as const;
 
  export const TRACKING_PERIODS = {
