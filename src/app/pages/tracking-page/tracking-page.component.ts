@@ -112,10 +112,10 @@ export class TrackingPageComponent implements OnInit {
 
   searchByCustomerName(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const value = input.value.trim();
+    const value = input.value.trim().toLowerCase();
     if (value) {
       this.filteredOrders = this.allOrders.filter((order) =>
-        order.customerName?.toLowerCase().includes(value.toLowerCase())
+        order.customerName?.toLowerCase().includes(value)
       );
     } else {
       this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
