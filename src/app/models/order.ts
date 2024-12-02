@@ -14,7 +14,7 @@ export interface IOrder {
   date: Date;
   orderNo : number;
   customerName: string,
-  status: 'pending' | 'paid' | 'postponed' | 'cancelled';
+  status: IOrderStatus;
 }
 
-
+export type IOrderStatus = 'pending' | 'paid' | 'postponed' | 'cancelled';

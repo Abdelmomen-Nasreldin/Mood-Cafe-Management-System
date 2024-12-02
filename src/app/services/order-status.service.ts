@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OrderService } from './order.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IOrder } from '../models/order';
+import { IOrder, IOrderStatus } from '../models/order';
 import { OrderStatus } from '../defines/defines';
 
 @Injectable({
@@ -37,6 +37,20 @@ export class OrderStatusService {
     return this._cancelledOrders.asObservable();
   }
 
-  
+  changeOrdersStatus() {
 
+    this._pendingOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PENDING));
+    this._paidOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PAID));
+    this._postponedOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.POSTPONED));
+    this._cancelledOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.CANCELLED));
+  }
+
+  changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus }) {
+    const wantedOrder = this._orderService.getOrderById(orderStatusAndId.orderId)
+     if (!wantedOrder || wantedOrder.status === orderStatusAndId.newStatus) {
+       return;
+     }
+     wantedOrder.status = orderStatusAndId.newStatus;
+     this._orderService.updateOrder(wantedOrder);
+   }
 }

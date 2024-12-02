@@ -3,17 +3,17 @@
 }
 
 <div class="pb-4 bg-white">
-  <div class="flex flex-wrap my-5 justify-center gap-3">
+  <div class="flex flex-wrap justify-center gap-3 my-5">
     @for (order of filteredOrders; track order.orderId) {
-    <app-order-box [order]="order" (printOrder)="printReceipt($event)" (editOrder)="onEditOrder($event)" [isEditAllowed]="isEditAllowed"></app-order-box>
+    <app-order-box [order]="order" (printOrder)="printReceipt($event)" (editOrder)="onEditOrder($event)" (changeOrderStatus)="onChangeOrderStatus($event)"  [isEditAllowed]="isEditAllowed"></app-order-box>
     }
   </div>
   @if (!allOrders.length) {
-  <div class="flex flex-col justify-center items-center">
-    <svg class="icon icon-illustration-empty-cart mt-4">
+  <div class="flex flex-col items-center justify-center">
+    <svg class="mt-4 icon icon-illustration-empty-cart">
       <use xlink:href="#icon-illustration-empty-cart"></use>
     </svg>
-    <h3 class="text-center text-3xl p-2">لا يوجد طلبات</h3>
+    <h3 class="p-2 text-3xl text-center">لا يوجد طلبات</h3>
   </div>
   }
 </div>

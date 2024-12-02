@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IOrder } from '../../models/order';
+import { IOrder, IOrderStatus } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { OrderStatus, OrderStatusTranslations } from '../../defines/defines';
 // import { OrderService } from '../../services/order.service';
@@ -18,6 +18,8 @@ export class OrderBoxComponent {
   @Input() isEditAllowed = false;
   @Output() printOrder = new EventEmitter<string>()
   @Output() editOrder = new EventEmitter<string>()
+  @Output() changeOrderStatus = new EventEmitter<{orderId: string, newStatus: IOrderStatus}>()
+
   orderStatus = Object.values(OrderStatus);
   OrderStatusTranslations = Object.values(OrderStatusTranslations);
   constructor() {}
@@ -30,7 +32,7 @@ export class OrderBoxComponent {
     this.printOrder.emit(orderId)
   }
 
-  onOrderStatus(orderId: string, OrderStatus: string) {
-    console.log(orderId, OrderStatus);
+  onOrderStatus(orderId: string, OrderStatus: IOrderStatus) {
+    this.changeOrderStatus.emit({orderId, newStatus: OrderStatus});
   }
 }

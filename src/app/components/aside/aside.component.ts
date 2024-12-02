@@ -22,6 +22,10 @@ export class AsideComponent {
     {
       name: 'tracking',
       path: PAGES.TRACKING
+    },
+    {
+      name: 'المدفوعات',
+      path: PAGES.PAID
     }
   ]
 }
