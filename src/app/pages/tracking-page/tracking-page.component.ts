@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
-import { calculateOrderItemQuantity, calculateOrderTotal } from '../../utils';
+import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 import { ExportService } from '../../services/export.service';
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 
@@ -47,10 +47,6 @@ export class TrackingPageComponent implements OnInit {
   onDateChanged(date: string) {
     this.selectedDate = date; // Handle the date change event
     this.loadOrders(this.selectedTime);
-  }
-
-  calcQuantities() {
-    this.allQuantities = calculateOrderItemQuantity(this.filteredOrders);
   }
 
   loadOrders(period: string) {
@@ -99,28 +95,17 @@ export class TrackingPageComponent implements OnInit {
   }
 
   sortOrders() {
-    if (this.selectedOrder == 'new') {
-      this.filteredOrders.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-    } else {
-      this.filteredOrders.sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-      );
-    }
+    this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
   }
 
   searchByCustomerName(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const value = input.value.trim().toLowerCase();
-    if (value) {
-      this.filteredOrders = this.allOrders.filter((order) =>
-        order.customerName?.toLowerCase().includes(value)
-      );
-    } else {
-      this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
-    }
+    this.filteredOrders = filterOrders(this.allOrders, input.value);
     this.calcQuantities();
+  }
+
+  calcQuantities() {
+    this.allQuantities = calculateOrderItemQuantity(this.filteredOrders);
   }
 
   exportOrdersToCSV() {
