@@ -1,15 +1,15 @@
-<div class="bg-white rounded p-3 shadow-sm">
-  <div class="flex justify-between items-baseline flex-wrap gap-3">
-    <h2 class="text-2xl my-3 text-secondary font-bold">
+<div class="p-3 bg-white rounded shadow-sm">
+  <div class="flex flex-wrap items-baseline justify-between gap-3">
+    <h2 class="my-3 text-2xl font-bold text-secondary">
       {{ "الطلبات " + " (" + allOrders.length + ")" }}
     </h2>
-    <h3 class="text-xl text-secondary font-bold p-1 rounded">
+    <h3 class="p-1 text-xl font-bold rounded text-secondary">
       الاجمالي: {{ total }} جنيه
     </h3>
   </div>
 
   <div class="flex justify-center gap-[2rem]">
-    <div class="flex flex-wrap gap-2 items-center">
+    <div class="flex flex-wrap items-center gap-2">
       <div>
         <span class="font-bold text-roseDark-100">من </span>
         <select
@@ -54,8 +54,8 @@
     </div>
   </div>
 
-  <div class="flex flex-wrap gap-2 items-center my-2 justify-between">
-    <div class="flex flex-wrap gap-2 items-center my-2">
+  <div class="flex flex-wrap items-center justify-between gap-2 my-2">
+    <div class="flex flex-wrap items-center gap-2 my-2">
       <p>ابحث بأسم العميل :</p>
       <input
         type="search"
@@ -63,28 +63,28 @@
         id="searchOrderTracking"
         (input)="searchByCustomerName($event)"
         #customerNameInput
-        class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700"
+        class="p-1 border shadow-sm rounded-xl m-"
         placeholder="ابحث"
       />
     </div>
     <button
-      class="p-2 bg-green-500 text-white rounded"
+      class="p-2 text-white bg-green-500 rounded"
       (click)="exportOrdersToCSV()"
     >
       export Orders To CSV
     </button>
   </div>
 
-  <div class="w-full my-4 bg-white rounded-lg shadow-md dark:bg-neutral-800">
+  <div class="w-full my-4 bg-white rounded-lg shadow-md">
     <div class="hs-accordion-group">
       <div class="hs-accordion active" id="hs-basic-heading-one">
         <button
-          class="hs-accordion-toggle hs-accordion-active:text-secondary px-6 py-3 inline-flex items-center gap-x-3 text-sm w-full font-semibold text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:hs-accordion-active:text-blue-500 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400"
+          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
           aria-expanded="true"
           aria-controls="hs-basic-collapse-one"
         >
           <svg
-            class="hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary block size-4 text-roseDark-100 group-hover:text-roseMedium2 dark:text-neutral-400"
+            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2:te "
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -99,7 +99,7 @@
             <path d="M12 5v14"></path>
           </svg>
           <svg
-            class="hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary hidden size-4 text-roseDark-100 group-hover:text-roseMedium2 dark:text-neutral-400"
+            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -120,23 +120,23 @@
           role="region"
           aria-labelledby="hs-basic-heading-one"
         >
-          <div class="pb-4 px-6">
+          <div class="px-6 pb-4">
             @if((allQuantities|keyvalue).length >0){ @for (item of allQuantities
             | keyvalue; track $index) {
             <div
-              class="bg-beige rounded py-1 px-2 my-2 flex items-center shadow-sm"
+              class="flex items-center px-2 py-1 my-2 rounded shadow-sm bg-beige"
             >
-              <span class="text-roseDark-100 font-medium w-36 inline-block">{{
+              <span class="inline-block font-medium text-roseDark-100 w-36">{{
                 item.key
               }}</span>
-              <span class="text-roseMedium2 font-bold">{{ item.value }}</span>
+              <span class="font-bold text-roseMedium2">{{ item.value }}</span>
             </div>
             } }@else {
-            <div class="flex flex-col justify-center items-center">
-              <svg class="icon icon-illustration-empty-cart mt-4">
+            <div class="flex flex-col items-center justify-center">
+              <svg class="mt-4 icon icon-illustration-empty-cart">
                 <use xlink:href="#icon-illustration-empty-cart"></use>
               </svg>
-              <h3 class="text-center text-3xl p-2">لا يوجد كميات</h3>
+              <h3 class="p-2 text-3xl text-center">لا يوجد كميات</h3>
             </div>
 
             }
@@ -146,12 +146,12 @@
 
       <div class="hs-accordion" id="hs-basic-heading-two">
         <button
-          class="hs-accordion-toggle hs-accordion-active:text-secondary px-6 py-3 inline-flex items-center gap-x-3 text-sm w-full font-semibold text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 rounded-lg disabled:opacity-50 disabled:pointer-events-none"
+          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
           aria-expanded="false"
           aria-controls="hs-basic-collapse-two"
         >
           <svg
-            class="hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary block size-4 text-roseDark-100 group-hover:text-roseMedium2 dark:text-neutral-400"
+            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -166,7 +166,7 @@
             <path d="M12 5v14"></path>
           </svg>
           <svg
-            class="hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary hidden size-4 text-roseDark-100 group-hover:text-secondary"
+            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-secondary"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"

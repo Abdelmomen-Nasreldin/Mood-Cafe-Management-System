@@ -1,9 +1,9 @@
-<div class="bg-white rounded p-3 shadow-sm">
-  <div class="flex justify-between items-center">
-    <h2 class="text-2xl my-3 text-secondary font-bold">
+<div class="p-3 bg-white rounded shadow-sm">
+  <div class="flex items-center justify-between">
+    <h2 class="my-3 text-2xl font-bold text-secondary">
       {{ "طلبات اليوم" + " (" + allOrders.length + ")" }}
     </h2>
-    <h3 class="text-xl text-secondary font-bold">الاجمالي: {{ total }} جنيه</h3>
+    <h3 class="text-xl font-bold text-secondary">الاجمالي: {{ total }} جنيه</h3>
   </div>
 
   <div class="flex justify-center gap-[2rem]">
@@ -35,20 +35,20 @@
   <app-order-print [order]="printedOrder"></app-order-print>
   } -->
 
-  <div class="flex flex-wrap gap-2 items-center my-2">
+  <div class="flex flex-wrap items-center gap-2 my-2">
     <p>ابحث بأسم العميل :</p>
     <input type="search" name="searchOrder" id="searchOrder" (input)="searchByCustomerName($event)" #customerNameInput
-      class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث" />
+      class="p-1 m-2 border shadow-sm rounded-xl " placeholder="ابحث" />
   </div>
 
-  <!-- <div class="flex flex-wrap my-5 justify-center gap-3">
+  <!-- <div class="flex flex-wrap justify-center gap-3 my-5">
     @for (order of filteredOrders; track order.orderId) {
     <app-order-box [order]="order" [isEditAllowed]="true" (editOrder)="editOrder($event)" (printOrder)="printReceipt($event)"></app-order-box>
     }
   </div>
 
   @if (!allOrders.length) {
-  <h3 class="text-center text-3xl p-2 m-5 text-roseDark-100">لا يوجد طلبات</h3>
+  <h3 class="p-2 m-5 text-3xl text-center text-roseDark-100">لا يوجد طلبات</h3>
   } -->
   <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders" [isEditAllowed]="true" (editOrder)="editOrder($event)"></app-orders-wrapper>
 
