@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { IOrder, IOrderItem, IOrderStatus } from '../models/order';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { calculateItemTotal } from '../utils';
+import { Injectable } from "@angular/core";
+import { IOrder, IOrderItem, IOrderStatus } from "../models/order";
+import { BehaviorSubject, Observable } from "rxjs";
+import { calculateItemTotal } from "../utils";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class OrderService {
-  private ordersKey = 'cafe_orders';
+  private ordersKey = "cafe_orders";
   private _enableOrdering = new BehaviorSubject(false);
 
   public get enableOrdering() {
@@ -23,33 +23,29 @@ export class OrderService {
     return this._orderedSidebarItems.asObservable();
   }
 
-  public setOrderedSidebarItems(orders :IOrderItem[]) {
+  public setOrderedSidebarItems(orders: IOrderItem[]) {
     this._orderedSidebarItems.next(orders);
   }
 
   public addOrderedSidebarItems(orderItem: IOrderItem) {
     const currentOrders = this._orderedSidebarItems.getValue();
-    const itemIndex = currentOrders.findIndex(
-      (ele) => ele.itemName === orderItem.itemName
-    );
+    const itemIndex = currentOrders.findIndex((ele) => ele.itemName === orderItem.itemName);
     if (itemIndex == -1) {
       currentOrders.push(orderItem);
     } else {
       currentOrders[itemIndex].quantity++;
-      currentOrders[itemIndex].total = calculateItemTotal(
-        currentOrders[itemIndex]
-      );
+      currentOrders[itemIndex].total = calculateItemTotal(currentOrders[itemIndex]);
     }
     this._orderedSidebarItems.next(currentOrders);
   }
 
   public deleteOrderedSidebarItem(itemId: string): void {
     const currentOrders = this._orderedSidebarItems.getValue();
-    const filtered = currentOrders.filter(ele => ele.id !== itemId);
+    const filtered = currentOrders.filter((ele) => ele.id !== itemId);
     this._orderedSidebarItems.next(filtered);
   }
 
-  public resetOrderedSidebarItems(){
+  public resetOrderedSidebarItems() {
     this._orderedSidebarItems.next([]);
   }
 
@@ -66,10 +62,10 @@ export class OrderService {
   // }
 
   private updateOrdersSubject() {
-    this._allOrders.next(this.getOrders());  // Sync the subject with the latest orders from localStorage
+    this._allOrders.next(this.getOrders()); // Sync the subject with the latest orders from localStorage
   }
 
-  saveOrdersToLocalStorage(orders : IOrder[]){
+  saveOrdersToLocalStorage(orders: IOrder[]) {
     localStorage.setItem(this.ordersKey, JSON.stringify(orders));
     this.updateOrdersSubject();
   }
@@ -79,10 +75,10 @@ export class OrderService {
     return orders ? JSON.parse(orders) : [];
   }
 
-  getOrderById(orderId : string){
+  getOrderById(orderId: string) {
     const orders = this.getOrders();
-    const wantedOrder = orders.find(ele=>ele.orderId == orderId);
-    return wantedOrder
+    const wantedOrder = orders.find((ele) => ele.orderId == orderId);
+    return wantedOrder;
   }
 
   saveOrder(order: IOrder) {
@@ -103,9 +99,7 @@ export class OrderService {
       order.orderId === updatedOrder.orderId ? updatedOrder : order
     );
     this.saveOrdersToLocalStorage(orders);
-    console.log(updatedOrder,orders);
-     // Save and notify
+    console.log(updatedOrder, orders);
+    // Save and notify
   }
-
-
 }
