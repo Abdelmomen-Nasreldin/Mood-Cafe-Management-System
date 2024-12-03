@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderStatusService } from '../../services/order-status.service';
 import { Subject, takeUntil } from 'rxjs';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-paid-page',
@@ -29,7 +30,7 @@ export class PaidPageComponent implements OnInit {
     selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
     timeArr = TRACKING_TIME;
 
-    selectedDate: string = '';
+    selectedDate : string = '';
     showSelectDate = false;
     allQuantities!: Record<string, number>;
     printedOrder: IOrder | undefined;
@@ -38,48 +39,56 @@ export class PaidPageComponent implements OnInit {
       private _trackingService: TrackingService,
       private _exportService: ExportService,
       private _orderStatusService: OrderStatusService,
+      private _orderService: OrderService,
     ) {}
 
     ngOnInit(): void {
       this.loadOrders(TRACKING_PERIODS.FROM_1ST_OF_MONTH);
     }
 
-    onDateChanged(date: string) {
+  onDateChanged(date: string) {
+      console.log(date);
+
       this.selectedDate = date; // Handle the date change event
-      this.loadOrders(this.selectedTime);
+      this.loadOrders(TRACKING_PERIODS.CUSTOM_DAY);
     }
 
-    loadOrders(period: string) {
-     switch (period) {
-       case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
-         this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
-         break;
-       case TRACKING_PERIODS.LAST_30_DAYS:
-         this.allOrders = this._trackingService.getMonthlyOrders();
-         break;
-       case TRACKING_PERIODS.LAST_7_DAYS:
-         this.allOrders = this._trackingService.getWeeklyOrders();
-         break;
-       case TRACKING_PERIODS.CUSTOM_DAY:
-         this.allOrders = this._trackingService.getOrdersForSpecificDayAt7AM(
-           new Date(this.selectedDate)
-         );
-         break;
-       default:
-         this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
-         break;
-      }
+  loadOrders(period: string) {
+    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe((orders) => {
+
+    switch (period) {
+      case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
+        this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
+        break;
+      case TRACKING_PERIODS.LAST_30_DAYS:
+        this.allOrders = this._trackingService.getMonthlyOrders();
+        break;
+      case TRACKING_PERIODS.LAST_7_DAYS:
+        this.allOrders = this._trackingService.getWeeklyOrders();
+        break;
+      case TRACKING_PERIODS.CUSTOM_DAY:
+        this.allOrders = this._trackingService.getOrdersForSpecificDayAt7AM(new Date(this.selectedDate));
+        break;
+      default:
+        this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
+        break;
+    }
+
+      this.allOrders = this.allOrders.filter((order) => (order.status === OrderStatus.PAID || !order.status));
+
   // // the filter will be done for the paid orders and the orders that have no status (old orders)
-     this.allOrders = this.allOrders.filter((order) => (order.status === OrderStatus.PAID || !order.status));
       // this._orderStatusService.getPaidOrders().pipe(takeUntil(this.destroy$)).subscribe((orders) => { this.allOrders = orders });
 
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
+      console.log('llllllllllllllllll', this.filteredOrders);
+
       this.calcQuantities();
       this.sortOrders();
       if (this.customerNameInput) {
         this.customerNameInput.nativeElement.value = ''
       }
+    });
     }
 
     onOrderChange() {
@@ -89,11 +98,13 @@ export class PaidPageComponent implements OnInit {
     onTimeChange() {
       if (this.selectedTime == (TRACKING_PERIODS.CUSTOM_DAY as string)) {
         this.showSelectDate = true;
+        // this.filteredOrders = []
       } else {
         this.showSelectDate = false;
+        this.selectedDate = '';
+        this.loadOrders(this.selectedTime);
       }
-      this.selectedDate = '';
-      this.loadOrders(this.selectedTime);
+
     }
 
     sortOrders() {

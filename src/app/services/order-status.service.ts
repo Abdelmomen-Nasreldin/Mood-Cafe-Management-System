@@ -38,9 +38,8 @@ export class OrderStatusService {
   }
 
   changeOrdersStatus() {
-
     this._pendingOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PENDING));
-    this._paidOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PAID));
+    this._paidOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PAID || !order.status));
     this._postponedOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.POSTPONED));
     this._cancelledOrders.next(this._orderService.getOrders().filter((order) => order.status === this.orderStatus.CANCELLED));
   }

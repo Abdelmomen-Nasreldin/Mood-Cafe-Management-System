@@ -1,3 +1,5 @@
+import { IOrderStatus } from "../models/order";
+
 export const PAGES = {
   MENU : 'menu',
   ORDERS : 'orders',
@@ -41,7 +43,7 @@ export enum OrderStatus {
   CANCELLED = 'cancelled',
 }
 
-export const OrderStatusTranslations = {
+export const OrderStatusTranslations : { [key: string]: { en: IOrderStatus; ar: string }} = {
   [OrderStatus.PENDING]: { en: OrderStatus.PENDING, ar: 'قيد الانتظار' },
   [OrderStatus.PAID]: { en: OrderStatus.PAID, ar: 'مدفوع' },
   [OrderStatus.POSTPONED]: { en: OrderStatus.POSTPONED, ar: 'تم تأجيله' },

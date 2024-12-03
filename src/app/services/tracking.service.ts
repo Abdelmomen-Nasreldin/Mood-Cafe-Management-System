@@ -96,20 +96,39 @@ export class TrackingService {
     return this.getOrdersWithinRange(startOfMonth, now);
   }
 
+  // getOrdersForSpecificDayAt7AM(date: Date): IOrder[] {
+  //   // Set the start time of the specific day to 7 AM
+
+  //   const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 7, 0, 0);
+
+  //   // Set the end time to 6:59:59 AM of the next day (just before 7 AM)
+  //   const endOfDay = new Date(addDays(startOfDay, 1).getTime() - 1);
+
+  //   const orders = this._orderService.getOrders();
+
+  //   return orders.filter((order) =>
+  //     isWithinInterval(new Date(order.date), { start: startOfDay, end: endOfDay })
+  //   );
+  // }
   getOrdersForSpecificDayAt7AM(date: Date): IOrder[] {
     // Set the start time of the specific day to 7 AM
-
     const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 7, 0, 0);
 
     // Set the end time to 6:59:59 AM of the next day (just before 7 AM)
-    const endOfDay = new Date(addDays(startOfDay, 1).getTime() - 1);
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(startOfDay.getDate() + 1);  // Move to the next day
+    endOfDay.setMilliseconds(endOfDay.getMilliseconds() - 1); // Set to 6:59:59.999 AM
 
     const orders = this._orderService.getOrders();
 
-    return orders.filter((order) =>
-      isWithinInterval(new Date(order.date), { start: startOfDay, end: endOfDay })
-    );
+    // Filter orders where the order date is within the specified interval
+    return orders.filter((order) => {
+      // Ensure that order.date is a Date object if it's not already
+      const orderDate = new Date(order.date);
+      return isWithinInterval(orderDate, { start: startOfDay, end: endOfDay });
+    });
   }
+
 
 }
 
