@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';    // Import FormsModule for ngMod
 import { Router } from '@angular/router';
 import { OrderStatus, PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
-import { calculateOrderTotal } from '../../utils';
+import { calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
@@ -61,12 +61,8 @@ export class OrdersPageComponent implements OnInit {
     this.loadOrders();
   }
 
-  sortOrders (){
-    if(this.selectedOrder == 'new'){
-      this.filteredOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else {
-      this.filteredOrders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    }
+  sortOrders() {
+    this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
   }
 
   onOrderChange(){
@@ -85,16 +81,10 @@ export class OrdersPageComponent implements OnInit {
     this._modalService.openModal();
   }
 
-  searchByCustomerName(event: Event){
+  searchByCustomerName(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const value = input.value.trim();
-    if (value) {
-      this.filteredOrders = this.allOrders.filter((order) =>
-        order.customerName?.toLowerCase().includes(value.toLowerCase())
-      );
-    } else {
-      this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
-    }
+    this.filteredOrders = filterOrders(this.allOrders, input.value);
+    // this.calcQuantities();
   }
 
   changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
