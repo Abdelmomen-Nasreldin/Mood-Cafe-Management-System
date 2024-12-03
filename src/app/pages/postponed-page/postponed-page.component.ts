@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrdersWrapperComponent } from '../../components/orders-wrapper/orders-wrapper.component';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-postponed-page',
@@ -38,6 +39,7 @@ export class PostponedPageComponent implements OnInit {
         private _trackingService: TrackingService,
         private _exportService: ExportService,
         private _orderStatusService: OrderStatusService,
+        private _orderService: OrderService,
       ) {}
 
       ngOnInit(): void {
@@ -50,38 +52,18 @@ export class PostponedPageComponent implements OnInit {
       }
 
       loadOrders(period: string) {
-         switch (period) {
-           case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
-             this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
-             break;
-           case TRACKING_PERIODS.LAST_30_DAYS:
-             this.allOrders = this._trackingService.getMonthlyOrders();
-             break;
-           case TRACKING_PERIODS.LAST_7_DAYS:
-             this.allOrders = this._trackingService.getWeeklyOrders();
-             break;
-           case TRACKING_PERIODS.CUSTOM_DAY:
-             this.allOrders = this._trackingService.getOrdersForSpecificDayAt7AM(
-               new Date(this.selectedDate)
-             );
-             break;
-
-           default:
-             this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
-             break;
-        }
-
-        this.allOrders = this.allOrders.filter((order) => order.status === OrderStatus.POSTPONED);
-
-        // this._orderStatusService.getPostponedOrders().pipe(takeUntil(this.destroy$)).subscribe((orders) => { this.allOrders = orders });
-
-        this.total = calculateOrderTotal(this.allOrders);
-        this.filteredOrders = [...this.allOrders];
-        this.calcQuantities();
-        this.sortOrders();
-        if (this.customerNameInput) {
-          this.customerNameInput.nativeElement.value = ''
-        }
+        this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
+          const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
+          this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined);
+          this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.POSTPONED);
+          this.total = calculateOrderTotal(this.allOrders);
+          this.filteredOrders = [...this.allOrders];
+          this.calcQuantities();
+          this.sortOrders();
+          if (this.customerNameInput) {
+            this.customerNameInput.nativeElement.value = "";
+          }
+        });
       }
 
       onOrderChange() {
@@ -118,7 +100,7 @@ export class PostponedPageComponent implements OnInit {
     changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
       this._orderStatusService.changeOrderStatus(orderStatusAndId);
   }
-  
+
     ngOnDestroy(): void {
       this.destroy$.next();
       this.destroy$.complete();

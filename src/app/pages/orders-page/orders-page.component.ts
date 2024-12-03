@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IOrder, IOrderStatus } from '../../models/order';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
 import { Router } from '@angular/router';
@@ -43,18 +43,20 @@ export class OrdersPageComponent implements OnInit {
     this.loadOrders();
   }
 
-  loadOrders(){
-    this.allOrders = this._trackingService
-      .getTodayOrdersFromCustomTime(this.selectedTime).filter((order) => order.status === OrderStatus.PENDING);
-
-    this.filteredOrders = [...this.allOrders];
-    this.sortOrders();
-    this.total = calculateOrderTotal(this.allOrders);
-    if (this.customerNameInput) {
-      this.customerNameInput.nativeElement.value = '';
-    }
+  loadOrders() {
+    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
+      // const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
+      this.allOrders = this._trackingService.getTodayOrdersFromCustomTime(orders, this.selectedTime);
+      this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PENDING);
+      this.total = calculateOrderTotal(this.allOrders);
+      this.filteredOrders = [...this.allOrders];
+      // this.calcQuantities();
+      this.sortOrders();
+      if (this.customerNameInput) {
+        this.customerNameInput.nativeElement.value = "";
+      }
+    });
   }
-
   onTimeChange(){
     this.loadOrders();
   }

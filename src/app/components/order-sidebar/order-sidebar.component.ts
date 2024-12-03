@@ -53,7 +53,7 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
         this.orderedItems = items;
         this.updateOrderTotal();
       });
-      this.orders = this._trackingService.getTodayOrdersFrom7AM();
+      this.orders = this._trackingService.getTodayOrdersFrom7AM(this.orders);
   }
 
   ngAfterViewInit(): void {
