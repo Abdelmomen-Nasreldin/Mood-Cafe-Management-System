@@ -5,12 +5,14 @@
       <path d="m6 9 6 6 6-6"></path>
     </svg>
   </button>
-
+  {{order.status}}
   <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 w-56 hidden z-10 mt-2 min-w-60 bg-white shadow-md rounded-lg p-2" role="menu" aria-orientation="vertical" aria-labelledby="hs-dropdown-example">
     @for (status of OrderStatusTranslations; track $index) {
-    <span class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 " (click)="onOrderStatus(order.orderId, status.en)">
-      {{status.ar}}
-    </span>
+      @if (status.en !== order.status) {
+        <span  class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 " (click)="onOrderStatus(order.orderId, status.en)">
+          {{status.ar}}
+        </span>
+      }
   }
   </div>
 </div>

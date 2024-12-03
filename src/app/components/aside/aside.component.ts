@@ -26,6 +26,10 @@ export class AsideComponent {
     {
       name: 'المدفوعات',
       path: PAGES.PAID
+    },
+    {
+      name: 'المؤجلات',
+      path: PAGES.POSTPONED
     }
   ]
 }

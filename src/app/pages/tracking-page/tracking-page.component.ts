@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TrackingService } from '../../services/tracking.service';
-import { IOrder } from '../../models/order';
+import { IOrder, IOrderStatus } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
@@ -8,6 +8,7 @@ import { DatePickerComponent } from '../../components/date-picker/date-picker.co
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 import { ExportService } from '../../services/export.service';
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
+import { OrderStatusService } from '../../services/order-status.service';
 
 @Component({
   selector: 'app-tracking-page',
@@ -38,6 +39,7 @@ export class TrackingPageComponent implements OnInit {
   constructor(
     private _trackingService: TrackingService,
     private _exportService: ExportService,
+    private _orderStatusService: OrderStatusService,
   ) {}
 
   ngOnInit(): void {
@@ -108,7 +110,12 @@ export class TrackingPageComponent implements OnInit {
     this.allQuantities = calculateOrderItemQuantity(this.filteredOrders);
   }
 
+  changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
+    this._orderStatusService.changeOrderStatus(orderStatusAndId);
+  }
   exportOrdersToCSV() {
     this._exportService.exportOrdersToCSV(this.allOrders);
   }
+
+
 }

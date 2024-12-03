@@ -51,6 +51,8 @@ export class OrderStatusService {
        return;
      }
      wantedOrder.status = orderStatusAndId.newStatus;
-     this._orderService.updateOrder(wantedOrder);
-   }
+    this._orderService.updateOrder(wantedOrder);
+    this.changeOrdersStatus();
+  }
+
 }

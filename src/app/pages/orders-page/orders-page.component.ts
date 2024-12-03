@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
 import { Router } from '@angular/router';
-import { PAGES } from '../../defines/defines';
+import { OrderStatus, PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal } from '../../utils';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
@@ -45,11 +45,8 @@ export class OrdersPageComponent implements OnInit {
 
   loadOrders(){
     this.allOrders = this._trackingService
-      .getTodayOrdersFromCustomTime(this.selectedTime)
-      // .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date (newest to oldest)
-    // .pipe(takeUntil(this.destroy$)).subscribe((orders => {
-    //   this.allOrders = orders;
-    // }))
+      .getTodayOrdersFromCustomTime(this.selectedTime).filter((order) => order.status === OrderStatus.PENDING);
+
     this.filteredOrders = [...this.allOrders];
     this.sortOrders();
     this.total = calculateOrderTotal(this.allOrders);
@@ -99,10 +96,7 @@ export class OrdersPageComponent implements OnInit {
   }
 
   changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
-
-    // console.log(orderStatusAndId.newStatus, orderStatusAndId.orderId);
     this._orderStatusService.changeOrderStatus(orderStatusAndId);
-    this._orderStatusService.changeOrdersStatus();
   }
 
   ngOnDestroy(): void {
