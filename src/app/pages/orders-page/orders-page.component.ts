@@ -1,20 +1,21 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IOrder } from '../../models/order';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
 import { Router } from '@angular/router';
-import { PAGES } from '../../defines/defines';
+import { OrderStatus, PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
-import { calculateOrderTotal } from '../../utils';
+import { calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
 import { OrderBoxComponent } from "../../components/order-box/order-box.component";
+import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrderPrintComponent, OrderBoxComponent],
+  imports: [CommonModule, FormsModule, OrderPrintComponent, OrderBoxComponent, OrdersWrapperComponent],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })
@@ -40,31 +41,26 @@ export class OrdersPageComponent implements OnInit {
     this.loadOrders();
   }
 
-  loadOrders(){
-    this.allOrders = this._trackingService
-      .getTodayOrdersFromCustomTime(this.selectedTime)
-      // .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date (newest to oldest)
-    // .pipe(takeUntil(this.destroy$)).subscribe((orders => {
-    //   this.allOrders = orders;
-    // }))
-    this.filteredOrders = [...this.allOrders];
-    this.sortOrders();
-    this.total = calculateOrderTotal(this.allOrders);
-    if (this.customerNameInput) {
-      this.customerNameInput.nativeElement.value = '';
-    }
+  loadOrders() {
+    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
+      // const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
+      this.allOrders = this._trackingService.getTodayOrdersFromCustomTime(orders, this.selectedTime);
+      this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PENDING);
+      this.total = calculateOrderTotal(this.allOrders);
+      this.filteredOrders = [...this.allOrders];
+      // this.calcQuantities();
+      this.sortOrders();
+      if (this.customerNameInput) {
+        this.customerNameInput.nativeElement.value = "";
+      }
+    });
   }
-
   onTimeChange(){
     this.loadOrders();
   }
 
-  sortOrders (){
-    if(this.selectedOrder == 'new'){
-      this.filteredOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else {
-      this.filteredOrders.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    }
+  sortOrders() {
+    this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
   }
 
   onOrderChange(){
@@ -83,16 +79,10 @@ export class OrdersPageComponent implements OnInit {
     this._modalService.openModal();
   }
 
-  searchByCustomerName(event: Event){
+  searchByCustomerName(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const value = input.value.trim();
-    if (value) {
-      this.filteredOrders = this.allOrders.filter((order) =>
-        order.customerName?.toLowerCase().includes(value.toLowerCase())
-      );
-    } else {
-      this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
-    }
+    this.filteredOrders = filterOrders(this.allOrders, input.value);
+    // this.calcQuantities();
   }
 
   ngOnDestroy(): void {

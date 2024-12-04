@@ -20,8 +20,16 @@ export class AsideComponent {
       path: PAGES.ORDERS
     },
     {
+      name: 'المدفوعات',
+      path: PAGES.PAID
+    },
+    {
+      name: 'المؤجلات',
+      path: PAGES.POSTPONED
+    },
+    {
       name: 'tracking',
       path: PAGES.TRACKING
-    }
+    },
   ]
 }
