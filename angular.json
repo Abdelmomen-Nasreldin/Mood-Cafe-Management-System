@@ -15,12 +15,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser-esbuild",
           "options": {
-            "outputPath": "dist/moods-cafe",
+            "outputPath": "docs",
             "index": "src/index.html",
-            "browser": "src/main.ts",
-            "baseHref": "/moods-cafe/",
+            "main": "src/main.ts",
+            "baseHref": "/Mood-Cafe-Management-System/",
             "polyfills": [
               "zone.js"
             ],
