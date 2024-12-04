@@ -1,8 +1,13 @@
+import { IOrderStatus } from "../models/order";
+
 export const PAGES = {
   MENU : 'menu',
   ORDERS : 'orders',
   TRACKING : 'tracking',
   EDIT : 'edit',
+  PAID : 'paid',
+  POSTPONED : 'postponed',
+  CANCELLED : 'cancelled',
  } as const;
 
  export const TRACKING_PERIODS = {
@@ -30,3 +35,17 @@ export const PAGES = {
     value: TRACKING_PERIODS.CUSTOM_DAY,
   },
 ];
+
+export enum OrderStatus {
+  PENDING = 'pending',
+  PAID = 'paid',
+  POSTPONED = 'postponed',
+  CANCELLED = 'cancelled',
+}
+
+export const OrderStatusTranslations : { [key: string]: { en: IOrderStatus; ar: string }} = {
+  [OrderStatus.PENDING]: { en: OrderStatus.PENDING, ar: 'قيد الانتظار' },
+  [OrderStatus.PAID]: { en: OrderStatus.PAID, ar: 'مدفوع' },
+  [OrderStatus.POSTPONED]: { en: OrderStatus.POSTPONED, ar: 'تم تأجيله' },
+  [OrderStatus.CANCELLED]: { en: OrderStatus.CANCELLED, ar: 'ملغى' }
+} as const;

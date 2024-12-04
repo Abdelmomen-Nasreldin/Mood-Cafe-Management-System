@@ -1,0 +1,8 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  // margin: 0.75rem /* 12px */;
+  border-radius: 0.5rem /* 8px */;
+  width: 300px;
+  @apply bg-beige;
+}

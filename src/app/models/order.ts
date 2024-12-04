@@ -12,6 +12,9 @@ export interface IOrder {
   items: IOrderItem[];
   total: number;
   date: Date;
+  orderNo : number;
+  customerName: string,
+  status: IOrderStatus;
 }
 
-
+export type IOrderStatus = 'pending' | 'paid' | 'postponed' | 'cancelled';

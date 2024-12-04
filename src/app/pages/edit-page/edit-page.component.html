@@ -1,17 +1,30 @@
 <div class="btns m-3">
-  <button class="px-4 py-2 rounded-lg font-semibold bg-blue-400 text-white hover:bg-red-500" (click)="cancel()">
+  <button class="px-4 py-2 w-[200px] rounded-full font-semibold bg-roseDark-100 text-white hover:bg-secondary" (click)="cancel()">
     cancel
   </button>
 </div>
 
-<input type="search" name="searchItem" id="searchItem"  (input)="filterItems($event)" class="border rounded-xl shadow-sm p-1 m-2 dark:bg-neutral-800 dark:border-neutral-700" placeholder="ابحث">
-
 <div class="flex justify-between flex-wrap md:flex-nowrap gap-[15px]">
-  <div class="flex flex-wrap gap-[15px]">
-    @for (item of filteredItems; track item.id) {
-    <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
-    }
+
+  <div class="menu-items-wrapper container flex flex-col justify-center ">
+    <ul class="flex justify-center gap-[15px] my-5 flex-wrap">
+      @for (category of menuCategories; track category) {
+        <li class=" py-1 px-5 rounded-full text-center border-2 font-bold border-secondary text-secondary {{selectedCategory == category?'bg-secondary text-white':''}}">
+        <button (click)="filterItemsByCategory(category)" >
+          {{category}}
+        </button>
+        </li>
+      }
+    </ul>
+    <input #searchInput type="search" name="searchItem" id="searchItem"  (input)="searchMenuItems($event)" class="border rounded shadow-sm p-2 mb-4 mx-auto sm:w-[90%] md:w-[70%] lg:w-[60%] " placeholder="ابحث">
+    <div class="flex flex-wrap justify-center gap-[15px]">
+      @for (item of filteredItems; track item.id) {
+        <app-menu-item [item]="item" [enableOrdering]="enableOrdering"></app-menu-item>
+      }
+    </div>
   </div>
-  <app-order-sidebar [updatedOrder]="editedOrder" class=" block bg-slate-600 rounded text-white"
-    (setOrder)="setOrder($event)"></app-order-sidebar>
+
+
+  <button (click)="orderDetails.toggleOrderDetails()" class="bg-secondary xl:hidden fixed top-[3rem] left-[-4px] cursor-pointer border-0 py-2 px-4"> <i class="fa-solid fa-clipboard text-white"></i></button>
+  <app-order-sidebar #orderDetails [updatedOrder]="editedOrder" class="rounded text-secondary xl:sticky top-[60px] left-0 md:w-0  xl:h-[25%]  xl:min-w-[420px]" (setOrder)="setOrder($event)"></app-order-sidebar>
 </div>

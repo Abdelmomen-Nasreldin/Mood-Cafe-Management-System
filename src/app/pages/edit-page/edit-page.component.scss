@@ -1,0 +1,5 @@
+.menu-items-wrapper{
+  @media (min-width: 768px) {
+    width: calc(100% - 350px);
+  }
+}

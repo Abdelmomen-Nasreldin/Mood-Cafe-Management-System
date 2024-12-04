@@ -1,136 +1,198 @@
-<div class="flex justify-between items-baseline flex-wrap gap-3">
-  <h2 class="text-2xl my-3">الطلبات</h2>
-  <div class="flex flex-wrap gap-2">
-    <div>
-      <span> من  </span>
-      <select class="w-36" name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
-        @for (item of timeArr; track $index) {
-        <option [value]="item.value">{{item.text}}</option>
-      }
-    </select>
+<div class="p-3 bg-white rounded shadow-sm">
+  <div class="flex flex-wrap items-baseline justify-between gap-3">
+    <h2 class="my-3 text-2xl font-bold text-secondary">
+      {{ "كل الطلبات " + " (" + allOrders.length + ")" }}
+    </h2>
+    <h3 class="p-1 text-xl font-bold rounded text-secondary">
+      الاجمالي: {{ total }} جنيه
+    </h3>
   </div>
-  @if (showSelectDate) {
-    <div>
-      <!-- select date -->
-      <app-date-picker (dateChanged)="onDateChanged($event)"></app-date-picker>
-      <p>يوم : {{ selectedDate }}</p>  </div>
-    }
-  </div>
-  <h3 class="text-xl bg-gray-900 text-white p-1 rounded"> الاجمالي: {{total}} جنيه</h3>
-</div>
-<div class="my-2">
-  <span>الترتيب </span>
-  <select class="w-16" name="time" id="time" [(ngModel)]="selectedOrder" (change)="onOrderChange()">
-    <option value="new" >الأحدث</option>
-      <option value="old">الأقدم</option>
-  </select>
-</div>
 
-@if (printedOrder) {
-  <app-order-print [order]="printedOrder"></app-order-print>
-}
-
-<div class="w-full my-4 bg-white rounded-lg shadow-md dark:bg-neutral-800">
-  <div class="hs-accordion-group">
-    <div class="hs-accordion active" id="hs-basic-heading-one">
-      <button class="hs-accordion-toggle hs-accordion-active:text-blue-600 px-6 py-3 inline-flex items-center gap-x-3 text-sm w-full font-semibold text-start text-gray-800 hover:text-gray-500 focus:outline-none focus:text-gray-500 rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:hs-accordion-active:text-blue-500 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400" aria-expanded="true" aria-controls="hs-basic-collapse-one">
-        <svg class="hs-accordion-active:hidden hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 block size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14"></path>
-          <path d="M12 5v14"></path>
-        </svg>
-        <svg class="hs-accordion-active:block hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 hidden size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14"></path>
-        </svg>
-        الكميات
-      </button>
-      <div id="hs-basic-collapse-one" class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300" role="region" aria-labelledby="hs-basic-heading-one">
-        <div class="pb-4 px-6">
-          @for (item of allQuantities | keyvalue; track $index) {
-            <div class="bg-gray-100 p-1 my-2 flex items-center">
-              <span class="mx-2 me-8 w-36 inline-block">{{item.key}}</span>
-              <span>{{item.value}}</span>
-            </div>
+  <div class="flex justify-center gap-[2rem]">
+    <div class="flex flex-wrap items-center gap-2">
+      <div>
+        <span class="font-bold text-roseDark-100">من </span>
+        <select
+          class="rounded bg-beige w-[120px] px-3 py-2 border-2 border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
+          name="time"
+          id="time"
+          [(ngModel)]="selectedTime"
+          (change)="onTimeChange()"
+        >
+          @for (item of timeArr; track $index) {
+          <option class="hover:bg-roseLight1 bg-beige" [value]="item.value">
+            {{ item.text }}
+          </option>
           }
-        </div>
+        </select>
       </div>
+
+      @if (showSelectDate) {
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onDateChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
+      </div>
+      }
     </div>
 
-    <div class="hs-accordion" id="hs-basic-heading-two">
-      <button class="hs-accordion-toggle hs-accordion-active:text-blue-600 px-6 py-3 inline-flex items-center gap-x-3 text-sm w-full font-semibold text-start text-gray-800 hover:text-gray-500 focus:outline-none focus:text-gray-500 rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:hs-accordion-active:text-blue-500 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400" aria-expanded="false" aria-controls="hs-basic-collapse-two">
-        <svg class="hs-accordion-active:hidden hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 block size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14"></path>
-          <path d="M12 5v14"></path>
-        </svg>
-        <svg class="hs-accordion-active:block hs-accordion-active:text-blue-600 hs-accordion-active:group-hover:text-blue-600 hidden size-4 text-gray-600 group-hover:text-gray-500 dark:text-neutral-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14"></path>
-        </svg>
-        الطلبات
-      </button>
-      <div id="hs-basic-collapse-two" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" role="region" aria-labelledby="hs-basic-heading-two">
-        <div class="pb-4 bg-gray-200">
-          <div class="flex flex-wrap">
-            @for (order of allOrders; track order.orderId) {
-            <div class="m-3 bg-white rounded-lg basis-80 flex flex-col">
-              <div class="p-4 md:p-6">
-                <div class="flex justify-between items-center">
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    الصنف
-                  </span>
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    السعر
-                  </span>
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    الكمية
-                  </span>
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    السعر الكلي
-                  </span>
-                </div>
-                @for (item of order.items; track item.id) {
-                <div class="flex items-center">
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    {{item.itemName}}
-                  </span>
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    {{item.price}}
-                  </span>
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    {{item.quantity}}
-                  </span>
-                  <span class="mb-1 text-xs font-semibold uppercase text-blue-600 dark:text-blue-500 basis-1/4">
-                    {{item.total}} جنيه
-                  </span>
-                </div>
-                }
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-neutral-300 dark:hover:text-white">
-                  الاجمالي : {{order.total}} جنيه
-                </h3>
-                <p class="mt-3 text-gray-500 dark:text-neutral-500">
-                  التاريخ : {{order.date | date: 'medium'}}
-                </p>
-              </div>
-              <!-- buttons -->
-              <div
-                class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-neutral-700 dark:divide-neutral-700">
-                <button
-                (click)="printReceipt(order.orderId)"
-                  class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
-                  طباعة
-                </button>
-                <!-- no edit here in tracking page -->
-              </div>
+    <div>
+      <span class="font-bold text-roseDark-100">الترتيب </span>
+
+      <select
+        class="rounded w-[120px] px-3 py-2 border-2 bg-beige border-cream text-roseDark-100"
+        name="time"
+        id="time"
+        [(ngModel)]="selectedOrder"
+        (change)="onOrderChange()"
+      >
+        <option class="hover:bg-roseLight1" value="new">الأحدث</option>
+        <option class="hover:bg-roseLight1" value="old">الأقدم</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-2 my-2">
+    <div class="flex flex-wrap items-center gap-2 my-2">
+      <p>ابحث بأسم العميل :</p>
+      <input
+        type="search"
+        name="searchOrderTracking"
+        id="searchOrderTracking"
+        (input)="searchByCustomerName($event)"
+        #customerNameInput
+        class="p-1 border shadow-sm rounded-xl m-"
+        placeholder="ابحث"
+      />
+    </div>
+    <button
+      class="p-2 text-white bg-green-500 rounded"
+      (click)="exportOrdersToCSV()"
+    >
+      export Orders To CSV
+    </button>
+  </div>
+
+  <div class="w-full my-4 bg-white rounded-lg shadow-md">
+    <div class="hs-accordion-group">
+      <div class="hs-accordion active" id="hs-basic-heading-one">
+        <button
+          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
+          aria-expanded="true"
+          aria-controls="hs-basic-collapse-one"
+        >
+          <svg
+            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2:te "
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14"></path>
+            <path d="M12 5v14"></path>
+          </svg>
+          <svg
+            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14"></path>
+          </svg>
+          الكميات
+        </button>
+        <div
+          id="hs-basic-collapse-one"
+          class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
+          role="region"
+          aria-labelledby="hs-basic-heading-one"
+        >
+          <div class="px-6 pb-4">
+            @if((allQuantities|keyvalue).length >0){ @for (item of allQuantities
+            | keyvalue; track $index) {
+            <div
+              class="flex items-center px-2 py-1 my-2 rounded shadow-sm bg-beige"
+            >
+              <span class="inline-block font-medium text-roseDark-100 w-36">{{
+                item.key
+              }}</span>
+              <span class="font-bold text-roseMedium2">{{ item.value }}</span>
+            </div>
+            } }@else {
+            <div class="flex flex-col items-center justify-center">
+              <svg class="mt-4 icon icon-illustration-empty-cart">
+                <use xlink:href="#icon-illustration-empty-cart"></use>
+              </svg>
+              <h3 class="p-2 text-3xl text-center">لا يوجد كميات</h3>
             </div>
 
             }
           </div>
-          @if (!allOrders.length) {
-            <h3 class="text-center text-3xl p-2">No Orders Yet</h3>
-            }
+        </div>
+      </div>
+
+      <div class="hs-accordion" id="hs-basic-heading-two">
+        <button
+          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
+          aria-expanded="false"
+          aria-controls="hs-basic-collapse-two"
+        >
+          <svg
+            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14"></path>
+            <path d="M12 5v14"></path>
+          </svg>
+          <svg
+            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-secondary"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14"></path>
+          </svg>
+          الطلبات
+        </button>
+        <div
+          id="hs-basic-collapse-two"
+          class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
+          role="region"
+          aria-labelledby="hs-basic-heading-two"
+        >
+          <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
 
         </div>
       </div>
     </div>
-
   </div>
 </div>
+
 
