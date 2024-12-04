@@ -1,22 +1,6 @@
 <div>
-  <span class="font-bold text-roseDark-100"> الحالة </span>
-  <select
-    class="rounded bg-beige w-[120px] px-3 py-2 border-2 border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
-    name="order-status"
-    id="order-status"
-    [(ngModel)]="SelectedOrderStatus"
-    (change)="onOrderStatus(order.orderId, SelectedOrderStatus)"
-  >
-    @for (status of OrderStatusTranslations; track $index) {
-      @if (status.en !== order.status) {
-    <option class="hover:bg-roseLight1 bg-beige" [value]="status.en">
-        <span  class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 " >
-          {{status.ar}}
-        </span>
-      </option>
-    }
-    }
-  </select>
+  <span class="px-2 font-bold text-white cursor-pointer bg-secondary" (click)="onOrderStatus(order.orderId)"> تغيير الحالة  </span>
+
 </div>
 <!-- make it a select box or a button with a dropdown -->
 <div class="flex flex-wrap items-baseline justify-between gap-2 p-3 shadow-sm">

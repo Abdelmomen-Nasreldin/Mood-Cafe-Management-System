@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { IOrder, IOrderStatus } from "../../models/order";
 import { CommonModule } from "@angular/common";
 import { OrderStatus, OrderStatusTranslations } from "../../defines/defines";
@@ -13,25 +13,17 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./order-box.component.html",
   styleUrl: "./order-box.component.scss",
 })
-export class OrderBoxComponent implements OnChanges {
+export class OrderBoxComponent {
   @Input({ required: true }) order!: IOrder;
   @Input() isEditAllowed = false;
   @Output() printOrder = new EventEmitter<string>();
   @Output() editOrder = new EventEmitter<string>();
-  @Output() changeOrderStatus = new EventEmitter<{ orderId: string; newStatus: IOrderStatus }>();
+  @Output() changeOrderStatus = new EventEmitter<string>();
 
   orderStatus = Object.values(OrderStatus);
   OrderStatusTranslations = Object.values(OrderStatusTranslations);
   SelectedOrderStatus!: IOrderStatus;
   constructor() {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // if (changes["order"]?.currentValue) {
-    //   const t = this.OrderStatusTranslations.find((status) => status.en === (changes["order"]?.currentValue as IOrder).status)
-    //   this.SelectedOrderStatus = t??{ar: '', en: OrderStatus.PENDING};
-    //   console.log(this.SelectedOrderStatus);
-    // }
-  }
 
   onEditOrder(orderID: string) {
     this.editOrder.emit(orderID);
@@ -41,7 +33,8 @@ export class OrderBoxComponent implements OnChanges {
     this.printOrder.emit(orderId);
   }
 
-  onOrderStatus(orderId: string, OrderStatus: IOrderStatus) {
-    this.changeOrderStatus.emit({ orderId, newStatus: OrderStatus });
+  onOrderStatus(orderId: string) {
+    this.changeOrderStatus.emit(orderId);
   }
+
 }

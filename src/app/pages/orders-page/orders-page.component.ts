@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { IOrder, IOrderStatus } from '../../models/order';
+import { IOrder } from '../../models/order';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
@@ -12,7 +12,6 @@ import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
 import { OrderBoxComponent } from "../../components/order-box/order-box.component";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
-import { OrderStatusService } from '../../services/order-status.service';
 @Component({
   selector: 'app-orders-page',
   standalone: true,
@@ -36,7 +35,6 @@ export class OrdersPageComponent implements OnInit {
     private _orderService: OrderService,
     private _router: Router,
     private _modalService: ModalService,
-    private _orderStatusService: OrderStatusService,
   ) {}
 
   ngOnInit(): void {
@@ -85,10 +83,6 @@ export class OrdersPageComponent implements OnInit {
     const input = event.target as HTMLInputElement; // Type assertion
     this.filteredOrders = filterOrders(this.allOrders, input.value);
     // this.calcQuantities();
-  }
-
-  changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
-    this._orderStatusService.changeOrderStatus(orderStatusAndId);
   }
 
   ngOnDestroy(): void {

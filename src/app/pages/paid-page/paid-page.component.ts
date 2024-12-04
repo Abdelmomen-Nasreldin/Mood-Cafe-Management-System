@@ -1,14 +1,13 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
-import { IOrder, IOrderStatus } from "../../models/order";
+import { IOrder } from "../../models/order";
 import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
 import { TrackingService } from "../../services/tracking.service";
 import { ExportService } from "../../services/export.service";
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { OrderStatusService } from "../../services/order-status.service";
 import { Subject, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
 
@@ -38,7 +37,6 @@ export class PaidPageComponent implements OnInit {
   constructor(
     private _trackingService: TrackingService,
     private _exportService: ExportService,
-    private _orderStatusService: OrderStatusService,
     private _orderService: OrderService
   ) {}
 
@@ -99,9 +97,6 @@ export class PaidPageComponent implements OnInit {
 
   exportOrdersToCSV() {
     this._exportService.exportOrdersToCSV(this.allOrders);
-  }
-  changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus }) {
-    this._orderStatusService.changeOrderStatus(orderStatusAndId);
   }
 
   ngOnDestroy(): void {

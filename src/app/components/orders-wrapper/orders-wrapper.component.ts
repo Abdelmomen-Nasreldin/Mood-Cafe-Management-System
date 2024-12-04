@@ -4,11 +4,13 @@ import { IOrder, IOrderStatus } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
 import { OrderPrintComponent } from "../order-print/order-print.component";
+import { OrderDetailsComponent } from "../order-details/order-details.component";
+import { OrderStatusService } from '../../services/order-status.service';
 
 @Component({
   selector: 'app-orders-wrapper',
   standalone: true,
-  imports: [OrderBoxComponent, OrderPrintComponent],
+  imports: [OrderBoxComponent, OrderPrintComponent, OrderDetailsComponent],
   templateUrl: './orders-wrapper.component.html',
   styleUrl: './orders-wrapper.component.scss'
 })
@@ -17,13 +19,15 @@ export class OrdersWrapperComponent {
   @Input() filteredOrders: IOrder[] = [];
   @Input() isEditAllowed = false;
   @Output() editOrder = new EventEmitter<string>();
-  @Output() changeOrderStatus = new EventEmitter<{orderId: string, newStatus: IOrderStatus}>()
+  // @Output() changeOrderStatus = new EventEmitter<{orderId: string, newStatus: IOrderStatus}>()
 
   printedOrder: IOrder | undefined;
-
+  statusChangedOrder: IOrder | undefined;
+  isModalOpen = false;
   constructor(
     private _modalService: ModalService,
     private _orderService: OrderService,
+    private _orderStatusService: OrderStatusService,
   ) { }
 
   onEditOrder(orderID: string) {
@@ -37,10 +41,20 @@ export class OrdersWrapperComponent {
   }
 
 
-  onChangeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus }) {
+  onChangeOrderStatus(orderId: string) {
+    this.statusChangedOrder = this._orderService.getOrderById(orderId);
+    this.openOderDetailsModal();
+  }
 
-    // console.log(orderStatusAndId.newStatus, orderStatusAndId.orderId);
-    this.changeOrderStatus.emit(orderStatusAndId);
+  onChangeOrderDetails(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
+    this._orderStatusService.changeOrderStatus(orderStatusAndId);
+  }
 
+  openOderDetailsModal() {
+    this.isModalOpen = true;
+  }
+
+  closeOderDetailsModal() {
+    this.isModalOpen = false;
   }
 }

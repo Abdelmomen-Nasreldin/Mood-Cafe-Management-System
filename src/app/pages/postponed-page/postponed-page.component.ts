@@ -1,10 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { IOrder, IOrderStatus } from '../../models/order';
+import { IOrder } from '../../models/order';
 import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { ExportService } from '../../services/export.service';
-import { OrderStatusService } from '../../services/order-status.service';
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -38,7 +37,6 @@ export class PostponedPageComponent implements OnInit {
       constructor(
         private _trackingService: TrackingService,
         private _exportService: ExportService,
-        private _orderStatusService: OrderStatusService,
         private _orderService: OrderService,
       ) {}
 
@@ -97,9 +95,6 @@ export class PostponedPageComponent implements OnInit {
       exportOrdersToCSV() {
         this._exportService.exportOrdersToCSV(this.allOrders);
     }
-    changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
-      this._orderStatusService.changeOrderStatus(orderStatusAndId);
-  }
 
     ngOnDestroy(): void {
       this.destroy$.next();

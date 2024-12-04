@@ -2,6 +2,10 @@
 <app-order-print [order]="printedOrder"></app-order-print>
 }
 
+@if(statusChangedOrder) {
+  <app-order-details [order]="statusChangedOrder" [isModalOpen]="isModalOpen" (closeModal)="closeOderDetailsModal()" (changeOrderStatus)="onChangeOrderDetails($event)"></app-order-details>
+}
+
 <div class="pb-4 bg-white">
   <div class="flex flex-wrap justify-center gap-3 my-5">
     @for (order of filteredOrders; track order.orderId) {
