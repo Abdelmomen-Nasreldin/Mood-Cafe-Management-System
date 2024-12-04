@@ -3,13 +3,13 @@ import { TrackingService } from '../../services/tracking.service';
 import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
+import {  TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
-import { calculateOrderItemQuantity, calculateOrderTotal } from '../../utils';
-import { ModalService } from '../../services/modal.service';
-import { OrderService } from '../../services/order.service';
-import { OrderPrintComponent } from "../../components/order-print/order-print.component";
+import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 import { ExportService } from '../../services/export.service';
+import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
+import { Subject, takeUntil } from 'rxjs';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-tracking-page',
@@ -18,12 +18,14 @@ import { ExportService } from '../../services/export.service';
     CommonModule,
     FormsModule,
     DatePickerComponent,
-    OrderPrintComponent,
-  ],
+    OrdersWrapperComponent
+],
   templateUrl: './tracking-page.component.html',
   styleUrl: './tracking-page.component.scss',
 })
 export class TrackingPageComponent implements OnInit {
+  private destroy$ = new Subject<void>();
+
   @ViewChild('customerNameInput') customerNameInput! : ElementRef<HTMLInputElement>
   allOrders: IOrder[] = [];
   filteredOrders: IOrder[] = [];
@@ -39,9 +41,8 @@ export class TrackingPageComponent implements OnInit {
 
   constructor(
     private _trackingService: TrackingService,
-    private _modalService: ModalService,
-    private _orderService: OrderService,
     private _exportService: ExportService,
+    private _orderService: OrderService,
   ) {}
 
   ngOnInit(): void {
@@ -53,39 +54,19 @@ export class TrackingPageComponent implements OnInit {
     this.loadOrders(this.selectedTime);
   }
 
-  calcQuantities() {
-    this.allQuantities = calculateOrderItemQuantity(this.filteredOrders);
-  }
-
   loadOrders(period: string) {
-    switch (period) {
-      case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
-        this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
-        break;
-      case TRACKING_PERIODS.LAST_30_DAYS:
-        this.allOrders = this._trackingService.getMonthlyOrders();
-        break;
-      case TRACKING_PERIODS.LAST_7_DAYS:
-        this.allOrders = this._trackingService.getWeeklyOrders();
-        break;
-      case TRACKING_PERIODS.CUSTOM_DAY:
-        this.allOrders = this._trackingService.getOrdersForSpecificDayAt7AM(
-          new Date(this.selectedDate)
-        );
-        break;
-
-      default:
-        this.allOrders = this._trackingService.getOrdersFromStartOfMonthAt7AM();
-        break;
-    }
-
-    this.total = calculateOrderTotal(this.allOrders);
-    this.filteredOrders = [...this.allOrders];
-    this.calcQuantities();
-    this.sortOrders();
-    if (this.customerNameInput) {
-      this.customerNameInput.nativeElement.value = ''
-    }
+    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
+      const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
+      this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined);
+      // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.POSTPONED);
+      this.total = calculateOrderTotal(this.allOrders);
+      this.filteredOrders = [...this.allOrders];
+      this.calcQuantities();
+      this.sortOrders();
+      if (this.customerNameInput) {
+        this.customerNameInput.nativeElement.value = "";
+      }
+    });
   }
 
   onOrderChange() {
@@ -103,37 +84,25 @@ export class TrackingPageComponent implements OnInit {
   }
 
   sortOrders() {
-    if (this.selectedOrder == 'new') {
-      this.filteredOrders.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-    } else {
-      this.filteredOrders.sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-      );
-    }
-  }
-
-  printReceipt(orderId: string) {
-    // open modal that has the order-print component
-    this.printedOrder = this._orderService.getOrderById(orderId);
-    this._modalService.openModal();
+    this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
   }
 
   searchByCustomerName(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    const value = input.value.trim();
-    if (value) {
-      this.filteredOrders = this.allOrders.filter((order) =>
-        order.customerName?.includes(value)
-      );
-    } else {
-      this.filteredOrders = [...this.allOrders]; // Reset to full list if no input
-    }
+    this.filteredOrders = filterOrders(this.allOrders, input.value);
     this.calcQuantities();
+  }
+
+  calcQuantities() {
+    this.allQuantities = calculateOrderItemQuantity(this.filteredOrders);
   }
 
   exportOrdersToCSV() {
     this._exportService.exportOrdersToCSV(this.allOrders);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

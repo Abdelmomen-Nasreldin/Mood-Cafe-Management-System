@@ -1,13 +1,17 @@
-<a class="block relative h-20 rounded overflow-hidden">
-  <img alt="ecommerce" class="object-cover object-center w-full h-full block"
-    [src]="item.image? item.image : 'https://dummyimage.com/420x260'">
-</a>
-<div class="p-2">
-  <h3 class="text-gray-500 tracking-widest title-font mb-1">{{item.name}}</h3>
-  <p class="mt-1">{{item.price}} جنيه</p>
+
+<div class="rounded h-36 overflow-hidden">
+  <img class="object-cover object-center w-full h-full {{selectedMenuItems[item.id -1]['isSelected'] ?'border-secondary border-2':''}}"
+    [src]="item.image? item.image : 'https://dummyimage.com/200x160'" alt="item image" />
+
 </div>
-@if (enableOrdering) {
-<button class="px-4 py-2 rounded-lg font-semibold bg-slate-600 text-white block m-auto mb-2"
-  (click)="addToOrder(item)">Add
-  to order</button>
-}
+<div class="p-2 relative flex flex-col">
+  <button class=" rounded-full absolute top-[-25px] order-btn px-5 py-2 w-[calc(95%-2rem)] font-semibold bg-beige border-2 text-secondary block m-auto mb-2 {{selectedMenuItems[item.id -1]['isSelected'] ?'border-secondary':'border-cream '}}"
+  (click)="addToOrder(item)"> أضف <i class="fa-solid fa-clipboard-list text-secondary mx-1"></i></button>
+
+  <div class=" mt-[25px] flex justify-between">
+    <h3 class=" text-gray-500 tracking-widest title-font mb-1">{{item.name}}</h3>
+    <hr class="w-[calc(100%-1rem)] h-[20px] border-cream mt-4 mx-1">
+    <p class="text-secondary font-bold ms-2">{{item.price}} جنيه</p>
+  </div>
+</div>
+

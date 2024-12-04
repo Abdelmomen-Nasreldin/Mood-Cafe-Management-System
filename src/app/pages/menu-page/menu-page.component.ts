@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MenuItemComponent } from '../../components/menu-item/menu-item.component';
 import { MenuService } from '../../services/menu.service';
 import { IMenuItem } from '../../models/menu-item';
@@ -19,14 +19,18 @@ export class MenuPageComponent implements OnInit, OnDestroy {
 
   menuItems: IMenuItem[] = [];
   filteredItems: IMenuItem[] = [];
+  menuCategories: string[] = [];
   enableOrdering = false;
+  selectedCategory = 'الجميع';
+  @ViewChild('searchInput') searchInputElement!:ElementRef;
+
   constructor(
     private _menuService: MenuService,
     private _orderService: OrderService
   ) {}
 
   CreateOrder() {
-    this._orderService.setEnableOrdering(true);
+    // this._orderService.setEnableOrdering(true);
   }
 
   cancel() {
@@ -36,7 +40,10 @@ export class MenuPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
+    this._menuService.resetSelectedItems();
+    this.menuCategories = this._menuService.categories;
     this.filteredItems = [...this.menuItems];
+
     this._orderService.enableOrdering
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -49,22 +56,35 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     this._orderService.resetOrderedSidebarItems();
   }
 
-  filterItems(event: Event) {
+  searchMenuItems(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
     const value = input.value.trim();
     if (value) {
-      this.filteredItems = this.menuItems.filter((item) =>
-        item.name.includes(value)
+      this.filteredItems = this.menuItems.filter(item =>
+      ( (item.category === this.selectedCategory) || this.selectedCategory) &&
+        item.name.toLowerCase().includes(value)
       );
+
     } else {
-      this.filteredItems = [...this.menuItems]; // Reset to full list if no input
+      this.filterItemsByCategory(this.selectedCategory);
+    }
+  }
+
+  filterItemsByCategory(category: string) {
+    this.selectedCategory = category;
+    this.searchInputElement.nativeElement.value = "";
+    if (category === 'الجميع') {
+      this.filteredItems = [...this.menuItems];
+    } else {
+      this.filteredItems = this.menuItems.filter(
+        (item) => item.category === category
+      );
     }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-
     this._orderService.setEnableOrdering(false);
   }
 }
