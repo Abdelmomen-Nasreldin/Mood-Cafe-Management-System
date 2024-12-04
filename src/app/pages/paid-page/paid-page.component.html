@@ -13,7 +13,7 @@
       <div>
         <span class="font-bold text-roseDark-100">من </span>
         <select
-          class="rounded bg-beige px-3 py-2 border-2 border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
+          class="px-3 py-2 border-2 rounded bg-beige border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
           name="time"
           id="time"
           [(ngModel)]="selectedTime"
@@ -34,6 +34,23 @@
           (dateChanged)="onDateChanged($event)"
         ></app-date-picker>
         <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
+      </div>
+      }
+
+      @if (showRangeSelectDate ) {
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateOneChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> من يوم : {{ selectedDate }}</p>
+      </div>
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateTwoChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> الي يوم : {{ secondSelectedDate }}</p>
       </div>
       }
     </div>

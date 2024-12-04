@@ -125,7 +125,7 @@ export class TrackingService {
     });
   }
 
-  getOrdersByPeriod(orders: IOrder[], period: string, selectedDate?: string): IOrder[] {
+  getOrdersByPeriod(orders: IOrder[], period: string, selectedDate?: string, secondSelectedDate?: string): IOrder[] {
     switch (period) {
       case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
         return this.getOrdersFromStartOfMonthAt7AM(orders);
@@ -136,6 +136,11 @@ export class TrackingService {
       case TRACKING_PERIODS.CUSTOM_DAY:
         if (selectedDate) {
           return this.getOrdersForSpecificDayAt7AM(orders, new Date(selectedDate));
+        }
+        break;
+      case TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE:
+        if (selectedDate && secondSelectedDate) {
+          return this.getOrdersWithinRange(orders, new Date(selectedDate), new Date(secondSelectedDate));
         }
         break;
       default:
