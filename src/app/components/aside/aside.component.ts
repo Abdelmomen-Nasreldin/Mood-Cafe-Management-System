@@ -24,8 +24,12 @@ export class AsideComponent {
       path: PAGES.PAID
     },
     {
-      name: 'المؤجلات',
+      name: 'temp',
       path: PAGES.POSTPONED
+    },
+    {
+      name: 'الملغية',
+      path: PAGES.CANCELLED
     },
     {
       name: 'tracking',
