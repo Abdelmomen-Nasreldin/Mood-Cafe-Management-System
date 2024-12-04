@@ -20,6 +20,7 @@ import { calculateItemTotal, calculateOrderTotal } from '../../utils';
 import { TrackingService } from '../../services/tracking.service';
 import { MenuService } from '../../services/menu.service';
 import { OrderStatus } from '../../defines/defines';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-order-sidebar',
@@ -111,7 +112,7 @@ if(this.orderedItems[itemIndex]){
       this.setOrder.emit(this.updatedOrder);
     } else {
       const order: IOrder = {
-        orderId: `${+new Date()}-${Math.floor(Math.random() * 10000)}`,
+        orderId: uuidv4(),
         items: [...this.orderedItems],
         total: this.OrderTotal,
         date: new Date(),

@@ -3,6 +3,7 @@ import { IMenuItem } from '../../models/menu-item';
 import { OrderService } from '../../services/order.service';
 import { IOrderItem } from '../../models/order';
 import { MenuService } from '../../services/menu.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-menu-item',
@@ -34,7 +35,7 @@ export class MenuItemComponent implements OnInit, OnDestroy {
 
   addToOrder(item: IMenuItem) {
     const orderedItem: IOrderItem = {
-      id: `${+new Date()}-${Math.floor(Math.random() * 10000)}`,
+      id: uuidv4(),
       itemName: item.name,
       itemEnglishName: item.english_name,
       price: item.price,
