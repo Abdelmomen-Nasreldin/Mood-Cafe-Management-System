@@ -9,8 +9,8 @@
 <div class="container flex flex-col justify-center menu-items-wrapper">
   <ul class="flex justify-center gap-[15px] my-5 flex-wrap">
     @for (category of menuCategories; track category) {
-      <li class=" py-1 px-5 rounded-full text-center border-2 font-bold border-secondary text-secondary {{selectedCategory == category.en?'bg-secondary text-white':''}}">
-      <button (click)="filterItemsByCategory(category.en)" >
+      <li class="rounded-full text-center border-2 font-bold border-secondary text-secondary {{selectedCategory == category.en?'bg-secondary text-white':''}}">
+      <button class="px-5 py-1" (click)="filterItemsByCategory(category.en)" >
         {{category.ar}}
       </button>
       </li>
