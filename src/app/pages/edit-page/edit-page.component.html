@@ -1,4 +1,4 @@
-<div class="btns m-3">
+<div class="m-3 btns">
   <button class="px-4 py-2 w-[200px] rounded-full font-semibold bg-roseDark-100 text-white hover:bg-secondary" (click)="cancel()">
     cancel
   </button>
@@ -6,12 +6,12 @@
 
 <div class="flex justify-between flex-wrap md:flex-nowrap gap-[15px]">
 
-  <div class="menu-items-wrapper container flex flex-col justify-center ">
+  <div class="container flex flex-col justify-center menu-items-wrapper ">
     <ul class="flex justify-center gap-[15px] my-5 flex-wrap">
       @for (category of menuCategories; track category) {
-        <li class=" py-1 px-5 rounded-full text-center border-2 font-bold border-secondary text-secondary {{selectedCategory == category?'bg-secondary text-white':''}}">
-        <button (click)="filterItemsByCategory(category)" >
-          {{category}}
+        <li class=" py-1 px-5 rounded-full text-center border-2 font-bold border-secondary text-secondary {{selectedCategory == category.en?'bg-secondary text-white':''}}">
+        <button (click)="filterItemsByCategory(category.en)" >
+          {{category.ar}}
         </button>
         </li>
       }
@@ -25,6 +25,6 @@
   </div>
 
 
-  <button (click)="orderDetails.toggleOrderDetails()" class="bg-secondary xl:hidden fixed top-[3rem] left-[-4px] cursor-pointer border-0 py-2 px-4"> <i class="fa-solid fa-clipboard text-white"></i></button>
+  <button (click)="orderDetails.toggleOrderDetails()" class="bg-secondary xl:hidden fixed top-[3rem] left-[-4px] cursor-pointer border-0 py-2 px-4"> <i class="text-white fa-solid fa-clipboard"></i></button>
   <app-order-sidebar #orderDetails [updatedOrder]="editedOrder" class="rounded text-secondary xl:sticky top-[60px] left-0 md:w-0  xl:h-[25%]  xl:min-w-[420px]" (setOrder)="setOrder($event)"></app-order-sidebar>
 </div>
