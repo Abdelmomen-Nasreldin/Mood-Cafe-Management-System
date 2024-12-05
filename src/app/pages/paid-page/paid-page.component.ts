@@ -73,12 +73,11 @@ export class PaidPageComponent implements OnInit {
   onTimeChange() {
     if (this.selectedTime == (TRACKING_PERIODS.CUSTOM_DAY as string)) {
       this.showSelectDate = true;
-      // this.filteredOrders = []
     } else {
       this.showSelectDate = false;
-      this.selectedDate = "";
-      this.loadOrders(this.selectedTime);
     }
+    this.selectedDate = '';
+    this.loadOrders(this.selectedTime);
   }
 
   sortOrders() {

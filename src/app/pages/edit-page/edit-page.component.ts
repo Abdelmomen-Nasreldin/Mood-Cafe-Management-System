@@ -6,7 +6,7 @@ import { IMenuItem } from '../../models/menu-item';
 import { MenuItemComponent } from "../../components/menu-item/menu-item.component";
 import { OrderSidebarComponent } from "../../components/order-sidebar/order-sidebar.component";
 import { ActivatedRoute, Router } from '@angular/router';
-import { PAGES } from '../../defines/defines';
+import { CATEGORIES, ENGLISH_CATEGORIES, PAGES } from '../../defines/defines';
 
 @Component({
   selector: 'app-edit-page',
@@ -23,8 +23,8 @@ export class EditPageComponent {
   enableOrdering = true;
   orderId = '';
   editedOrder : IOrder | undefined;
-  menuCategories: string[] = [];
-  selectedCategory = 'الجميع';
+  menuCategories: { en: string; ar: string }[] = [];
+  selectedCategory = ENGLISH_CATEGORIES.ALL;
   @ViewChild('searchInput') searchInputElement!:ElementRef;
 
   constructor(
@@ -43,7 +43,7 @@ export class EditPageComponent {
 
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
-    this.menuCategories = this._menuService.categories;
+    this.menuCategories = CATEGORIES;
     this.filteredItems = [...this.menuItems];
     // get the orderId from the url
     this._activatedRoute.params.subscribe((data)=>{
@@ -89,9 +89,9 @@ export class EditPageComponent {
 
 
   filterItemsByCategory(category: string) {
-    this.selectedCategory = category;
+    this.selectedCategory = category as ENGLISH_CATEGORIES;
     this.searchInputElement.nativeElement.value = "";
-    if (category === 'الجميع') {
+    if (category === ENGLISH_CATEGORIES.ALL) {
       this.filteredItems = [...this.menuItems];
     } else {
       this.filteredItems = this.menuItems.filter(
