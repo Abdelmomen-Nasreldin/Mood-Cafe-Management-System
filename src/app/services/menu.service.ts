@@ -565,7 +565,7 @@ export class MenuService {
     {
       "id": 80,
       "name": "ميلك شيك اوريو",
-      "price": 45,
+      "price": 50,
       "english_name": "MILK SHAKE OREO",
       "category": "cold"
     },
