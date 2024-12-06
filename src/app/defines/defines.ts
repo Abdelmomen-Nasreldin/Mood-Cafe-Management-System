@@ -54,3 +54,35 @@ export const OrderStatusTranslations : { [key: string]: { en: IOrderStatus; ar: 
   [OrderStatus.POSTPONED]: { en: OrderStatus.POSTPONED, ar: 'تم تأجيله' },
   [OrderStatus.CANCELLED]: { en: OrderStatus.CANCELLED, ar: 'ملغى' }
 } as const;
+
+export enum ENGLISH_CATEGORIES  {
+  ALL = 'all',
+  HOT = 'hot',
+  COLD = 'cold',
+  SWEETS = 'sweets',
+  OTHERS = 'others'
+}
+
+export const CATEGORIES : { en: ENGLISH_CATEGORIES; ar: string }[] = [{
+  en: ENGLISH_CATEGORIES.ALL,
+  ar: 'الجميع'
+},
+{
+  en: ENGLISH_CATEGORIES.HOT,
+  ar: 'مشروبات ساخنه'
+},
+{
+  en: ENGLISH_CATEGORIES.COLD,
+  ar: 'مشروبات بارده'
+},
+{
+  en: ENGLISH_CATEGORIES.SWEETS,
+  ar: 'حلويات'
+},
+{
+  en: ENGLISH_CATEGORIES.OTHERS,
+  ar: 'أخرى'
+}
+] as const;
+
+
