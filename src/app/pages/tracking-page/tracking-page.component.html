@@ -13,7 +13,7 @@
       <div>
         <span class="font-bold text-roseDark-100">من </span>
         <select
-          class="rounded bg-beige px-3 py-2 border-2 border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
+          class="px-3 py-2 border-2 rounded bg-beige border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
           name="time"
           id="time"
           [(ngModel)]="selectedTime"
@@ -34,6 +34,23 @@
           (dateChanged)="onDateChanged($event)"
         ></app-date-picker>
         <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
+      </div>
+      }
+
+      @if (showRangeSelectDate ) {
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateOneChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> من يوم : {{ selectedDate }}</p>
+      </div>
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateTwoChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> الي يوم : {{ secondSelectedDate }}</p>
       </div>
       }
     </div>
@@ -77,7 +94,7 @@
 
   <div class="w-full my-4 bg-white rounded-lg shadow-md">
     <div class="hs-accordion-group">
-      <div class="hs-accordion active" id="hs-basic-heading-one">
+      <div class="hs-accordion" id="hs-basic-heading-one">
         <button
           class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
           aria-expanded="true"
@@ -116,7 +133,7 @@
         </button>
         <div
           id="hs-basic-collapse-one"
-          class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
+          class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
           role="region"
           aria-labelledby="hs-basic-heading-one"
         >
@@ -144,7 +161,7 @@
         </div>
       </div>
 
-      <div class="hs-accordion" id="hs-basic-heading-two">
+      <div class="hs-accordion active" id="hs-basic-heading-two">
         <button
           class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
           aria-expanded="false"
@@ -183,7 +200,7 @@
         </button>
         <div
           id="hs-basic-collapse-two"
-          class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
+          class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
           role="region"
           aria-labelledby="hs-basic-heading-two"
         >

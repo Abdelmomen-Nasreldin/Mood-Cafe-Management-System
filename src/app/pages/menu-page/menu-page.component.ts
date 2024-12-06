@@ -6,6 +6,7 @@ import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrderSidebarComponent } from '../../components/order-sidebar/order-sidebar.component';
 import { IOrder } from '../../models/order';
+import { CATEGORIES, ENGLISH_CATEGORIES } from '../../defines/defines';
 
 @Component({
   selector: 'app-menu-page',
@@ -19,15 +20,15 @@ export class MenuPageComponent implements OnInit, OnDestroy {
 
   menuItems: IMenuItem[] = [];
   filteredItems: IMenuItem[] = [];
-  menuCategories: string[] = [];
+  menuCategories: { en: string; ar: string }[] = [];
   enableOrdering = false;
-  selectedCategory = 'الجميع';
+  selectedCategory = ENGLISH_CATEGORIES.ALL;
   @ViewChild('searchInput') searchInputElement!:ElementRef;
 
   constructor(
     private _menuService: MenuService,
     private _orderService: OrderService
-  ) {}
+  ) { }
 
   CreateOrder() {
     // this._orderService.setEnableOrdering(true);
@@ -41,7 +42,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.menuItems = this._menuService.getMenuItems();
     this._menuService.resetSelectedItems();
-    this.menuCategories = this._menuService.categories;
+    this.menuCategories = CATEGORIES;
     this.filteredItems = [...this.menuItems];
 
     this._orderService.enableOrdering
@@ -71,9 +72,9 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   }
 
   filterItemsByCategory(category: string) {
-    this.selectedCategory = category;
+    this.selectedCategory = category as ENGLISH_CATEGORIES;
     this.searchInputElement.nativeElement.value = "";
-    if (category === 'الجميع') {
+    if (category === ENGLISH_CATEGORIES.ALL) {
       this.filteredItems = [...this.menuItems];
     } else {
       this.filteredItems = this.menuItems.filter(

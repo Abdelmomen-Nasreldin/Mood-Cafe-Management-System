@@ -65,6 +65,9 @@ export class OrderStatusService {
       return;
     }
     wantedOrder.status = orderStatusAndId.newStatus;
+    if (orderStatusAndId.newStatus === this.orderStatus.PAID) {
+      wantedOrder.date = new Date();
+    }
     this._orderService.updateOrder(wantedOrder);
     this.changeOrdersStatus();
   }
