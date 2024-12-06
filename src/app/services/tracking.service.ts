@@ -91,9 +91,8 @@ export class TrackingService {
     });
   }
 
-  // Important Important Important Important Important
-  // there's an issue with the FROM_CUSTOM_DATE_TO_DATE period // the first date is not from 7 AM
-  getOrdersByPeriod(orders: IOrder[], period: string, selectedDate?: string, secondSelectedDate?: string): IOrder[] {
+  getOrdersByPeriod(orders: IOrder[], period: string, startDate?: string, endDate?: string): IOrder[] {
+    const today = new Date();
     switch (period) {
       case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
         return this.getOrdersFromStartOfMonthAt7AM(orders);
@@ -102,20 +101,18 @@ export class TrackingService {
       case TRACKING_PERIODS.LAST_7_DAYS:
         return this.getOrdersWithinDays(orders, DAYS_IN_WEEK);
       case TRACKING_PERIODS.CUSTOM_DAY:
-        if (selectedDate) {
-          return this.getOrdersForSpecificDayAt7AM(orders, new Date(selectedDate));
+        if (startDate) {
+          return this.getOrdersForSpecificDayAt7AM(orders, new Date(startDate));
         }
         break;
       case TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE:
-        if (selectedDate && secondSelectedDate) {
-          return this.getOrdersWithinRange(orders, new Date(selectedDate), new Date(
-            new Date(secondSelectedDate).getFullYear(),
-            new Date(secondSelectedDate).getMonth(),
-            new Date(secondSelectedDate).getDate() + 1, // Move to the next day
-            6, // Set hours to 6
-            59, // Set minutes to 59
-            59  // Set seconds to 59
-          ));
+        if (startDate && endDate) {
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+          start.setHours(6, 59, 59);
+          end.setDate(end.getDate() + 1);
+          end.setHours(6, 59, 59);
+          return this.getOrdersWithinRange(orders, start, end);
         }
         break;
       default:
