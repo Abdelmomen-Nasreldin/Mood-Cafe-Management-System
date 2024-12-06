@@ -91,6 +91,8 @@ export class TrackingService {
     });
   }
 
+  // Important Important Important Important Important
+  // there's an issue with the FROM_CUSTOM_DATE_TO_DATE period // the first date is not from 7 AM
   getOrdersByPeriod(orders: IOrder[], period: string, selectedDate?: string, secondSelectedDate?: string): IOrder[] {
     switch (period) {
       case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
@@ -106,7 +108,14 @@ export class TrackingService {
         break;
       case TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE:
         if (selectedDate && secondSelectedDate) {
-          return this.getOrdersWithinRange(orders, new Date(selectedDate), new Date(secondSelectedDate));
+          return this.getOrdersWithinRange(orders, new Date(selectedDate), new Date(
+            new Date(secondSelectedDate).getFullYear(),
+            new Date(secondSelectedDate).getMonth(),
+            new Date(secondSelectedDate).getDate() + 1, // Move to the next day
+            6, // Set hours to 6
+            59, // Set minutes to 59
+            59  // Set seconds to 59
+          ));
         }
         break;
       default:
@@ -115,3 +124,13 @@ export class TrackingService {
     return [];
   }
 }
+
+
+// new Date(
+//   selectedDate.getFullYear(),
+//   selectedDate.getMonth(),
+//   selectedDate.getDate() + 1, // Move to the next day
+//   6, // Set hours to 6
+//   59, // Set minutes to 59
+//   59  // Set seconds to 59
+// )
