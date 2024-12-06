@@ -36,6 +36,23 @@
         <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
       </div>
       }
+
+      @if (showRangeSelectDate ) {
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateOneChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> من يوم : {{ selectedDate }}</p>
+      </div>
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateTwoChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> الي يوم : {{ secondSelectedDate }}</p>
+      </div>
+      }
     </div>
 
     <div>
