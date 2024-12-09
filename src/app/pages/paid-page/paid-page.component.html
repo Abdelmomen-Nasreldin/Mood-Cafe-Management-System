@@ -4,7 +4,7 @@
       {{ "  الطلبات المدفوعة" + " (" + allOrders.length + ")" }}
     </h2>
     <h3 class="p-1 text-xl font-bold rounded text-secondary">
-      الاجمالي: {{ total }} جنيه
+      الاجمالي: {{ total }} + {{ totalPaidPostponedOrders }} = {{ total + totalPaidPostponedOrders }} جنيه
     </h3>
     <h3 class="p-1 text-xl font-bold rounded text-secondary">
       اجمالي المؤجل المدفوع: {{ totalPaidPostponedOrders }} جنيه
