@@ -13,17 +13,16 @@ export class TrackingService {
   constructor() {}
 
   // Helper function to get filtered orders between a date range
-  private getOrdersWithinRange(orders: IOrder[], startDate: Date, endDate: Date): IOrder[] {
-    // const orders = this._orderService.getOrders();
-    return orders.filter((order) => isWithinInterval(new Date(order.date), { start: startDate, end: endDate }));
+  private getOrdersWithinRange(orders: IOrder[], startDate: Date, endDate: Date, isPaidPostponed = false): IOrder[] {
+    return orders.filter((order) => isWithinInterval(new Date((isPaidPostponed && order.paidDate) ? order.paidDate : order.date), { start: startDate, end: endDate }));
   }
 
   // Helper function to get filtered orders by date range at 7 AM
-  private getOrdersWithinDays(orders: IOrder[], daysAgo: number): IOrder[] {
+  private getOrdersWithinDays(orders: IOrder[], daysAgo: number, isPaidPostponed = false): IOrder[] {
     const today = new Date();
     // Calculate the start date `daysAgo` with time set to 7 AM
     const startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - daysAgo, 7, 0, 0);
-    return orders.filter((order) => isWithinInterval(new Date(order.date), { start: startDate, end: today }));
+    return orders.filter((order) => isWithinInterval(new Date((isPaidPostponed && order.paidDate) ? order.paidDate : order.date), { start: startDate, end: today }));
   }
 
   // Get orders from the last week
@@ -66,16 +65,16 @@ export class TrackingService {
   }
 
   // the orders from the 1st day of the current month at 7 AM
-  getOrdersFromStartOfMonthAt7AM(orders: IOrder[]): IOrder[] {
+  getOrdersFromStartOfMonthAt7AM(orders: IOrder[], isPaidPostponed = false): IOrder[] {
     const today = new Date();
     // Set the start of the month to the 1st day of the current month at 7 AM
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1, 7, 0, 0); // 1st day of the month at 7 AM
     const now = new Date(); // Current time
 
-    return this.getOrdersWithinRange(orders, startOfMonth, now);
+    return this.getOrdersWithinRange(orders, startOfMonth, now, isPaidPostponed);
   }
 
-  getOrdersForSpecificDayAt7AM(orders: IOrder[], date: Date): IOrder[] {
+  getOrdersForSpecificDayAt7AM(orders: IOrder[], date: Date, isPaidPostponed = false): IOrder[] {
     // Set the start time of the specific day to 7 AM
     const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 7, 0, 0);
 
@@ -86,23 +85,23 @@ export class TrackingService {
     // Filter orders where the order date is within the specified interval
     return orders.filter((order) => {
       // Ensure that order.date is a Date object if it's not already
-      const orderDate = new Date(order.date);
+      const orderDate = new Date(isPaidPostponed && order.paidDate ? order.paidDate : order.date);
       return isWithinInterval(orderDate, { start: startOfDay, end: endOfDay });
     });
   }
 
-  getOrdersByPeriod(orders: IOrder[], period: string, startDate?: string, endDate?: string): IOrder[] {
+  getOrdersByPeriod(orders: IOrder[], period: string, startDate?: string, endDate?: string, isPaidPostponed = false): IOrder[] {
     const today = new Date();
     switch (period) {
       case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
-        return this.getOrdersFromStartOfMonthAt7AM(orders);
+        return this.getOrdersFromStartOfMonthAt7AM(orders, isPaidPostponed);
       case TRACKING_PERIODS.LAST_30_DAYS:
-        return this.getOrdersWithinDays(orders, DAYS_IN_MONTH);
+        return this.getOrdersWithinDays(orders, DAYS_IN_MONTH, isPaidPostponed);
       case TRACKING_PERIODS.LAST_7_DAYS:
-        return this.getOrdersWithinDays(orders, DAYS_IN_WEEK);
+        return this.getOrdersWithinDays(orders, DAYS_IN_WEEK, isPaidPostponed);
       case TRACKING_PERIODS.CUSTOM_DAY:
         if (startDate) {
-          return this.getOrdersForSpecificDayAt7AM(orders, new Date(startDate));
+          return this.getOrdersForSpecificDayAt7AM(orders, new Date(startDate), isPaidPostponed);
         }
         break;
       case TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE:
@@ -112,7 +111,7 @@ export class TrackingService {
           start.setHours(6, 59, 59);
           end.setDate(end.getDate() + 1);
           end.setHours(6, 59, 59);
-          return this.getOrdersWithinRange(orders, start, end);
+          return this.getOrdersWithinRange(orders, start, end, isPaidPostponed);
         }
         break;
       default:

@@ -10,6 +10,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
+import { OrderStatusService } from "../../services/order-status.service";
 
 @Component({
   selector: "app-paid-page",
@@ -36,11 +37,13 @@ export class PaidPageComponent implements OnInit {
   showRangeSelectDate = false;
   allQuantities!: Record<string, number>;
   printedOrder: IOrder | undefined;
-
+  paidPostponedOrders: IOrder[] = [];
+  totalPaidPostponedOrders = 0;
   constructor(
     private _trackingService: TrackingService,
     private _exportService: ExportService,
-    private _orderService: OrderService
+    private _orderService: OrderService,
+    private _orderStatusService: OrderStatusService
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +71,13 @@ export class PaidPageComponent implements OnInit {
       const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
       const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
       this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
+      this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
+
       this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
+      this.paidPostponedOrders = this.paidPostponedOrders.filter(order => order.status === OrderStatus.PAID_POSTPONED);
+      this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
+      // console.log(this.totalPaidPostponedOrders, this.paidPostponedOrders);
+
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
       this.calcQuantities();
@@ -103,9 +112,11 @@ export class PaidPageComponent implements OnInit {
     this.selectedDate = "";
     this.secondSelectedDate = "";
     this.allOrders = [];
+    this.paidPostponedOrders = [];
     this.filteredOrders = [];
     this.calcQuantities();
     this.total = 0;
+    this.totalPaidPostponedOrders = 0;
     if (this.customerNameInput) {
       this.customerNameInput.nativeElement.value = "";
     }

@@ -30,8 +30,13 @@
     الاجمالي : {{ order.total }} جنيه
   </h3>
   <p class="my-3 text-gray-500">
-    التاريخ : {{ order.date | date : "medium" }}
+    تاريخ الاوردر : {{ order.date | date : "medium" }}
   </p>
+  @if (order.paidDate) {
+    <p class="my-3 text-gray-500">
+      تاريخ الدفع : {{ order.paidDate| date : "medium" }}
+    </p>
+  }
 </div>
 <!-- buttons -->
 <div

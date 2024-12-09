@@ -116,6 +116,7 @@ if(this.orderedItems[itemIndex]){
         items: [...this.orderedItems],
         total: this.OrderTotal,
         date: new Date(),
+        paidDate: null,
         orderNo : this.orders.length + 1,
         customerName: this.customerName.nativeElement.value || '',
         status: this.orderStatus.PENDING,
