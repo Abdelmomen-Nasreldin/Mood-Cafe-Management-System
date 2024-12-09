@@ -28,7 +28,11 @@ export class OrderBoxComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['order']?.currentValue) {
-      this.currentOrderStatus = this.orderStatusTranslations.find((item) => item.en === (changes['order'].currentValue as IOrder).status) || { en: OrderStatus.PAID, ar: 'مدفوع' };
+      if ((changes['order'].currentValue as IOrder).status === OrderStatus.PAID_POSTPONED) {
+        this.currentOrderStatus =  { en: OrderStatus.PAID_POSTPONED, ar: 'مؤجل مدفوع' }
+      } else {
+        this.currentOrderStatus = this.orderStatusTranslations.find((item) => item.en === (changes['order'].currentValue as IOrder).status) || { en: OrderStatus.PAID, ar: 'مدفوع' };
+      }
     }
   }
 
