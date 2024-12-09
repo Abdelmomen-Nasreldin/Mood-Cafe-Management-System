@@ -15,6 +15,7 @@ export const PAGES = {
   LAST_30_DAYS : "from30Days",
   LAST_7_DAYS : "from7Days",
   CUSTOM_DAY : "formSelectedDay",
+  FROM_CUSTOM_DATE_TO_DATE : "formSelectedDateToDate",
  } as const;
 
  export const TRACKING_TIME : { text: string; value: string }[] = [
@@ -33,6 +34,10 @@ export const PAGES = {
   {
     text: 'تاربخ معين',
     value: TRACKING_PERIODS.CUSTOM_DAY,
+  },
+  {
+    text: ' من تاربخ معين لتاريخ معين',
+    value: TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE,
   },
 ];
 
