@@ -76,7 +76,7 @@ export class PaidPageComponent implements OnInit {
       this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
       this.paidPostponedOrders = this.paidPostponedOrders.filter(order => order.status === OrderStatus.PAID_POSTPONED);
       this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
-      // console.log(this.totalPaidPostponedOrders, this.paidPostponedOrders);
+      console.log(this.totalPaidPostponedOrders, this.paidPostponedOrders);
 
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
