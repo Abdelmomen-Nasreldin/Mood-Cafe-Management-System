@@ -1,3 +1,5 @@
+import { OrderStatus } from "../defines/defines";
+
 export interface IOrderItem {
   id: string;
   itemName: string;
@@ -12,9 +14,10 @@ export interface IOrder {
   items: IOrderItem[];
   total: number;
   date: Date;
+  paidDate: Date | null;
   orderNo : number;
   customerName: string,
   status: IOrderStatus;
 }
 
-export type IOrderStatus = 'pending' | 'paid' | 'postponed' | 'cancelled';
+export type IOrderStatus =  OrderStatus.PENDING | OrderStatus.PAID | OrderStatus.POSTPONED | OrderStatus.CANCELLED | OrderStatus.PAID_POSTPONED;

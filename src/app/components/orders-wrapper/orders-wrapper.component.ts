@@ -18,6 +18,7 @@ export class OrdersWrapperComponent {
   @Input() allOrders: IOrder[] = [];
   @Input() filteredOrders: IOrder[] = [];
   @Input() isEditAllowed = false;
+  @Input() showCurrentOrderStatus = false;
   @Output() editOrder = new EventEmitter<string>();
   // @Output() changeOrderStatus = new EventEmitter<{orderId: string, newStatus: IOrderStatus}>()
 

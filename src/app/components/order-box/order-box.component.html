@@ -1,6 +1,8 @@
-<div>
+<div class="flex flex-wrap items-baseline justify-between gap-2 p-1 shadow-sm">
   <span class="px-2 font-bold text-white cursor-pointer bg-secondary" (click)="onOrderStatus(order.orderId)"> تغيير الحالة  </span>
-
+  @if (showCurrentOrderStatus) {
+    <span class="px-2 font-bold text-white bg-secondary">{{currentOrderStatus.ar}}</span>
+  }
 </div>
 <!-- make it a select box or a button with a dropdown -->
 <div class="flex flex-wrap items-baseline justify-between gap-2 p-3 shadow-sm">
@@ -30,8 +32,13 @@
     الاجمالي : {{ order.total }} جنيه
   </h3>
   <p class="my-3 text-gray-500">
-    التاريخ : {{ order.date | date : "medium" }}
+    تاريخ الاوردر : {{ order.date | date : "medium" }}
   </p>
+  @if (order.paidDate) {
+    <p class="my-3 text-gray-500">
+      تاريخ الدفع : {{ order.paidDate| date : "medium" }}
+    </p>
+  }
 </div>
 <!-- buttons -->
 <div
