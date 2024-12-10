@@ -66,10 +66,11 @@ export class OrderStatusService {
 
   changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus }) {
     const wantedOrder = this._orderService.getOrderById(orderStatusAndId.orderId);
-    if (!wantedOrder || wantedOrder.status === orderStatusAndId.newStatus) {
+
+    if (!wantedOrder || wantedOrder.status === orderStatusAndId.newStatus || !orderStatusAndId.newStatus) {
       return;
     }
-    
+
     if (wantedOrder.status === this.orderStatus.POSTPONED && orderStatusAndId.newStatus === this.orderStatus.PAID) {
       wantedOrder.status = this.orderStatus.PAID_POSTPONED;
     } else {
