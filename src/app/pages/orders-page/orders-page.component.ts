@@ -12,6 +12,7 @@ import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
 import { OrderBoxComponent } from "../../components/order-box/order-box.component";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
+import { OrderStatusService } from '../../services/order-status.service';
 @Component({
   selector: 'app-orders-page',
   standalone: true,
@@ -35,6 +36,7 @@ export class OrdersPageComponent implements OnInit {
     private _orderService: OrderService,
     private _router: Router,
     private _modalService: ModalService,
+    private _orderStatusService: OrderStatusService
   ) {}
 
   ngOnInit(): void {
@@ -42,10 +44,10 @@ export class OrdersPageComponent implements OnInit {
   }
 
   loadOrders() {
-    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
+    this._orderStatusService.pendingOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
       // const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
       this.allOrders = this._trackingService.getTodayOrdersFromCustomTime(orders, this.selectedTime);
-      this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PENDING);
+      // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PENDING);
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
       // this.calcQuantities();

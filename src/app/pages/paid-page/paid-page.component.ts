@@ -67,17 +67,12 @@ export class PaidPageComponent implements OnInit {
     }
   }
   loadOrders(period: string) {
-    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
-      const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-      const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+    const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+    const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+
+    this._orderStatusService.paidOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
       this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-      this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
-
-      this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
-      this.paidPostponedOrders = this.paidPostponedOrders.filter(order => order.status === OrderStatus.PAID_POSTPONED);
-      this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
-      console.log(this.totalPaidPostponedOrders, this.paidPostponedOrders);
-
+      // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
       this.calcQuantities();
@@ -86,6 +81,11 @@ export class PaidPageComponent implements OnInit {
         this.customerNameInput.nativeElement.value = "";
       }
     });
+
+    this._orderStatusService.paidPostponedOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
+      this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
+      this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
+    })
   }
 
   onOrderChange() {

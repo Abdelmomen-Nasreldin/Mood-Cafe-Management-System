@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { OrdersWrapperComponent } from '../../components/orders-wrapper/orders-wrapper.component';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
 import { OrderService } from '../../services/order.service';
+import { OrderStatusService } from '../../services/order-status.service';
 
 @Component({
   selector: 'app-postponed-page',
@@ -40,6 +41,7 @@ export class PostponedPageComponent implements OnInit {
         private _trackingService: TrackingService,
         private _exportService: ExportService,
         private _orderService: OrderService,
+        private _orderStatusService: OrderStatusService
       ) {}
 
       ngOnInit(): void {
@@ -64,11 +66,11 @@ export class PostponedPageComponent implements OnInit {
       }
 
       loadOrders(period: string) {
-        this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
-          const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-          const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+        const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+        const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+
+        this._orderStatusService.postponedOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
           this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-          this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.POSTPONED);
           this.total = calculateOrderTotal(this.allOrders);
           this.filteredOrders = [...this.allOrders];
           this.calcQuantities();

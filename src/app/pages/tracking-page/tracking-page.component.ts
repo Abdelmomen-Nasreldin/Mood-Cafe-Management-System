@@ -73,7 +73,6 @@ export class TrackingPageComponent implements OnInit {
       const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
       const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
       this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-      // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
       this.calcQuantities();
