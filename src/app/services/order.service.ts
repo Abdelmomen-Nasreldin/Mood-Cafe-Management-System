@@ -57,15 +57,6 @@ export class OrderService {
     return from(liveQuery(() => db.orders.toArray()));
   }
 
-  // private updateOrdersSubject() {
-  //   this._allOrders.next(this.getOrders()); // Sync the subject with the latest orders from localStorage
-  // }
-
-  saveOrdersToLocalStorage(orders: IOrder[]) {
-    localStorage.setItem(this.ordersKey, JSON.stringify(orders));
-    // this.updateOrdersSubject();
-  }
-
   getOrders(): IOrder[] {
     const orders = localStorage.getItem(this.ordersKey);
     return orders ? JSON.parse(orders) : [];
