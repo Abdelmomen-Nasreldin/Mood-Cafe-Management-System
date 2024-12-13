@@ -39,6 +39,7 @@ export class PaidPageComponent implements OnInit {
   printedOrder: IOrder | undefined;
   paidPostponedOrders: IOrder[] = [];
   totalPaidPostponedOrders = 0;
+  isLoading = false;
   constructor(
     private _trackingService: TrackingService,
     private _exportService: ExportService,
@@ -67,18 +68,25 @@ export class PaidPageComponent implements OnInit {
     }
   }
   loadOrders(period: string) {
+    this.isLoading = true;
     const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
     const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
 
-    this._orderStatusService.paidOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
-      this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-      // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
-      this.total = calculateOrderTotal(this.allOrders);
-      this.filteredOrders = [...this.allOrders];
-      this.calcQuantities();
-      this.sortOrders();
-      if (this.customerNameInput) {
-        this.customerNameInput.nativeElement.value = "";
+    this._orderStatusService.paidOrders$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (orders) => {
+        this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
+        // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
+        this.total = calculateOrderTotal(this.allOrders);
+        this.filteredOrders = [...this.allOrders];
+        this.calcQuantities();
+        this.sortOrders();
+        if (this.customerNameInput) {
+          this.customerNameInput.nativeElement.value = "";
+        }
+        this.isLoading = false;
+      }, error: (err) => {
+        this.isLoading = false;
+        console.error(err);
       }
     });
 

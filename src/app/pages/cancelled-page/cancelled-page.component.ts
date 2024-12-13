@@ -36,7 +36,7 @@ export class CancelledPageComponent implements OnInit {
       showRangeSelectDate = false;
       allQuantities!: Record<string, number>;
       printedOrder: IOrder | undefined;
-
+      isLoading = false;
       constructor(
         private _trackingService: TrackingService,
         private _exportService: ExportService,
@@ -64,22 +64,30 @@ export class CancelledPageComponent implements OnInit {
           this.loadOrders(TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE);
         }
       }
-      loadOrders(period: string) {
-        const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-        const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+  loadOrders(period: string) {
+    this.isLoading = true;
 
-        this._orderStatusService.cancelledOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
-          this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-          // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.CANCELLED);
-          this.total = calculateOrderTotal(this.allOrders);
-          this.filteredOrders = [...this.allOrders];
-          this.calcQuantities();
-          this.sortOrders();
-          if (this.customerNameInput) {
-            this.customerNameInput.nativeElement.value = "";
-          }
-        });
+    const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+    const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+
+    this._orderStatusService.cancelledOrders$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (orders) => {
+        this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
+        // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.CANCELLED);
+        this.total = calculateOrderTotal(this.allOrders);
+        this.filteredOrders = [...this.allOrders];
+        this.calcQuantities();
+        this.sortOrders();
+        if (this.customerNameInput) {
+          this.customerNameInput.nativeElement.value = "";
+        }
+        this.isLoading = false;
+      }, error: (err) => {
+        this.isLoading = false;
+        console.error(err);
       }
+    });
+  }
 
       onOrderChange() {
         this.sortOrders();

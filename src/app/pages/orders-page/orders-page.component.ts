@@ -30,7 +30,8 @@ export class OrdersPageComponent implements OnInit {
   timeArr = Array.from({ length: 24 - 7 + 1 }, (_, i) => i + 7); // Dynamic array from 1 to 24
   selectedTime = 7;  // Default selected time
   selectedOrder = 'old'
-  printedOrder : IOrder | undefined;
+  printedOrder: IOrder | undefined;
+  isLoading = false;
   constructor(
     private _trackingService: TrackingService,
     private _orderService: OrderService,
@@ -44,8 +45,11 @@ export class OrdersPageComponent implements OnInit {
   }
 
   loadOrders() {
-    this._orderStatusService.pendingOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
-      // const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
+    this.isLoading = true;
+
+    this._orderStatusService.pendingOrders$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (orders) => {
+        // const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
       this.allOrders = this._trackingService.getTodayOrdersFromCustomTime(orders, this.selectedTime);
       // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PENDING);
       this.total = calculateOrderTotal(this.allOrders);
@@ -55,6 +59,12 @@ export class OrdersPageComponent implements OnInit {
       if (this.customerNameInput) {
         this.customerNameInput.nativeElement.value = "";
       }
+      this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error(err);
+       }
     });
   }
   onTimeChange(){
