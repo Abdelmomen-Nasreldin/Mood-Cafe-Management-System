@@ -48,7 +48,9 @@ export class EditPageComponent {
     // get the orderId from the url
     this._activatedRoute.params.subscribe((data)=>{
       this.orderId = data['orderId'];
-       this.editedOrder = this._orderService.getOrderById(this.orderId);
+      this._orderService.getOrderById(this.orderId).then(order => {
+        this.editedOrder = order
+
        this.editedOrder?.items.forEach(item=>{
         this._menuService.setSelectedItems(item.itemEnglishName,true);
        })
@@ -59,7 +61,8 @@ export class EditPageComponent {
       }
       // set the orderSidebarItems to be the wanted order
       this._orderService.setOrderedSidebarItems(this.editedOrder.items);
-    })
+      })
+    });
     //
   }
 

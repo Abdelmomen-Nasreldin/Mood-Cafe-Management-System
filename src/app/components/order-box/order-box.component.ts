@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { IOrder, IOrderStatus } from "../../models/order";
 import { CommonModule } from "@angular/common";
 import { OrderStatus, OrderStatusTranslations } from "../../defines/defines";
@@ -13,17 +13,28 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./order-box.component.html",
   styleUrl: "./order-box.component.scss",
 })
-export class OrderBoxComponent {
+export class OrderBoxComponent implements OnChanges {
   @Input({ required: true }) order!: IOrder;
   @Input() isEditAllowed = false;
+  @Input() showCurrentOrderStatus = false;
   @Output() printOrder = new EventEmitter<string>();
   @Output() editOrder = new EventEmitter<string>();
   @Output() changeOrderStatus = new EventEmitter<string>();
 
   orderStatus = Object.values(OrderStatus);
-  OrderStatusTranslations = Object.values(OrderStatusTranslations);
-  SelectedOrderStatus!: IOrderStatus;
+  orderStatusTranslations : { en: IOrderStatus; ar: string }[]= Object.values(OrderStatusTranslations);
+  currentOrderStatus!: { en: IOrderStatus; ar: string };
   constructor() {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['order']?.currentValue) {
+      if ((changes['order'].currentValue as IOrder).status === OrderStatus.PAID_POSTPONED) {
+        this.currentOrderStatus =  { en: OrderStatus.PAID_POSTPONED, ar: 'مؤجل مدفوع' }
+      } else {
+        this.currentOrderStatus = this.orderStatusTranslations.find((item) => item.en === (changes['order'].currentValue as IOrder).status) || { en: OrderStatus.PAID, ar: 'مدفوع' };
+      }
+    }
+  }
 
   onEditOrder(orderID: string) {
     this.editOrder.emit(orderID);

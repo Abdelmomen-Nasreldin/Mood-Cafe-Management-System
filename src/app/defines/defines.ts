@@ -15,6 +15,7 @@ export const PAGES = {
   LAST_30_DAYS : "from30Days",
   LAST_7_DAYS : "from7Days",
   CUSTOM_DAY : "formSelectedDay",
+  FROM_CUSTOM_DATE_TO_DATE : "formSelectedDateToDate",
  } as const;
 
  export const TRACKING_TIME : { text: string; value: string }[] = [
@@ -34,6 +35,10 @@ export const PAGES = {
     text: 'تاربخ معين',
     value: TRACKING_PERIODS.CUSTOM_DAY,
   },
+  {
+    text: ' من تاربخ معين لتاريخ معين',
+    value: TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE,
+  },
 ];
 
 export enum OrderStatus {
@@ -41,13 +46,14 @@ export enum OrderStatus {
   PAID = 'paid',
   POSTPONED = 'postponed',
   CANCELLED = 'cancelled',
+  PAID_POSTPONED = 'paid-postponed'
 }
 
 export const OrderStatusTranslations : { [key: string]: { en: IOrderStatus; ar: string }} = {
   [OrderStatus.PENDING]: { en: OrderStatus.PENDING, ar: 'قيد الانتظار' },
   [OrderStatus.PAID]: { en: OrderStatus.PAID, ar: 'مدفوع' },
   [OrderStatus.POSTPONED]: { en: OrderStatus.POSTPONED, ar: 'تم تأجيله' },
-  [OrderStatus.CANCELLED]: { en: OrderStatus.CANCELLED, ar: 'ملغى' }
+  [OrderStatus.CANCELLED]: { en: OrderStatus.CANCELLED, ar: 'ملغى' },
 } as const;
 
 export enum ENGLISH_CATEGORIES  {

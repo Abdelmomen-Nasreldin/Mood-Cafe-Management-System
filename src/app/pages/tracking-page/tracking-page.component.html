@@ -1,8 +1,8 @@
 <div class="p-3 bg-white rounded shadow-sm">
   <div class="flex flex-wrap items-baseline justify-between gap-3">
-    <h2 class="my-3 text-2xl font-bold text-secondary">
+    <h3 class="my-3 text-xl font-bold text-secondary">
       {{ "كل الطلبات " + " (" + allOrders.length + ")" }}
-    </h2>
+    </h3>
     <h3 class="p-1 text-xl font-bold rounded text-secondary">
       الاجمالي: {{ total }} جنيه
     </h3>
@@ -34,6 +34,23 @@
           (dateChanged)="onDateChanged($event)"
         ></app-date-picker>
         <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
+      </div>
+      }
+
+      @if (showRangeSelectDate ) {
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateOneChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> من يوم : {{ selectedDate }}</p>
+      </div>
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateTwoChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> الي يوم : {{ secondSelectedDate }}</p>
       </div>
       }
     </div>
@@ -121,7 +138,7 @@
           aria-labelledby="hs-basic-heading-one"
         >
           <div class="px-6 pb-4">
-            @if((allQuantities|keyvalue).length >0){ @for (item of allQuantities
+            @if(allQuantities && (allQuantities|keyvalue).length >0){ @for (item of allQuantities
             | keyvalue; track $index) {
             <div
               class="flex items-center px-2 py-1 my-2 rounded shadow-sm bg-beige"
@@ -187,7 +204,7 @@
           role="region"
           aria-labelledby="hs-basic-heading-two"
         >
-          <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
+          <app-orders-wrapper [showCurrentOrderStatus]="showCurrentOrderStatus" [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
 
         </div>
       </div>

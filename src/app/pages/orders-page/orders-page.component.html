@@ -1,8 +1,8 @@
 <div class="p-3 bg-white rounded shadow-sm">
   <div class="flex items-center justify-between">
-    <h2 class="my-3 text-2xl font-bold text-secondary">
+    <h3 class="my-3 text-xl font-bold text-secondary">
       {{ "طلبات اليوم" + " (" + allOrders.length + ")" }}
-    </h2>
+    </h3>
     <h3 class="text-xl font-bold text-secondary">الاجمالي: {{ total }} جنيه</h3>
   </div>
 
@@ -10,7 +10,7 @@
     <div>
       <span class="font-bold text-roseDark-100">من الساعة </span>
       <select
-        class="rounded bg-beige px-3 py-2 border-2 border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
+        class="px-3 py-2 border-2 rounded bg-beige border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
         name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
         @for (item of timeArr; track $index) {
         <option class="hover:bg-roseLight1 bg-beige" [value]="item">

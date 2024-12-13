@@ -26,11 +26,13 @@ export class PostponedPageComponent implements OnInit {
       filteredOrders: IOrder[] = [];
       total = 0;
       selectedOrder = 'old';
-      selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
+      selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH as string;
       timeArr = TRACKING_TIME;
 
-      selectedDate: string = '';
+      selectedDate: string = "";
+      secondSelectedDate: string = "";
       showSelectDate = false;
+      showRangeSelectDate = false;
       allQuantities!: Record<string, number>;
       printedOrder: IOrder | undefined;
 
@@ -46,13 +48,26 @@ export class PostponedPageComponent implements OnInit {
 
       onDateChanged(date: string) {
         this.selectedDate = date; // Handle the date change event
-        this.loadOrders(this.selectedTime);
+        this.loadOrders(TRACKING_PERIODS.CUSTOM_DAY);
+      }
+      onRangeDateOneChanged(date: string) {
+        this.selectedDate = date; // Handle the date change event
+        if (this.selectedDate && this.secondSelectedDate) {
+          this.loadOrders(TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE);
+        }
+      }
+      onRangeDateTwoChanged(date: string) {
+        this.secondSelectedDate = date;
+        if (this.selectedDate && this.secondSelectedDate) {
+          this.loadOrders(TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE);
+        }
       }
 
       loadOrders(period: string) {
         this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
-          const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
-          this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined);
+          const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+          const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+          this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
           this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.POSTPONED);
           this.total = calculateOrderTotal(this.allOrders);
           this.filteredOrders = [...this.allOrders];
@@ -63,21 +78,37 @@ export class PostponedPageComponent implements OnInit {
           }
         });
       }
-
       onOrderChange() {
         this.sortOrders();
       }
 
-      onTimeChange() {
-        if (this.selectedTime == (TRACKING_PERIODS.CUSTOM_DAY as string)) {
-          this.showSelectDate = true;
-        } else {
-          this.showSelectDate = false;
+      onTimeChange() : void {
+        this.reset();
+        switch (this.selectedTime) {
+          case TRACKING_PERIODS.CUSTOM_DAY:
+            this.showSelectDate = true;
+            break;
+          case TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE:
+            this.showRangeSelectDate = true;
+            break;
+          default:
+            this.loadOrders(this.selectedTime);
         }
-        this.selectedDate = '';
-        this.loadOrders(this.selectedTime);
       }
 
+      reset() : void {
+        this.showSelectDate = false;
+        this.showRangeSelectDate = false;
+        this.selectedDate = "";
+        this.secondSelectedDate = "";
+        this.allOrders = [];
+        this.filteredOrders = [];
+        this.calcQuantities();
+        this.total = 0;
+        if (this.customerNameInput) {
+          this.customerNameInput.nativeElement.value = "";
+        }
+      }
       sortOrders() {
         this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
       }

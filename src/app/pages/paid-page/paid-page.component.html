@@ -1,10 +1,13 @@
 <div class="p-3 bg-white rounded shadow-sm">
   <div class="flex flex-wrap items-baseline justify-between gap-3">
-    <h2 class="my-3 text-2xl font-bold text-secondary">
+    <h3 class="my-3 text-xl font-bold text-secondary">
       {{ "  الطلبات المدفوعة" + " (" + allOrders.length + ")" }}
-    </h2>
+    </h3>
     <h3 class="p-1 text-xl font-bold rounded text-secondary">
-      الاجمالي: {{ total }} جنيه
+      الاجمالي: {{ total }} + {{ totalPaidPostponedOrders }} = {{ total + totalPaidPostponedOrders }} جنيه
+    </h3>
+    <h3 class="p-1 text-xl font-bold rounded text-secondary">
+      اجمالي المؤجل المدفوع: {{ totalPaidPostponedOrders }} جنيه
     </h3>
   </div>
 
@@ -34,6 +37,23 @@
           (dateChanged)="onDateChanged($event)"
         ></app-date-picker>
         <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
+      </div>
+      }
+
+      @if (showRangeSelectDate ) {
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateOneChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> من يوم : {{ selectedDate }}</p>
+      </div>
+      <div>
+        <!-- select date -->
+        <app-date-picker
+          (dateChanged)="onRangeDateTwoChanged($event)"
+        ></app-date-picker>
+        <p class="font-bold text-roseDark-100"> الي يوم : {{ secondSelectedDate }}</p>
       </div>
       }
     </div>
@@ -121,7 +141,7 @@
           aria-labelledby="hs-basic-heading-one"
         >
           <div class="px-6 pb-4">
-            @if((allQuantities|keyvalue).length >0){ @for (item of allQuantities
+            @if(allQuantities &&(allQuantities|keyvalue).length >0){ @for (item of allQuantities
             | keyvalue; track $index) {
             <div
               class="flex items-center px-2 py-1 my-2 rounded shadow-sm bg-beige"
@@ -189,6 +209,54 @@
         >
         <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
       </div>
+      </div>
+
+      <div class="hs-accordion" id="hs-basic-heading-three">
+        <button
+          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
+          aria-expanded="true"
+          aria-controls="hs-basic-collapse-three"
+        >
+          <svg
+            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2:te "
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14"></path>
+            <path d="M12 5v14"></path>
+          </svg>
+          <svg
+            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 12h14"></path>
+          </svg>
+          الطلبات المؤجلة المدفوعة
+        </button>
+        <div
+          id="hs-basic-collapse-three"
+          class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
+          role="region"
+          aria-labelledby="hs-basic-heading-three"
+        >
+        <app-orders-wrapper class="p-2 bg-roseDark-100" [allOrders]="paidPostponedOrders" [filteredOrders]="paidPostponedOrders"></app-orders-wrapper>
+
+        </div>
       </div>
     </div>
   </div>
