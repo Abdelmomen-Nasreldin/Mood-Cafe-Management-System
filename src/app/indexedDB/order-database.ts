@@ -1,66 +1,49 @@
 import Dexie, { Table } from 'dexie';
-import { Injectable } from '@angular/core';
-import { IOrder, IOrderStatus } from '../models/order';
+import { IOrder, IOrderItem } from '../models/order';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class OrderDatabase extends Dexie {
-  // Define tables for your orders
-  orders!: Table<IOrder, string>; // `orderId` is the key
+export class CafeDatabase extends Dexie {
+  orders!: Table<IOrder, string>; // Table with `IOrder` interface and `orderId` as the primary key
+  orderItems!: Table<IOrderItem, string>; // Table with `IOrderItem` interface and `id` as the primary key
 
   constructor() {
-    super('OrderDatabase'); // Name of the database
+    super('CafeDatabase');
+
+    // Define tables and indexes
     this.version(1).stores({
-      orders: 'orderId, date, status, customerName', // Indexes for faster querying
+      orders: 'orderId, date, paidDate, status, orderNo, customerName', // Indexing for faster queries
+      orderItems: 'id, itemName, itemEnglishName, price, total',
     });
   }
-
-    // Add multiple orders at once
-  async addOrders(orders: IOrder[]): Promise<void> {
-      await this.orders.bulkAdd(orders); // Add an array of orders at once
-  }
-
-  // Add an order to IndexedDB
-  async addOrder(order: IOrder): Promise<void> {
-    await this.orders.add(order);
-  }
-
-  // Get a specific order by orderId
-  async getOrder(orderId: string): Promise<IOrder | undefined> {
-    return this.orders.get(orderId);
-  }
-
-  // Get all orders
-  async getAllOrders(): Promise<IOrder[]> {
-    return this.orders.toArray();
-  }
-
-  // Delete an order
-  async deleteOrder(orderId: string): Promise<void> {
-    await this.orders.delete(orderId);
-  }
-
-  // Clear all orders
-  async clearOrders(): Promise<void> {
-    await this.orders.clear();
-  }
-
-  // Query orders by status (e.g., "pending")
-  async getOrdersByStatus(status: IOrderStatus): Promise<IOrder[]> {
-    return this.orders.where('status').equals(status).toArray();
-  }
-
-  // Query orders by customer name
-  async getOrdersByCustomerName(customerName: string): Promise<IOrder[]> {
-    return this.orders.where('customerName').equalsIgnoreCase(customerName).toArray();
-  }
-
-  // Query orders within a date range
-  async getOrdersByDateRange(startDate: Date, endDate: Date): Promise<IOrder[]> {
-    return this.orders
-      .where('date')
-      .between(startDate.toISOString(), endDate.toISOString(), true, true)
-      .toArray();
-  }
 }
+
+// Initialize database instance
+export const db = new CafeDatabase();
+
+
+  // // Delete an order
+  // async deleteOrder(orderId: string): Promise<void> {
+  //   await this.orders.delete(orderId);
+  // }
+
+  // // Clear all orders
+  // async clearOrders(): Promise<void> {
+  //   await this.orders.clear();
+  // }
+
+  // // Query orders by status (e.g., "pending")
+  // async getOrdersByStatus(status: IOrderStatus): Promise<IOrder[]> {
+  //   return this.orders.where('status').equals(status).toArray();
+  // }
+
+  // // Query orders by customer name
+  // async getOrdersByCustomerName(customerName: string): Promise<IOrder[]> {
+  //   return this.orders.where('customerName').equalsIgnoreCase(customerName).toArray();
+  // }
+
+  // // Query orders within a date range
+  // async getOrdersByDateRange(startDate: Date, endDate: Date): Promise<IOrder[]> {
+  //   return this.orders
+  //     .where('date')
+  //     .between(startDate.toISOString(), endDate.toISOString(), true, true)
+  //     .toArray();
+  // }
