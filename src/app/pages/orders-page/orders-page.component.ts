@@ -75,8 +75,10 @@ export class OrdersPageComponent implements OnInit {
 
   printReceipt(orderId : string){
     // open modal that has the order-print component
-    this.printedOrder =  this._orderService.getOrderById(orderId);
-    this._modalService.openModal();
+    this._orderService.getOrderById(orderId).then((order) => {
+      this.printedOrder = order
+      this._modalService.openModal();
+    });
   }
 
   searchByCustomerName(event: Event) {

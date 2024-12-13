@@ -18,6 +18,7 @@ export class OrdersWrapperComponent {
   @Input() allOrders: IOrder[] = [];
   @Input() filteredOrders: IOrder[] = [];
   @Input() isEditAllowed = false;
+  @Input() showCurrentOrderStatus = false;
   @Output() editOrder = new EventEmitter<string>();
   // @Output() changeOrderStatus = new EventEmitter<{orderId: string, newStatus: IOrderStatus}>()
 
@@ -36,14 +37,18 @@ export class OrdersWrapperComponent {
 
   printReceipt(orderId: string) {
     // open modal that has the order-print component
-    this.printedOrder = this._orderService.getOrderById(orderId);
-    this._modalService.openModal();
+    this._orderService.getOrderById(orderId).then((order) => {
+      this.printedOrder = order;
+      this._modalService.openModal();
+    });
   }
 
 
   onChangeOrderStatus(orderId: string) {
-    this.statusChangedOrder = this._orderService.getOrderById(orderId);
-    this.openOderDetailsModal();
+    this._orderService.getOrderById(orderId).then((order) => {
+      this.statusChangedOrder = order;
+      this.openOderDetailsModal();
+    });
   }
 
   onChangeOrderDetails(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {

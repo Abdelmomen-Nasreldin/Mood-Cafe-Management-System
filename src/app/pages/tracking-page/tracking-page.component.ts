@@ -40,7 +40,7 @@ export class TrackingPageComponent implements OnInit {
   showRangeSelectDate = false;
   allQuantities!: Record<string, number>;
   printedOrder: IOrder | undefined;
-
+  showCurrentOrderStatus = true;
   constructor(
     private _trackingService: TrackingService,
     private _exportService: ExportService,
