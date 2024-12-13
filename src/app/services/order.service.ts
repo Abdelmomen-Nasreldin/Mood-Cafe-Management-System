@@ -57,11 +57,6 @@ export class OrderService {
     return from(liveQuery(() => db.orders.toArray()));
   }
 
-  getOrders(): IOrder[] {
-    const orders = localStorage.getItem(this.ordersKey);
-    return orders ? JSON.parse(orders) : [];
-  }
-
   async getOrderById(orderId: string): Promise<IOrder | undefined> {
     const order = await db.orders.get(orderId);
     return order
@@ -82,6 +77,11 @@ export class OrderService {
     } catch (error) {
       console.error('Failed to delete order:', error);
     }
+  }
+
+  // Query orders by status (e.g., "pending")
+  getOrdersByStatus(status: IOrderStatus): Observable<IOrder[]> {
+    return from(liveQuery(() => db.orders.where('status').equals(status).toArray()));
   }
 
   // addOrders(orders: IOrder[]): Observable<void> {

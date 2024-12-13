@@ -8,60 +8,18 @@ import { OrderStatus } from "../defines/defines";
   providedIn: "root",
 })
 export class OrderStatusService {
-  private _pendingOrders: BehaviorSubject<IOrder[]>;
-  private _paidOrders: BehaviorSubject<IOrder[]>;
-  private _postponedOrders: BehaviorSubject<IOrder[]>;
-  private _cancelledOrders: BehaviorSubject<IOrder[]>;
-  private _paidPostponedOrders: BehaviorSubject<IOrder[]> = new BehaviorSubject<IOrder[]>([]);
-  private orderStatus = OrderStatus;
+   pendingOrders$: Observable<IOrder[]>;
+   paidOrders$: Observable<IOrder[]>;
+   postponedOrders$: Observable<IOrder[]>;
+   cancelledOrders$: Observable<IOrder[]>;
+   paidPostponedOrders$: Observable<IOrder[]> = new BehaviorSubject<IOrder[]>([]);
+   orderStatus = OrderStatus;
   constructor(private _orderService: OrderService) {
-    this._pendingOrders = new BehaviorSubject<IOrder[]>(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PENDING)
-    );
-    this._paidOrders = new BehaviorSubject<IOrder[]>(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PAID)
-    );
-    this._postponedOrders = new BehaviorSubject<IOrder[]>(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.POSTPONED)
-    );
-    this._cancelledOrders = new BehaviorSubject<IOrder[]>(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.CANCELLED)
-    );
-  }
-
-  public getPendingOrders(): Observable<IOrder[]> {
-    return this._pendingOrders.asObservable();
-  }
-
-  public getPaidOrders(): Observable<IOrder[]> {
-    return this._paidOrders.asObservable();
-  }
-
-  public getPostponedOrders(): Observable<IOrder[]> {
-    return this._postponedOrders.asObservable();
-  }
-
-  public getCancelledOrders(): Observable<IOrder[]> {
-    return this._cancelledOrders.asObservable();
-  }
-
-  public getPaidPostponedOrders(): Observable<IOrder[]> {
-    return this._paidPostponedOrders.asObservable();
-  }
-
-  changeOrdersStatus() {
-    this._pendingOrders.next(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PENDING)
-    );
-    this._paidOrders.next(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.PAID || !order.status)
-    );
-    this._postponedOrders.next(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.POSTPONED)
-    );
-    this._cancelledOrders.next(
-      this._orderService.getOrders().filter((order) => order.status === this.orderStatus.CANCELLED)
-    );
+    this.pendingOrders$ = this._orderService.getOrdersByStatus(this.orderStatus.PENDING)
+    this.paidOrders$ = this._orderService.getOrdersByStatus(this.orderStatus.PAID)
+    this.postponedOrders$ = this._orderService.getOrdersByStatus(this.orderStatus.POSTPONED)
+    this.cancelledOrders$ = this._orderService.getOrdersByStatus(this.orderStatus.CANCELLED)
+    this.paidPostponedOrders$ = this._orderService.getOrdersByStatus(this.orderStatus.PAID_POSTPONED)
   }
 
   async changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus }) {
@@ -82,6 +40,5 @@ export class OrderStatusService {
     }
 
     this._orderService.updateOrder(wantedOrder);
-    this.changeOrdersStatus();
   }
 }
