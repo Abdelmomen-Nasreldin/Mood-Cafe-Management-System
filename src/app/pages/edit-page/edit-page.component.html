@@ -24,7 +24,8 @@
     </div>
   </div>
 
-
+@if (editedOrder) {
   <button (click)="orderDetails.toggleOrderDetails()" class="bg-secondary xl:hidden fixed top-[3rem] left-[-4px] cursor-pointer border-0 py-2 px-4"> <i class="text-white fa-solid fa-clipboard"></i></button>
   <app-order-sidebar #orderDetails [updatedOrder]="editedOrder" class="rounded text-secondary xl:sticky top-[60px] left-0 md:w-0  xl:h-[25%]  xl:min-w-[420px]" (setOrder)="setOrder($event)"></app-order-sidebar>
+}
 </div>
