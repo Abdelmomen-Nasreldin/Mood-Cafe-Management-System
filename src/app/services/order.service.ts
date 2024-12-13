@@ -3,6 +3,7 @@ import { IOrder, IOrderItem, IOrderStatus } from "../models/order";
 import { BehaviorSubject, from, Observable } from "rxjs";
 import { calculateItemTotal } from "../utils";
 import { db } from "../indexedDB/order-database";
+import { liveQuery } from "dexie";
 
 @Injectable({
   providedIn: "root",
@@ -52,9 +53,8 @@ export class OrderService {
 
   // orders ///////////////////////////////////////////////////////////////
 
-  public getAllOrders(): Observable<IOrder[]> {
-    // return this._allOrders.asObservable();
-    return from(db.orders.toArray())
+  getAllOrders(): Observable<IOrder[]> {
+    return from(liveQuery(() => db.orders.toArray()));
   }
 
   // private updateOrdersSubject() {
