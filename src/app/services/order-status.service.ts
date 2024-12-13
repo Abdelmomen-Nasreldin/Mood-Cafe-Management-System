@@ -64,8 +64,8 @@ export class OrderStatusService {
     );
   }
 
-  changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus }) {
-    const wantedOrder = this._orderService.getOrderById(orderStatusAndId.orderId);
+  async changeOrderStatus(orderStatusAndId: { orderId: string; newStatus: IOrderStatus }) {
+    const wantedOrder = await this._orderService.getOrderById(orderStatusAndId.orderId);
 
     if (!wantedOrder || wantedOrder.status === orderStatusAndId.newStatus || !orderStatusAndId.newStatus) {
       return;
