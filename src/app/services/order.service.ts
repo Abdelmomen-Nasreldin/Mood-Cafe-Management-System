@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { IOrder, IOrderItem, IOrderStatus } from "../models/order";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, from, Observable } from "rxjs";
 import { calculateItemTotal } from "../utils";
+import { db } from "../indexedDB/order-database";
+import { liveQuery } from "dexie";
 
 @Injectable({
   providedIn: "root",
@@ -51,55 +53,45 @@ export class OrderService {
 
   // orders ///////////////////////////////////////////////////////////////
 
-  private _allOrders = new BehaviorSubject<IOrder[]>(this.getOrders());
-
-  public getAllOrders(): Observable<IOrder[]> {
-    return this._allOrders.asObservable();
+  getAllOrders(): Observable<IOrder[]> {
+    return from(liveQuery(() => db.orders.toArray()));
   }
 
-  // public setAllOrders(value: IOrder[]) {
-  //   this._allOrders.next(value);
+  async getOrderById(orderId: string): Promise<IOrder | undefined> {
+    const order = await db.orders.get(orderId);
+    return order
+  }
+
+  async saveOrder(order: IOrder): Promise<void> {
+    await db.orders.add(order);
+  }
+
+  async updateOrder(updatedOrder: IOrder): Promise<void> {
+    await db.orders.put(updatedOrder);
+  }
+
+  async deleteOrder(orderId: string) {
+    try {
+      await db.orders.delete(orderId);
+      console.log('Order deleted successfully!');
+    } catch (error) {
+      console.error('Failed to delete order:', error);
+    }
+  }
+
+  // Query orders by status (e.g., "pending")
+  getOrdersByStatus(status: IOrderStatus): Observable<IOrder[]> {
+    return from(liveQuery(() => db.orders.where('status').equals(status).toArray()));
+  }
+
+  // addOrders(orders: IOrder[]): Observable<void> {
+  //   return defer(() => db.orders.bulkAdd(orders)).pipe(
+  //     map(() => {}),
+  //     catchError(error => {
+  //       console.error('Failed to add orders:', error);
+  //       throw error; // Re-throw the error for higher-level handling
+  //     })
+  //   );
   // }
 
-  private updateOrdersSubject() {
-    this._allOrders.next(this.getOrders()); // Sync the subject with the latest orders from localStorage
-  }
-
-  saveOrdersToLocalStorage(orders: IOrder[]) {
-    localStorage.setItem(this.ordersKey, JSON.stringify(orders));
-    this.updateOrdersSubject();
-  }
-
-  getOrders(): IOrder[] {
-    const orders = localStorage.getItem(this.ordersKey);
-    return orders ? JSON.parse(orders) : [];
-  }
-
-  getOrderById(orderId: string) {
-    const orders = this.getOrders();
-    const wantedOrder = orders.find((ele) => ele.orderId == orderId);
-    return wantedOrder;
-  }
-
-  saveOrder(order: IOrder) {
-    const orders = this.getOrders();
-    orders.push(order);
-    this.saveOrdersToLocalStorage(orders);
-  }
-
-  deleteOrder(orderId: string) {
-    let orders = this.getOrders();
-    orders = orders.filter((order: IOrder) => order.orderId !== orderId);
-    this.saveOrdersToLocalStorage(orders);
-  }
-
-  // make sure it works fine
-  updateOrder(updatedOrder: IOrder): void {
-    const orders = this.getOrders().map((order: IOrder) =>
-      order.orderId === updatedOrder.orderId ? updatedOrder : order
-    );
-    this.saveOrdersToLocalStorage(orders);
-    console.log(updatedOrder, orders);
-    // Save and notify
-  }
 }

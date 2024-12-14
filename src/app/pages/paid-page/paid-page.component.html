@@ -1,265 +1,270 @@
-<div class="p-3 bg-white rounded shadow-sm">
-  <div class="flex flex-wrap items-baseline justify-between gap-3">
-    <h3 class="my-3 text-xl font-bold text-secondary">
-      {{ "  الطلبات المدفوعة" + " (" + allOrders.length + ")" }}
-    </h3>
-    <h3 class="p-1 text-xl font-bold rounded text-secondary">
-      الاجمالي: {{ total }} + {{ totalPaidPostponedOrders }} = {{ total + totalPaidPostponedOrders }} جنيه
-    </h3>
-    <h3 class="p-1 text-xl font-bold rounded text-secondary">
-      اجمالي المؤجل المدفوع: {{ totalPaidPostponedOrders }} جنيه
-    </h3>
-  </div>
+->
+  <div class="p-3 bg-white rounded shadow-sm">
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <h3 class="my-3 text-xl font-bold text-secondary">
+        {{ "  الطلبات المدفوعة" + " (" + allOrders.length + ")" }}
+      </h3>
+      <h3 class="p-1 text-xl font-bold rounded text-secondary">
+        الاجمالي: {{ total }} + {{ totalPaidPostponedOrders }} = {{ total + totalPaidPostponedOrders }} جنيه
+      </h3>
+      <h3 class="p-1 text-xl font-bold rounded text-secondary">
+        اجمالي المؤجل المدفوع: {{ totalPaidPostponedOrders }} جنيه
+      </h3>
+    </div>
 
-  <div class="flex justify-center gap-[2rem]">
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="flex justify-center gap-[2rem]">
+      <div class="flex flex-wrap items-center gap-2">
+        <div>
+          <span class="font-bold text-roseDark-100">من </span>
+          <select
+            class="px-3 py-2 border-2 rounded bg-beige border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
+            name="time"
+            id="time"
+            [(ngModel)]="selectedTime"
+            (change)="onTimeChange()"
+          >
+            @for (item of timeArr; track $index) {
+            <option class="hover:bg-roseLight1 bg-beige" [value]="item.value">
+              {{ item.text }}
+            </option>
+            }
+          </select>
+        </div>
+
+        @if (showSelectDate) {
+        <div>
+          <!-- select date -->
+          <app-date-picker
+            (dateChanged)="onDateChanged($event)"
+          ></app-date-picker>
+          <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
+        </div>
+        }
+
+        @if (showRangeSelectDate ) {
+        <div>
+          <!-- select date -->
+          <app-date-picker
+            (dateChanged)="onRangeDateOneChanged($event)"
+          ></app-date-picker>
+          <p class="font-bold text-roseDark-100"> من يوم : {{ selectedDate }}</p>
+        </div>
+        <div>
+          <!-- select date -->
+          <app-date-picker
+            (dateChanged)="onRangeDateTwoChanged($event)"
+          ></app-date-picker>
+          <p class="font-bold text-roseDark-100"> الي يوم : {{ secondSelectedDate }}</p>
+        </div>
+        }
+      </div>
+
       <div>
-        <span class="font-bold text-roseDark-100">من </span>
+        <span class="font-bold text-roseDark-100">الترتيب </span>
+
         <select
-          class="px-3 py-2 border-2 rounded bg-beige border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
+          class="rounded w-[120px] px-3 py-2 border-2 bg-beige border-cream text-roseDark-100"
           name="time"
           id="time"
-          [(ngModel)]="selectedTime"
-          (change)="onTimeChange()"
+          [(ngModel)]="selectedOrder"
+          (change)="onOrderChange()"
         >
-          @for (item of timeArr; track $index) {
-          <option class="hover:bg-roseLight1 bg-beige" [value]="item.value">
-            {{ item.text }}
-          </option>
-          }
+          <option class="hover:bg-roseLight1" value="new">الأحدث</option>
+          <option class="hover:bg-roseLight1" value="old">الأقدم</option>
         </select>
       </div>
-
-      @if (showSelectDate) {
-      <div>
-        <!-- select date -->
-        <app-date-picker
-          (dateChanged)="onDateChanged($event)"
-        ></app-date-picker>
-        <p class="font-bold text-roseDark-100">يوم : {{ selectedDate }}</p>
-      </div>
-      }
-
-      @if (showRangeSelectDate ) {
-      <div>
-        <!-- select date -->
-        <app-date-picker
-          (dateChanged)="onRangeDateOneChanged($event)"
-        ></app-date-picker>
-        <p class="font-bold text-roseDark-100"> من يوم : {{ selectedDate }}</p>
-      </div>
-      <div>
-        <!-- select date -->
-        <app-date-picker
-          (dateChanged)="onRangeDateTwoChanged($event)"
-        ></app-date-picker>
-        <p class="font-bold text-roseDark-100"> الي يوم : {{ secondSelectedDate }}</p>
-      </div>
-      }
     </div>
 
-    <div>
-      <span class="font-bold text-roseDark-100">الترتيب </span>
-
-      <select
-        class="rounded w-[120px] px-3 py-2 border-2 bg-beige border-cream text-roseDark-100"
-        name="time"
-        id="time"
-        [(ngModel)]="selectedOrder"
-        (change)="onOrderChange()"
+    <div class="flex flex-wrap items-center justify-between gap-2 my-2">
+      <div class="flex flex-wrap items-center gap-2 my-2">
+        <p>ابحث بأسم العميل :</p>
+        <input
+          type="search"
+          name="searchOrderTracking"
+          id="searchOrderTracking"
+          (input)="searchByCustomerName($event)"
+          #customerNameInput
+          class="p-1 border shadow-sm rounded-xl m-"
+          placeholder="ابحث"
+        />
+      </div>
+      <button
+        class="p-2 text-white bg-green-500 rounded"
+        (click)="exportOrdersToCSV()"
       >
-        <option class="hover:bg-roseLight1" value="new">الأحدث</option>
-        <option class="hover:bg-roseLight1" value="old">الأقدم</option>
-      </select>
+        export Orders To CSV
+      </button>
     </div>
-  </div>
 
-  <div class="flex flex-wrap items-center justify-between gap-2 my-2">
-    <div class="flex flex-wrap items-center gap-2 my-2">
-      <p>ابحث بأسم العميل :</p>
-      <input
-        type="search"
-        name="searchOrderTracking"
-        id="searchOrderTracking"
-        (input)="searchByCustomerName($event)"
-        #customerNameInput
-        class="p-1 border shadow-sm rounded-xl m-"
-        placeholder="ابحث"
-      />
-    </div>
-    <button
-      class="p-2 text-white bg-green-500 rounded"
-      (click)="exportOrdersToCSV()"
-    >
-      export Orders To CSV
-    </button>
-  </div>
-
-  <div class="w-full my-4 bg-white rounded-lg shadow-md">
-    <div class="hs-accordion-group">
-      <div class="hs-accordion" id="hs-basic-heading-one">
-        <button
-          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
-          aria-expanded="true"
-          aria-controls="hs-basic-collapse-one"
-        >
-          <svg
-            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2:te "
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+    <div class="w-full my-4 bg-white rounded-lg shadow-md">
+      <div class="hs-accordion-group">
+        <div class="hs-accordion" id="hs-basic-heading-one">
+          <button
+            class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
+            aria-expanded="true"
+            aria-controls="hs-basic-collapse-one"
           >
-            <path d="M5 12h14"></path>
-            <path d="M12 5v14"></path>
-          </svg>
-          <svg
-            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M5 12h14"></path>
-          </svg>
-          الكميات
-        </button>
-        <div
-          id="hs-basic-collapse-one"
-          class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
-          role="region"
-          aria-labelledby="hs-basic-heading-one"
-        >
-          <div class="px-6 pb-4">
-            @if((allQuantities|keyvalue).length >0){ @for (item of allQuantities
-            | keyvalue; track $index) {
-            <div
-              class="flex items-center px-2 py-1 my-2 rounded shadow-sm bg-beige"
+            <svg
+              class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2:te "
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-              <span class="inline-block font-medium text-roseDark-100 w-36">{{
-                item.key
-              }}</span>
-              <span class="font-bold text-roseMedium2">{{ item.value }}</span>
-            </div>
-            } }@else {
-            <div class="flex flex-col items-center justify-center">
-              <svg class="mt-4 icon icon-illustration-empty-cart">
-                <use xlink:href="#icon-illustration-empty-cart"></use>
-              </svg>
-              <h3 class="p-2 text-3xl text-center">لا يوجد كميات</h3>
-            </div>
+              <path d="M5 12h14"></path>
+              <path d="M12 5v14"></path>
+            </svg>
+            <svg
+              class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14"></path>
+            </svg>
+            الكميات
+          </button>
+          <div
+            id="hs-basic-collapse-one"
+            class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
+            role="region"
+            aria-labelledby="hs-basic-heading-one"
+          >
+            <div class="px-6 pb-4">
+              @if(allQuantities &&(allQuantities|keyvalue).length >0){ @for (item of allQuantities
+              | keyvalue; track $index) {
+              <div
+                class="flex items-center px-2 py-1 my-2 rounded shadow-sm bg-beige"
+              >
+                <span class="inline-block font-medium text-roseDark-100 w-36">{{
+                  item.key
+                }}</span>
+                <span class="font-bold text-roseMedium2">{{ item.value }}</span>
+              </div>
+              } }@else {
+              <div class="flex flex-col items-center justify-center">
+                <svg class="mt-4 icon icon-illustration-empty-cart">
+                  <use xlink:href="#icon-illustration-empty-cart"></use>
+                </svg>
+                <h3 class="p-2 text-3xl text-center">لا يوجد كميات</h3>
+              </div>
 
-            }
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="hs-accordion active" id="hs-basic-heading-two">
+          <button
+            class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
+            aria-expanded="false"
+            aria-controls="hs-basic-collapse-two"
+          >
+            <svg
+              class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14"></path>
+              <path d="M12 5v14"></path>
+            </svg>
+            <svg
+              class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-secondary"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14"></path>
+            </svg>
+            الطلبات
+          </button>
+          <div
+            id="hs-basic-collapse-two"
+            class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
+            role="region"
+            aria-labelledby="hs-basic-heading-two"
+          >
+          @if(isLoading){
+          <span>loading...</span>
+          } @else {
+          <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
+          }
+        </div>
+        </div>
+
+        <div class="hs-accordion" id="hs-basic-heading-three">
+          <button
+            class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
+            aria-expanded="true"
+            aria-controls="hs-basic-collapse-three"
+          >
+            <svg
+              class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2:te "
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14"></path>
+              <path d="M12 5v14"></path>
+            </svg>
+            <svg
+              class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14"></path>
+            </svg>
+            الطلبات المؤجلة المدفوعة
+          </button>
+          <div
+            id="hs-basic-collapse-three"
+            class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
+            role="region"
+            aria-labelledby="hs-basic-heading-three"
+          >
+          <app-orders-wrapper class="p-2 bg-roseDark-100" [allOrders]="paidPostponedOrders" [filteredOrders]="paidPostponedOrders"></app-orders-wrapper>
+
           </div>
         </div>
       </div>
-
-      <div class="hs-accordion active" id="hs-basic-heading-two">
-        <button
-          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
-          aria-expanded="false"
-          aria-controls="hs-basic-collapse-two"
-        >
-          <svg
-            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M5 12h14"></path>
-            <path d="M12 5v14"></path>
-          </svg>
-          <svg
-            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-secondary"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M5 12h14"></path>
-          </svg>
-          الطلبات
-        </button>
-        <div
-          id="hs-basic-collapse-two"
-          class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
-          role="region"
-          aria-labelledby="hs-basic-heading-two"
-        >
-        <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
-      </div>
-      </div>
-
-      <div class="hs-accordion" id="hs-basic-heading-three">
-        <button
-          class="inline-flex items-center w-full px-6 py-3 text-sm font-semibold rounded-lg hs-accordion-toggle hs-accordion-active:text-secondary gap-x-3 text-start text-roseDark-100 hover:text-roseMedium2 focus:outline-none focus:text-roseMedium2 disabled:opacity-50 disabled:pointer-events-none"
-          aria-expanded="true"
-          aria-controls="hs-basic-collapse-three"
-        >
-          <svg
-            class="block hs-accordion-active:hidden hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2:te "
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M5 12h14"></path>
-            <path d="M12 5v14"></path>
-          </svg>
-          <svg
-            class="hidden hs-accordion-active:block hs-accordion-active:text-secondary hs-accordion-active:group-hover:text-secondary size-4 text-roseDark-100 group-hover:text-roseMedium2"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M5 12h14"></path>
-          </svg>
-          الطلبات المؤجلة المدفوعة
-        </button>
-        <div
-          id="hs-basic-collapse-three"
-          class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300"
-          role="region"
-          aria-labelledby="hs-basic-heading-three"
-        >
-        <app-orders-wrapper class="p-2 bg-roseDark-100" [allOrders]="paidPostponedOrders" [filteredOrders]="paidPostponedOrders"></app-orders-wrapper>
-
-        </div>
-      </div>
     </div>
   </div>
-</div>
 
 

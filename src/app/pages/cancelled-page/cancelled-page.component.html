@@ -138,7 +138,7 @@
           aria-labelledby="hs-basic-heading-one"
         >
           <div class="px-6 pb-4">
-            @if((allQuantities|keyvalue).length >0){ @for (item of allQuantities
+            @if(allQuantities && (allQuantities|keyvalue).length >0){ @for (item of allQuantities
             | keyvalue; track $index) {
             <div
               class="flex items-center px-2 py-1 my-2 rounded shadow-sm bg-beige"
@@ -204,7 +204,11 @@
           role="region"
           aria-labelledby="hs-basic-heading-two"
         >
-        <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
+        @if (isLoading) {
+          <span>loading...</span>
+        } @else {
+          <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders"></app-orders-wrapper>
+        }
       </div>
       </div>
     </div>

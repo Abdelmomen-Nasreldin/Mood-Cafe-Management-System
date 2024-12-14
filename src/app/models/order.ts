@@ -18,6 +18,8 @@ export interface IOrder {
   orderNo : number;
   customerName: string,
   status: IOrderStatus;
+  synced: boolean; // Indicates whether the order is synced with the backend
+  lastUpdated: Date; // Tracks the last time the order was modified
 }
 
 export type IOrderStatus =  OrderStatus.PENDING | OrderStatus.PAID | OrderStatus.POSTPONED | OrderStatus.CANCELLED | OrderStatus.PAID_POSTPONED;

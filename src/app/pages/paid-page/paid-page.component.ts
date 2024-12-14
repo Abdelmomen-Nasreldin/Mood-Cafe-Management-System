@@ -27,7 +27,7 @@ export class PaidPageComponent implements OnInit {
   filteredOrders: IOrder[] = [];
   total = 0;
   selectedOrder = "old";
-  selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH as string;
+  selectedTime = TRACKING_PERIODS.LAST_7_DAYS as string;
   // secondSelectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
   timeArr = TRACKING_TIME;
 
@@ -39,6 +39,7 @@ export class PaidPageComponent implements OnInit {
   printedOrder: IOrder | undefined;
   paidPostponedOrders: IOrder[] = [];
   totalPaidPostponedOrders = 0;
+  isLoading = false;
   constructor(
     private _trackingService: TrackingService,
     private _exportService: ExportService,
@@ -47,7 +48,7 @@ export class PaidPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadOrders(TRACKING_PERIODS.FROM_1ST_OF_MONTH);
+    this.loadOrders(TRACKING_PERIODS.LAST_7_DAYS);
   }
 
   onDateChanged(date: string) {
@@ -67,25 +68,32 @@ export class PaidPageComponent implements OnInit {
     }
   }
   loadOrders(period: string) {
-    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe(orders => {
-      const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-      const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-      this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-      this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
+    this.isLoading = true;
+    const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+    const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
 
-      this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
-      this.paidPostponedOrders = this.paidPostponedOrders.filter(order => order.status === OrderStatus.PAID_POSTPONED);
-      this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
-      console.log(this.totalPaidPostponedOrders, this.paidPostponedOrders);
-
-      this.total = calculateOrderTotal(this.allOrders);
-      this.filteredOrders = [...this.allOrders];
-      this.calcQuantities();
-      this.sortOrders();
-      if (this.customerNameInput) {
-        this.customerNameInput.nativeElement.value = "";
+    this._orderStatusService.paidOrders$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (orders) => {
+        this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
+        // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PAID || !order.status);
+        this.total = calculateOrderTotal(this.allOrders);
+        this.filteredOrders = [...this.allOrders];
+        this.calcQuantities();
+        this.sortOrders();
+        if (this.customerNameInput) {
+          this.customerNameInput.nativeElement.value = "";
+        }
+        this.isLoading = false;
+      }, error: (err) => {
+        this.isLoading = false;
+        console.error(err);
       }
     });
+
+    this._orderStatusService.paidPostponedOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
+      this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
+      this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
+    })
   }
 
   onOrderChange() {
