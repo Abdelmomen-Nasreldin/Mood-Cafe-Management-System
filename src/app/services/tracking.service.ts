@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { isWithinInterval } from "date-fns"; // Use date-fns for easy date handling
 import { IOrder } from "../models/order";
-import { TRACKING_PERIODS } from "../defines/defines";
+import { TRACKING_PERIODS, TrackingPeriod } from "../defines/defines";
 
 // Constants for time intervals
 const DAYS_IN_WEEK = 7;
@@ -90,7 +90,7 @@ export class TrackingService {
     });
   }
 
-  getOrdersByPeriod(orders: IOrder[], period: string, startDate?: string, endDate?: string, isPaidPostponed = false): IOrder[] {
+  getOrdersByPeriod(orders: IOrder[], period: TrackingPeriod, startDate?: string, endDate?: string, isPaidPostponed = false): IOrder[] {
     const today = new Date();
     switch (period) {
       case TRACKING_PERIODS.FROM_1ST_OF_MONTH:

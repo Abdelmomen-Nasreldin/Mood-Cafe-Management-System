@@ -18,6 +18,13 @@ export const PAGES = {
   FROM_CUSTOM_DATE_TO_DATE : "formSelectedDateToDate",
  } as const;
 
+ // Types
+export type TrackingPeriod = typeof TRACKING_PERIODS[keyof typeof TRACKING_PERIODS];
+export interface DateRange {
+  startDate: Date;
+  endDate: Date;
+}
+
  export const TRACKING_TIME : { text: string; value: string }[] = [
   {
     text: 'من أول الشهر',

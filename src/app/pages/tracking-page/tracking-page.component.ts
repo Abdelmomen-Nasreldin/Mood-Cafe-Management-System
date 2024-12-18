@@ -3,7 +3,7 @@ import { TrackingService } from '../../services/tracking.service';
 import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {  TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
+import {  TRACKING_PERIODS, TRACKING_TIME, TrackingPeriod } from '../../defines/defines';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 import { ExportService } from '../../services/export.service';
@@ -31,7 +31,7 @@ export class TrackingPageComponent implements OnInit {
   filteredOrders: IOrder[] = [];
   total = 0;
   selectedOrder = 'old';
-  selectedTime = TRACKING_PERIODS.LAST_7_DAYS as string;
+  selectedTime : TrackingPeriod = TRACKING_PERIODS.LAST_7_DAYS;
   timeArr = TRACKING_TIME;
 
   selectedDate: string = "";
@@ -69,7 +69,7 @@ export class TrackingPageComponent implements OnInit {
     }
   }
 
-  loadOrders(period: string) {
+  loadOrders(period: TrackingPeriod) {
     this.isLoading = true;
 
     this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe({

@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
 import { IOrder } from "../../models/order";
-import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
+import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME, TrackingPeriod } from "../../defines/defines";
 import { TrackingService } from "../../services/tracking.service";
 import { ExportService } from "../../services/export.service";
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from "../../utils";
@@ -27,7 +27,7 @@ export class PaidPageComponent implements OnInit {
   filteredOrders: IOrder[] = [];
   total = 0;
   selectedOrder = "old";
-  selectedTime = TRACKING_PERIODS.LAST_7_DAYS as string;
+  selectedTime : TrackingPeriod = TRACKING_PERIODS.LAST_7_DAYS;
   // secondSelectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
   timeArr = TRACKING_TIME;
 
@@ -67,7 +67,7 @@ export class PaidPageComponent implements OnInit {
       this.loadOrders(TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE);
     }
   }
-  loadOrders(period: string) {
+  loadOrders(period: TrackingPeriod) {
     this.isLoading = true;
     const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
     const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
