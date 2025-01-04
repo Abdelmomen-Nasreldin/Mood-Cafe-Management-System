@@ -250,7 +250,7 @@ export class MenuService {
     {
       "id": 35,
       "name": "ميكاتو",
-      "price": 43,
+      "price": 45,
       "english_name": "MIKATO",
       "category": "hot"
     },
@@ -390,7 +390,7 @@ export class MenuService {
     {
       "id": 55,
       "name": "افوكادو",
-      "price": 90,
+      "price": 65,
       "english_name": "AVOCADO",
       "category": "cold"
     },
@@ -726,9 +726,142 @@ export class MenuService {
     {
       "id": 103,
       "name": "دوم حليب",
-      "price": 25,
-      "english_name": "DOM MILK",
+      "price": 30,
+      "english_name": "DOM WITH MILK",
       "category": "cold"
+    },
+    {
+      "id": 104,
+      "name": "ام علي سادة",
+      "price": 30,
+      "english_name": "OM ALI",
+      "category": "others"
+    },
+    {
+      "id": 105,
+      "name": "ام علي قشطة",
+      "price": 40,
+      "english_name": "OM ALI WITH CREAM",
+      "category": "others"
+    },
+    {
+      "id": 106,
+      "name": "ام علي مكسرات",
+      "price": 35,
+      "english_name": "OM ALI WITH NUTS",
+      "category": "others"
+    },
+    {
+      "id": 107,
+      "name": "ام علي قشطة-مكسرات",
+      "price": 45,
+      "english_name": "OM ALI WITH CREAM-NUTS",
+      "category": "others"
+    },
+    {
+      "id": 108,
+      "name": "نسكافيه 3x1",
+      "price": 20,
+      "english_name": "NESCAFE 3X1",
+      "category": "hot"
+    },
+    {
+      "id": 109,
+      "name": "لاتيه بدون حليب",
+      "price": 25,
+      "english_name": "LATTE WITHOUT MILK",
+      "category": "hot"
+    },
+    {
+      "id": 110,
+      "name": "قهوة اسبرسو",
+      "price": 40,
+      "english_name": " COFFEE ESPRESSO",
+      "category": "hot"
+    },
+    {
+      "id": 111,
+      "name": "امريكانو اسبرسو",
+      "price": 35,
+      "english_name": " AMERICAN ESPRESSO",
+      "category": "hot"
+    },
+    {
+      "id": 112,
+      "name": "قرفة-جنزبيل -ليمون",
+      "price": 15,
+      "english_name": "CINNAMON-GINGER WITH LEMON",
+      "category": "hot"
+    },
+    {
+      "id": 113,
+      "name": "خدمة",
+      "price": 10,
+      "english_name": "SERVICE",
+      "category": "others"
+    },
+    {
+      "id": 114,
+      "name": "لاتيه حليب اسبرسو",
+      "price": 50,
+      "english_name": "LATTE ESPRESSO",
+      "category": "hot"
+    },
+    {
+      "id": 115,
+      "name": "كابتشينو  اسبرسو",
+      "price": 50,
+      "english_name": "CAPPUCCINO ESPRESSO",
+      "category": "hot"
+    },
+    {
+      "id": 116,
+      "name": "كابتشينو بدون حليب",
+      "price": 25,
+      "english_name": "CAPPUCCINO WITHOUT MILK",
+      "category": "hot"
+    },
+    {
+      "id": 117,
+      "name": "سكلانس",
+      "price": 20,
+      "english_name": "SKALANS",
+      "category": "hot"
+    },
+    {
+      "id": 118,
+      "name": "اناناس",
+      "price": 70,
+      "english_name": "PINEAPPLE",
+      "category": "cold"
+    },
+    {
+      "id": 119,
+      "name": "كوكتيل بالبلح",
+      "price": 45,
+      "english_name": " COCKTAIL WITH DATES",
+      "category": "cold"
+    },
+    {
+      "id": 120,
+      "name": "كوكتيل بالبلح لارج",
+      "price": 60,
+      "english_name": "LARGE COCKTAIL WITH DATES",
+      "category": "cold"
+    },
+    {
+      "id": 121,
+      "name": "قهوة بندق دوبل",
+      "price": 45,
+      "english_name": "DOUBLE HAZELNUT COFFEE",
+      "category": "hot"
+    },
+    {
+      "id": 122,
+      "name": "قهوة فرنساوي دوبل",
+      "price": 40,
+      "english_name": "DOUBLE FRENCH COFFEE",
+      "category": "hot"
     }
   ];
   // categories: ENGLISH_CATEGORIES[] = [ENGLISH_CATEGORIES.ALL, ENGLISH_CATEGORIES.HOT, ENGLISH_CATEGORIES.HOT, ENGLISH_CATEGORIES.SWEETS, ENGLISH_CATEGORIES.OTHERS]; //["الجميع", "مشروبات ساخنه", "مشروبات بارده", "حلويات", "أخرى"];
