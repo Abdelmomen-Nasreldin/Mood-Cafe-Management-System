@@ -77,9 +77,11 @@ export class PostponedPageComponent implements OnInit {
         this.filteredOrders = [...this.allOrders];
         this.calcQuantities();
         this.sortOrders();
-        if (this.customerNameInput) {
-          this.customerNameInput.nativeElement.value = "";
+        if (this.customerNameInput?.nativeElement.value) {
+          // this.customerNameInput.nativeElement.value = "";
+          this.searchByCustomerName({ target: { value: this.customerNameInput?.nativeElement.value.trim() } } as any);
         }
+
         this.isLoading = false;
       },
       error: (err) => {
@@ -126,7 +128,7 @@ export class PostponedPageComponent implements OnInit {
 
   searchByCustomerName(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
-    this.filteredOrders = filterOrders(this.allOrders, input.value);
+    this.filteredOrders = filterOrders(this.allOrders, input.value.trim());
     this.calcQuantities();
   }
 
