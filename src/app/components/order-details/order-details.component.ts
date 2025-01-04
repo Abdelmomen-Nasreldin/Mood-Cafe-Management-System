@@ -25,10 +25,10 @@ export class OrderDetailsComponent implements OnChanges, OnDestroy{
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    // console.log(changes);
     if (changes['isModalOpen']?.currentValue) {
       this.selectedOrderStatus = (changes['order'].currentValue as IOrder).status;
-      console.log(this.selectedOrderStatus);
+      // console.log(this.selectedOrderStatus);
 
      this.isModalOpen = changes['isModalOpen'].currentValue;
     }
