@@ -87,4 +87,9 @@ export const CATEGORIES : { en: ENGLISH_CATEGORIES; ar: string }[] = [{
 }
 ] as const;
 
-
+export const ROLES = {
+  ADMIN : 'admin',
+  OWNER : 'owner',
+  CASHIER : 'cashier',
+  READ_ONLY : 'read-only'
+} as const;
