@@ -93,3 +93,5 @@ export const ROLES = {
   CASHIER : 'cashier',
   READ_ONLY : 'read-only'
 } as const;
+
+export type Roles = typeof ROLES[keyof typeof ROLES];

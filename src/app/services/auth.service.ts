@@ -1,6 +1,6 @@
 // auth.service.ts
 import { Injectable } from '@angular/core';
-import { PAGES, ROLES } from '../defines/defines';
+import { PAGES, Roles, ROLES } from '../defines/defines';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -14,12 +14,12 @@ export class AuthService {
     { username: 'owner read only', password: 'moods-read', role: ROLES.READ_ONLY },
   ];
 
-  private currentUserRole: string | null = null;
+  private currentUserRole: Roles | null = null;
 
   constructor(private _router : Router) {}
 
-  public getCurrentUserRole(): string | null {
-    return this.currentUserRole;
+  public getCurrentUserRole(): Roles | null {
+    return this.currentUserRole; 
   }
 
   public async login(username: string, password: string): Promise<boolean> {
