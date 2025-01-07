@@ -40,10 +40,12 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.menuItems = this._menuService.getMenuItems();
-    this._menuService.resetSelectedItems();
-    this.menuCategories = CATEGORIES;
-    this.filteredItems = [...this.menuItems];
+    this._menuService.getMenuItems().pipe(takeUntil(this.destroy$)).subscribe((items) => {
+      this.menuItems = items;
+      this.filteredItems = items;
+      this._menuService.resetSelectedItems();
+      this.menuCategories = CATEGORIES;
+    });
 
     this._orderService.enableOrdering
       .pipe(takeUntil(this.destroy$))
@@ -83,6 +85,10 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  addMenuItems() {
+    this._menuService.addMenuItems(this.menuItems);
+
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

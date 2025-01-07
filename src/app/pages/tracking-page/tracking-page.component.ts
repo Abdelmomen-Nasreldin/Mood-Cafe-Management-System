@@ -85,6 +85,9 @@ export class TrackingPageComponent implements OnInit {
           this.customerNameInput.nativeElement.value = "";
         }
         this.isLoading = false;
+        console.log('====================================');
+        console.log('Orders', this.allOrders);
+        console.log('====================================');
       },
       error: (err) => {
         this.isLoading = false;
