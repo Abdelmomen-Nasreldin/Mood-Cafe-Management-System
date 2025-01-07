@@ -12,7 +12,7 @@ export class CafeDatabase extends Dexie {
 
     // Define tables and indexes
     this.version(2).stores({
-      orders: 'orderId, date, paidDate, status, orderNo, customerName, lastUpdated, synced, [date+status], [date+status+customerName]', // Indexing for faster queries
+      orders: 'orderId, date, paidDate, status, orderNo, customerName, lastUpdated, synced, [date+status], [date+status+customerName], [status+customerName], [date+customerName]', //indexing for faster queries
       orderItems: 'id, itemName, itemEnglishName, price, total',
       menuItems: 'id, name, english_name, price, isSelected, category',
     });
