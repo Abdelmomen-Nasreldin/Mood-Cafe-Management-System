@@ -1,5 +1,5 @@
 export interface IMenuItem {
-  id: number;
+  id: string;
   name: string;
   english_name: string;
   price: number;
