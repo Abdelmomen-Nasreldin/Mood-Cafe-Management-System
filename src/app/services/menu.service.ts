@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IMenuItem } from '../models/menu-item';
 import { BehaviorSubject, from, map, Observable, tap } from 'rxjs';
-import { ENGLISH_CATEGORIES } from '../defines/defines';
 import { db } from '../indexedDB/order-database';
 import { liveQuery } from 'dexie';
 

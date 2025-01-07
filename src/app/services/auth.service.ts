@@ -27,7 +27,7 @@ export class AuthService {
       (account) => account.username === username && account.password === password
     );
     if (user) {
-      this.currentUserRole = user.username;
+      this.currentUserRole = user.role;
       return true;
     }
     return false;
