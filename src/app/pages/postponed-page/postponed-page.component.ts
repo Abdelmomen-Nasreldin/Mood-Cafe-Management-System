@@ -43,7 +43,7 @@ export class PostponedPageComponent implements OnInit {
   total = 0;
   totalFiltered = 0;
   selectedOrder = 'old';
-  selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH as string;
+  selectedTime = TRACKING_PERIODS.TODAY as string;
   timeArr = TRACKING_TIME;
 
   selectedDate: string = '';
@@ -61,7 +61,7 @@ export class PostponedPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadOrders(TRACKING_PERIODS.FROM_1ST_OF_MONTH);
+    this.loadOrders(TRACKING_PERIODS.TODAY);
   }
 
   onDateChanged(date: string) {

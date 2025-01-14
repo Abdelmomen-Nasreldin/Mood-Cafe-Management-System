@@ -12,6 +12,7 @@ export const PAGES = {
  } as const;
 
  export const TRACKING_PERIODS = {
+  TODAY : "today",
   FROM_1ST_OF_MONTH : "fromFirstDayOfMonth",
   LAST_30_DAYS : "from30Days",
   LAST_7_DAYS : "from7Days",
@@ -20,6 +21,10 @@ export const PAGES = {
  } as const;
 
  export const TRACKING_TIME : { text: string; value: string }[] = [
+  {
+    text: ' اليوم',
+    value: TRACKING_PERIODS.TODAY,
+  },
   {
     text: 'من أول الشهر',
     value: TRACKING_PERIODS.FROM_1ST_OF_MONTH,

@@ -93,6 +93,8 @@ export class TrackingService {
   getOrdersByPeriod(orders: IOrder[], period: string, startDate?: string, endDate?: string, isPaidPostponed = false): IOrder[] {
     const today = new Date();
     switch (period) {
+      case TRACKING_PERIODS.TODAY:
+        return this.getTodayOrdersFrom7AM(orders);
       case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
         return this.getOrdersFromStartOfMonthAt7AM(orders, isPaidPostponed);
       case TRACKING_PERIODS.LAST_30_DAYS:
