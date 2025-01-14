@@ -1,10 +1,19 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { IOrder } from '../../models/order';
-import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
+import {
+  OrderStatus,
+  TRACKING_PERIODS,
+  TRACKING_TIME,
+} from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { ExportService } from '../../services/export.service';
-import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
+import {
+  calculateOrderItemQuantity,
+  calculateOrderTotal,
+  filterOrders,
+  sortOrders,
+} from '../../utils';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrdersWrapperComponent } from '../../components/orders-wrapper/orders-wrapper.component';
@@ -15,23 +24,30 @@ import { OrderStatusService } from '../../services/order-status.service';
 @Component({
   selector: 'app-postponed-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrdersWrapperComponent, DatePickerComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    OrdersWrapperComponent,
+    DatePickerComponent,
+  ],
   templateUrl: './postponed-page.component.html',
-  styleUrl: './postponed-page.component.scss'
+  styleUrl: './postponed-page.component.scss',
 })
 export class PostponedPageComponent implements OnInit {
   private destroy$ = new Subject<void>();
 
-  @ViewChild('customerNameInput') customerNameInput!: ElementRef<HTMLInputElement>
+  @ViewChild('customerNameInput')
+  customerNameInput!: ElementRef<HTMLInputElement>;
   allOrders: IOrder[] = [];
   filteredOrders: IOrder[] = [];
   total = 0;
+  totalFiltered = 0;
   selectedOrder = 'old';
   selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH as string;
   timeArr = TRACKING_TIME;
 
-  selectedDate: string = "";
-  secondSelectedDate: string = "";
+  selectedDate: string = '';
+  secondSelectedDate: string = '';
   showSelectDate = false;
   showRangeSelectDate = false;
   allQuantities!: Record<string, number>;
@@ -42,7 +58,7 @@ export class PostponedPageComponent implements OnInit {
     private _exportService: ExportService,
     private _orderService: OrderService,
     private _orderStatusService: OrderStatusService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadOrders(TRACKING_PERIODS.FROM_1ST_OF_MONTH);
@@ -67,28 +83,43 @@ export class PostponedPageComponent implements OnInit {
 
   loadOrders(period: string) {
     this.isLoading = true;
-    const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-    const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+    const isCustomDay =
+      period === TRACKING_PERIODS.CUSTOM_DAY ||
+      period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
+    const isRangeCustomDate =
+      period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
 
-    this._orderStatusService.postponedOrders$.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (orders) => {
-        this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-        this.total = calculateOrderTotal(this.allOrders);
-        this.filteredOrders = [...this.allOrders];
-        this.calcQuantities();
-        this.sortOrders();
-        if (this.customerNameInput?.nativeElement.value) {
-          // this.customerNameInput.nativeElement.value = "";
-          this.searchByCustomerName({ target: { value: this.customerNameInput?.nativeElement.value.trim() } } as any);
-        }
+    this._orderStatusService.postponedOrders$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (orders) => {
+          this.allOrders = this._trackingService.getOrdersByPeriod(
+            orders,
+            period,
+            isCustomDay ? this.selectedDate : undefined,
+            isRangeCustomDate ? this.secondSelectedDate : undefined
+          );
+          this.total = calculateOrderTotal(this.allOrders);
+          this.filteredOrders = [...this.allOrders];
+          this.totalFiltered = calculateOrderTotal(this.filteredOrders);
+          this.calcQuantities();
+          this.sortOrders();
+          if (this.customerNameInput?.nativeElement.value) {
+            // this.customerNameInput.nativeElement.value = "";
+            this.searchByCustomerName({
+              target: {
+                value: this.customerNameInput?.nativeElement.value.trim(),
+              },
+            } as any);
+          }
 
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error(err);
-      }
-    });
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error(err);
+        },
+      });
   }
 
   onOrderChange() {
@@ -112,14 +143,15 @@ export class PostponedPageComponent implements OnInit {
   reset(): void {
     this.showSelectDate = false;
     this.showRangeSelectDate = false;
-    this.selectedDate = "";
-    this.secondSelectedDate = "";
+    this.selectedDate = '';
+    this.secondSelectedDate = '';
     this.allOrders = [];
     this.filteredOrders = [];
     this.calcQuantities();
     this.total = 0;
+    this.totalFiltered = 0;
     if (this.customerNameInput) {
-      this.customerNameInput.nativeElement.value = "";
+      this.customerNameInput.nativeElement.value = '';
     }
   }
   sortOrders() {
@@ -130,6 +162,7 @@ export class PostponedPageComponent implements OnInit {
     const input = event.target as HTMLInputElement; // Type assertion
     this.filteredOrders = filterOrders(this.allOrders, input.value.trim());
     this.calcQuantities();
+    this.totalFiltered = calculateOrderTotal(this.filteredOrders);
   }
 
   calcQuantities() {
