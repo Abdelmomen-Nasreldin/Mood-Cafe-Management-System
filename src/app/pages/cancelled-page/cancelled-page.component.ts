@@ -27,7 +27,7 @@ export class CancelledPageComponent implements OnInit {
       filteredOrders: IOrder[] = [];
       total = 0;
       selectedOrder = 'old';
-      selectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH as string;
+      selectedTime = TRACKING_PERIODS.TODAY as string;
       timeArr = TRACKING_TIME;
 
       selectedDate: string = "";
@@ -45,7 +45,7 @@ export class CancelledPageComponent implements OnInit {
       ) {}
 
       ngOnInit(): void {
-        this.loadOrders(TRACKING_PERIODS.FROM_1ST_OF_MONTH);
+        this.loadOrders(TRACKING_PERIODS.TODAY);
       }
 
       onDateChanged(date: string) {

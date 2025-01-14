@@ -4,17 +4,19 @@ import { OrderService } from '../../services/order.service';
 import { IOrderItem } from '../../models/order';
 import { MenuService } from '../../services/menu.service';
 import { v4 as uuidv4 } from 'uuid';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-menu-item',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './menu-item.component.html',
   styleUrl: './menu-item.component.scss',
 })
 export class MenuItemComponent implements OnInit, OnDestroy {
   @Input({ required: true }) item!: IMenuItem;
   @Input() enableOrdering: boolean = false;
+  @Input() canUseEdit: boolean = false;
 
   selectedMenuItems:IMenuItem[]= []
 
@@ -47,5 +49,14 @@ export class MenuItemComponent implements OnInit, OnDestroy {
     this._orderService.addOrderedSidebarItems(orderedItem);
   }
 
+  editItem(item: IMenuItem) {
+    // open edit modal
+    // this._menuService.updateMenuItem(item.id, item);
+  }
+
+  deleteItem(item: IMenuItem) {
+    // open delete modal to emphasize the deletion
+    // this._menuService.deleteMenuItem(item.id);
+  }
   ngOnDestroy(): void {}
 }

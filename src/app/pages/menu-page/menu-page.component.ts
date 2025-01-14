@@ -6,12 +6,14 @@ import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrderSidebarComponent } from '../../components/order-sidebar/order-sidebar.component';
 import { IOrder } from '../../models/order';
-import { CATEGORIES, ENGLISH_CATEGORIES } from '../../defines/defines';
+import { CATEGORIES, ENGLISH_CATEGORIES, ROLES } from '../../defines/defines';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-menu-page',
   standalone: true,
-  imports: [MenuItemComponent, OrderSidebarComponent],
+  imports: [CommonModule, MenuItemComponent, OrderSidebarComponent],
   templateUrl: './menu-page.component.html',
   styleUrl: './menu-page.component.scss',
 })
@@ -25,10 +27,19 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   selectedCategory = ENGLISH_CATEGORIES.ALL;
   @ViewChild('searchInput') searchInputElement!:ElementRef;
 
+  userRole : string | null = null;
+  isAdmin = false;
+  ROLES = ROLES;
   constructor(
     private _menuService: MenuService,
-    private _orderService: OrderService
-  ) { }
+    private _orderService: OrderService,
+    private _authService: AuthService
+  ) {
+    this.userRole = this._authService.getCurrentUserRole();
+    console.log(this.userRole, 'userRole');
+
+    this.isAdmin = this.userRole === ROLES.ADMIN;
+   }
 
   CreateOrder() {
     // this._orderService.setEnableOrdering(true);
@@ -87,7 +98,11 @@ export class MenuPageComponent implements OnInit, OnDestroy {
 
   addMenuItems() {
     this._menuService.addMenuItems(this.menuItems);
+  }
 
+  addNewItemToMenu() {
+    // open add new item modal
+    // this._menuService.addMenuItem();
   }
   ngOnDestroy(): void {
     this.destroy$.next();

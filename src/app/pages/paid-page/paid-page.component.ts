@@ -27,7 +27,7 @@ export class PaidPageComponent implements OnInit {
   filteredOrders: IOrder[] = [];
   total = 0;
   selectedOrder = "old";
-  selectedTime = TRACKING_PERIODS.LAST_7_DAYS as string;
+  selectedTime = TRACKING_PERIODS.TODAY as string;
   // secondSelectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
   timeArr = TRACKING_TIME;
 
@@ -48,7 +48,7 @@ export class PaidPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadOrders(TRACKING_PERIODS.LAST_7_DAYS);
+    this.loadOrders(TRACKING_PERIODS.TODAY);
   }
 
   onDateChanged(date: string) {
