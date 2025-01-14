@@ -9,13 +9,14 @@ import { IOrder } from '../../models/order';
   styleUrl: './modal.component.scss',
 })
 export class ModalComponent {
-  @Input({ required: true }) order!: IOrder;
+  // @Input({ required: true }) order!: IOrder;
   @Input() isModalOpen = false;
   // @Output() changeOrderStatus = new EventEmitter<{
   //   orderId: string;
   //   newStatus: IOrderStatus;
   // }>();
   @Output() closeModal = new EventEmitter<void>();
+  @Output() save = new EventEmitter<void>();
 
   // currentDate = new Date();
   cafeName = 'Moods Cafe';
@@ -40,7 +41,7 @@ export class ModalComponent {
     this.closeModal.emit();
   }
 
-  save() {
+  onSave() {
     // this.changeOrderStatus.emit({
     //   orderId: this.order.orderId,
     //   newStatus: this.selectedOrderStatus,
