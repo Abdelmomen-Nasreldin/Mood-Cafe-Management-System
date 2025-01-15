@@ -42,9 +42,9 @@
               class="py-3 px-4 block w-3/4 border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "
               [(ngModel)]="category" name="category">
               @for (item of CATEGORIES; track $index) {
-                @if (item.en !== ENGLISH_CATEGORIES.ALL) {
-                  <option [value]="item.en">{{item.ar}}</option>
-                }
+              @if (item.en !== ENGLISH_CATEGORIES.ALL) {
+              <option [value]="item.en">{{item.ar}}</option>
+              }
               }
             </select>
           </div>
@@ -56,10 +56,17 @@
           class="py-2 px-3 w-[120px] inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50">
           اغلاق
         </button>
+        @if (!isEdit) {
         <button (click)="onSave()" type="button"
           class="py-2 px-3 w-[120px] inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-secondary text-white focus:outline-none disabled:opacity-50">
           حفظ
         </button>
+        } @else {
+        <button (click)="onEdit()" type="button"
+          class="py-2 px-3 w-[120px] inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-secondary text-white focus:outline-none disabled:opacity-50">
+          حفظ التعديلات
+        </button>
+        }
       </div>
     </div>
   </div>
