@@ -9,11 +9,12 @@ import { IOrder } from '../../models/order';
 import { CATEGORIES, ENGLISH_CATEGORIES, ROLES } from '../../defines/defines';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { ModalComponent } from "../../components/modal/modal.component";
 
 @Component({
   selector: 'app-menu-page',
   standalone: true,
-  imports: [CommonModule, MenuItemComponent, OrderSidebarComponent],
+  imports: [CommonModule, MenuItemComponent, OrderSidebarComponent, ModalComponent],
   templateUrl: './menu-page.component.html',
   styleUrl: './menu-page.component.scss',
 })
@@ -30,6 +31,9 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   userRole : string | null = null;
   isAdmin = false;
   ROLES = ROLES;
+
+  // modal
+  isModalOpen = false;
   constructor(
     private _menuService: MenuService,
     private _orderService: OrderService,
@@ -104,6 +108,18 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     // open add new item modal
     // this._menuService.addMenuItem();
   }
+
+  // modal
+  openModal() {
+    this.isModalOpen = true;
+  }
+  save() {
+    this.isModalOpen = false;
+  }
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

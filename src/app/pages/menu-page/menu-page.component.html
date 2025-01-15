@@ -1,8 +1,12 @@
 
+@if (isAdmin) {
+  <app-modal [isModalOpen]="isModalOpen" (closeModal)="closeModal()" (save)="save()"></app-modal>
+}
+
 <div class="page">
   <div class="m-3 btns">
     <ng-container *ngIf="isAdmin">
-      <button class="px-4 py-2 mx-2 w-[200px] rounded-full font-semibold bg-roseDark-100 text-white hover:bg-secondary" (click)="addNewItemToMenu()">
+      <button class="px-4 py-2 mx-2 w-[200px] rounded-full font-semibold bg-roseDark-100 text-white hover:bg-secondary" (click)="openModal()">
         أضف عنصر جديد للقائمة
       </button>
     </ng-container>

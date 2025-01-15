@@ -1,8 +1,7 @@
 <div class="" id="" [class.hidden]="!isModalOpen"
   class="overlay flex justify-center items-center size-full fixed top-0 start-0 z-[80] overflow-x-hidden transition-all overflow-y-auto">
   <div class="m-3 sm:max-w-lg sm:w-full sm:mx-auto">
-    <div
-      class="flex flex-col bg-white border shadow-sm rounded-xl ">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl ">
       <div class="flex items-center justify-between px-4 py-3 border-b ">
         <h3 class="font-bold text-secondary ">
           Moods Cafe
@@ -18,21 +17,47 @@
         </button>
       </div>
       <div class="p-4 overflow-y-auto">
-        <div>
-          welcome
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between gap-3">
+            <label for="" class="block text-sm">الاسم بالعربي</label>
+            <input type="text"
+              class="py-3 px-4 block w-3/4 border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="شاي" [(ngModel)]="nameAr" name="nameAr">
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <label for="" class="block text-sm">الاسم بالانجليزي</label>
+            <input type="text"
+              class="py-3 px-4 block w-3/4 border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="Tea" [(ngModel)]="nameEn" name="nameEn">
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <label for="" class="block text-sm">السعر </label>
+            <input type="text"
+              class="py-3 px-4 block w-3/4 border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="100 EGP" [(ngModel)]="price" name="price">
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <label for="" class="block text-sm"> التصنيف</label>
+            <select
+              class="py-3 px-4 block w-3/4 border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "
+              [(ngModel)]="category" name="category">
+              @for (item of CATEGORIES; track $index) {
+              <option [value]="item.en">{{item.ar}}</option>
+              }
+            </select>
+          </div>
         </div>
 
       </div>
-      <div (click)="onCloseModal()"
-        class="flex items-center justify-end px-4 py-3 border-t gap-x-2 ">
+      <div (click)="onCloseModal()" class="flex items-center justify-end px-4 py-3 border-t gap-x-2 ">
         <button type="button"
           class="py-2 px-3 w-[120px] inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50">
           اغلاق
         </button>
         <button (click)="onSave()" type="button"
-        class="py-2 px-3 w-[120px] inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-secondary text-white focus:outline-none disabled:opacity-50">
-        حفظ
-      </button>
+          class="py-2 px-3 w-[120px] inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-secondary text-white focus:outline-none disabled:opacity-50">
+          حفظ
+        </button>
       </div>
     </div>
   </div>

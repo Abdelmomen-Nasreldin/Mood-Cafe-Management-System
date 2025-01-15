@@ -1,10 +1,18 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { IOrder } from '../../models/order';
+import { FormsModule } from '@angular/forms';
+import { CATEGORIES } from '../../defines/defines';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
 })
@@ -22,20 +30,19 @@ export class ModalComponent {
   cafeName = 'Moods Cafe';
   // OrderStatusTranslations = Object.values(OrderStatusTranslations);
   // selectedOrderStatus!: IOrderStatus;
-
+  CATEGORIES = CATEGORIES;
+  nameAr = '';
+  nameEn = '';
+  price = 0;
+  category  = CATEGORIES[0].en;
   constructor() {}
 
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   // console.log(changes);
-  //   if (changes['isModalOpen']?.currentValue) {
-  //     this.selectedOrderStatus = (
-  //       changes['order'].currentValue as IOrder
-  //     ).status;
-  //     // console.log(this.selectedOrderStatus);
-
-  //     this.isModalOpen = changes['isModalOpen'].currentValue;
-  //   }
-  // }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if (changes['isModalOpen']?.currentValue) {
+      this.isModalOpen = changes['isModalOpen'].currentValue;
+    }
+  }
 
   onCloseModal() {
     this.closeModal.emit();
