@@ -2,12 +2,17 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
 import { IOrder } from '../../models/order';
 import { FormsModule } from '@angular/forms';
-import { CATEGORIES } from '../../defines/defines';
+import { CATEGORIES, ENGLISH_CATEGORIES } from '../../defines/defines';
+import { MenuService } from '../../services/menu.service';
+import { IMenuItem } from '../../models/menu-item';
 
 @Component({
   selector: 'app-modal',
@@ -16,7 +21,7 @@ import { CATEGORIES } from '../../defines/defines';
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
 })
-export class ModalComponent {
+export class ModalComponent implements OnInit, OnChanges, OnDestroy {
   // @Input({ required: true }) order!: IOrder;
   @Input() isModalOpen = false;
   // @Output() changeOrderStatus = new EventEmitter<{
@@ -31,11 +36,18 @@ export class ModalComponent {
   // OrderStatusTranslations = Object.values(OrderStatusTranslations);
   // selectedOrderStatus!: IOrderStatus;
   CATEGORIES = CATEGORIES;
+  ENGLISH_CATEGORIES = ENGLISH_CATEGORIES
   nameAr = '';
   nameEn = '';
-  price = 0;
-  category  = CATEGORIES[0].en;
-  constructor() {}
+  price = '';
+  category = '';
+  menuLength = 0;
+  constructor(private _menuService: MenuService) {}
+  ngOnInit(): void {
+    this._menuService.getMenuItems().subscribe((menuItems) => {
+      this.menuLength = menuItems.length;
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
@@ -48,12 +60,17 @@ export class ModalComponent {
     this.closeModal.emit();
   }
 
-  onSave() {
-    // this.changeOrderStatus.emit({
-    //   orderId: this.order.orderId,
-    //   newStatus: this.selectedOrderStatus,
-    // });
-    this.closeModal.emit();
+  onSave(): void {
+      const newMenuItem: IMenuItem = {
+        id: (this.menuLength + 1).toString(),
+        name: this.nameAr,
+        english_name: this.nameEn,
+        price: +this.price,
+        category: this.category,
+      };
+
+      this._menuService.addMenuItem(newMenuItem);
+      this.closeModal.emit();
   }
 
   ngOnDestroy(): void {}

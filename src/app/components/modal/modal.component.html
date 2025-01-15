@@ -32,7 +32,7 @@
           </div>
           <div class="flex items-center justify-between gap-3">
             <label for="" class="block text-sm">السعر </label>
-            <input type="text"
+            <input type="number"
               class="py-3 px-4 block w-3/4 border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "
               placeholder="100 EGP" [(ngModel)]="price" name="price">
           </div>
@@ -42,7 +42,9 @@
               class="py-3 px-4 block w-3/4 border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 "
               [(ngModel)]="category" name="category">
               @for (item of CATEGORIES; track $index) {
-              <option [value]="item.en">{{item.ar}}</option>
+                @if (item.en !== ENGLISH_CATEGORIES.ALL) {
+                  <option [value]="item.en">{{item.ar}}</option>
+                }
               }
             </select>
           </div>
