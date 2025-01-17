@@ -34,6 +34,10 @@ export class MenuPageComponent implements OnInit, OnDestroy {
 
   // modal
   isModalOpen = false;
+  // editMode
+  editMode = false;
+  editMenuItem : IMenuItem | null = null;
+
   constructor(
     private _menuService: MenuService,
     private _orderService: OrderService,
@@ -110,7 +114,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   }
 
   // modal
-  openModal() {
+  openAddMenuItemModal() {
     this.isModalOpen = true;
   }
   save() {
@@ -118,6 +122,20 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   }
   closeModal() {
     this.isModalOpen = false;
+    // this.editMenuItem = null;
+  }
+
+  onDeleteItem(item: IMenuItem) {
+    // open delete modal to emphasize the deletion
+    // this._menuService.deleteMenuItem(item.id);
+  }
+  onEditItem(item: IMenuItem) {
+    // open edit modal
+    console.log("edit item page", item);
+
+    this.editMode = true;
+    this.editMenuItem = item;
+    this.isModalOpen = true;
   }
 
   ngOnDestroy(): void {

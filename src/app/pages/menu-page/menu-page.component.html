@@ -1,12 +1,16 @@
 
-@if (isAdmin) {
+@if (isAdmin && !editMode) {
   <app-modal [isModalOpen]="isModalOpen" (closeModal)="closeModal()" (save)="save()"></app-modal>
+}
+
+@if (isAdmin && editMode && editMenuItem) {
+  <app-modal [isModalOpen]="isModalOpen" [isEdit]="editMode" [menuItem]="editMenuItem" (closeModal)="closeModal()" (save)="save()"></app-modal>
 }
 
 <div class="page">
   <div class="m-3 btns">
     <ng-container *ngIf="isAdmin">
-      <button class="px-4 py-2 mx-2 w-[200px] rounded-full font-semibold bg-roseDark-100 text-white hover:bg-secondary" (click)="openModal()">
+      <button class="px-4 py-2 mx-2 w-[200px] rounded-full font-semibold bg-roseDark-100 text-white hover:bg-secondary" (click)="openAddMenuItemModal()">
         أضف عنصر جديد للقائمة
       </button>
     </ng-container>
@@ -28,7 +32,7 @@
   <input #searchInput type="search" name="searchItem" id="searchItem"  (input)="searchMenuItems($event)" class="border rounded shadow-sm p-2 mb-4 mx-auto sm:w-[90%] md:w-[70%] lg:w-[60%] " placeholder="ابحث">
   <div class="flex flex-wrap justify-center gap-[15px]">
     @for (item of filteredItems; track item.id) {
-      <app-menu-item [item]="item" [enableOrdering]="enableOrdering" [canUseEdit]="isAdmin"></app-menu-item>
+      <app-menu-item [item]="item" [enableOrdering]="enableOrdering" [canUseEdit]="isAdmin" (editItem)="onEditItem($event)" (deleteItem)="onDeleteItem($event)"></app-menu-item>
     }
   </div>
 </div>
