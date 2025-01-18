@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IMenuItem } from '../../models/menu-item';
 import { OrderService } from '../../services/order.service';
 import { IOrderItem } from '../../models/order';
@@ -17,6 +17,8 @@ export class MenuItemComponent implements OnInit, OnDestroy {
   @Input({ required: true }) item!: IMenuItem;
   @Input() enableOrdering: boolean = false;
   @Input() canUseEdit: boolean = false;
+  @Output() editItem = new EventEmitter<IMenuItem>();
+  @Output() deleteItem = new EventEmitter<IMenuItem>();
 
   selectedMenuItems:IMenuItem[]= []
 
@@ -49,14 +51,18 @@ export class MenuItemComponent implements OnInit, OnDestroy {
     this._orderService.addOrderedSidebarItems(orderedItem);
   }
 
-  editItem(item: IMenuItem) {
+  onEditItem(item: IMenuItem) {
     // open edit modal
     // this._menuService.updateMenuItem(item.id, item);
+    console.log('edit item');
+
+    this.editItem.emit(item);
   }
 
-  deleteItem(item: IMenuItem) {
+  onDeleteItem(item: IMenuItem) {
     // open delete modal to emphasize the deletion
     // this._menuService.deleteMenuItem(item.id);
+    this.deleteItem.emit(item);
   }
   ngOnDestroy(): void {}
 }

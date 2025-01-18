@@ -39,7 +39,7 @@ export class MenuService {
    * @param id - The id of the menu item to be updated
    * @param updatedItem - The updated menu item
    */
-  async updateMenuItem(id: string, updatedItem: IMenuItem): Promise<void> {
+  async updateMenuItem(id: string, updatedItem: Partial<IMenuItem>): Promise<void> {
     await db.menuItems.update(id, updatedItem).then((id) => {
       this.resetCache();
     });
