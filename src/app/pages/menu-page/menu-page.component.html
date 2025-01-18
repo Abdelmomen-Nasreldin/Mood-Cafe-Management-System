@@ -1,10 +1,6 @@
 
-@if (isAdmin && !editMode) {
-  <app-modal [isModalOpen]="isModalOpen" (closeModal)="closeModal()" (save)="save()"></app-modal>
-}
-
-@if (isAdmin && editMode && editMenuItem) {
-  <app-modal [isModalOpen]="isModalOpen" [isEdit]="editMode" [menuItem]="editMenuItem" (closeModal)="closeModal()" (save)="save()"></app-modal>
+@if (isAdmin) {
+  <app-modal [isModalOpen]="isModalOpen" [isEdit]="editMode" [menuItem]="editedMenuItem" (closeModal)="closeModal()" (save)="saveMenuItem()"></app-modal>
 }
 
 <div class="page">
