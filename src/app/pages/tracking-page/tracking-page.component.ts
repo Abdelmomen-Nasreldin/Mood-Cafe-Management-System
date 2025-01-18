@@ -31,7 +31,7 @@ export class TrackingPageComponent implements OnInit {
   filteredOrders: IOrder[] = [];
   total = 0;
   selectedOrder = 'old';
-  selectedTime = TRACKING_PERIODS.LAST_7_DAYS as string;
+  selectedTime = TRACKING_PERIODS.TODAY as string;
   timeArr = TRACKING_TIME;
 
   selectedDate: string = "";
@@ -49,7 +49,7 @@ export class TrackingPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadOrders(TRACKING_PERIODS.LAST_7_DAYS);
+    this.loadOrders(TRACKING_PERIODS.TODAY);
   }
 
   onDateChanged(date: string) {

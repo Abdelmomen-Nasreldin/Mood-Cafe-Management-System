@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
-import { IOrder, IOrderItem, IOrderStatus } from "../models/order";
-import { BehaviorSubject, from, Observable } from "rxjs";
-import { calculateItemTotal } from "../utils";
-import { db } from "../indexedDB/order-database";
-import { liveQuery } from "dexie";
+import { Injectable } from '@angular/core';
+import { IOrder, IOrderItem, IOrderStatus } from '../models/order';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { calculateItemTotal } from '../utils';
+import { db } from '../indexedDB/order-database';
+import { liveQuery } from 'dexie';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class OrderService {
-  private ordersKey = "cafe_orders";
+  private ordersKey = 'cafe_orders';
   private _enableOrdering = new BehaviorSubject(false);
 
   public get enableOrdering() {
@@ -31,12 +31,16 @@ export class OrderService {
 
   public addOrderedSidebarItems(orderItem: IOrderItem) {
     const currentOrders = this._orderedSidebarItems.getValue();
-    const itemIndex = currentOrders.findIndex((ele) => ele.itemName === orderItem.itemName);
+    const itemIndex = currentOrders.findIndex(
+      (ele) => ele.itemName === orderItem.itemName
+    );
     if (itemIndex == -1) {
       currentOrders.push(orderItem);
     } else {
       currentOrders[itemIndex].quantity++;
-      currentOrders[itemIndex].total = calculateItemTotal(currentOrders[itemIndex]);
+      currentOrders[itemIndex].total = calculateItemTotal(
+        currentOrders[itemIndex]
+      );
     }
     this._orderedSidebarItems.next(currentOrders);
   }
@@ -59,7 +63,7 @@ export class OrderService {
 
   async getOrderById(orderId: string): Promise<IOrder | undefined> {
     const order = await db.orders.get(orderId);
-    return order
+    return order;
   }
 
   async saveOrder(order: IOrder): Promise<void> {
@@ -81,9 +85,61 @@ export class OrderService {
 
   // Query orders by status (e.g., "pending")
   getOrdersByStatus(status: IOrderStatus): Observable<IOrder[]> {
-    return from(liveQuery(() => db.orders.where('status').equals(status).toArray()));
+    return from(
+      liveQuery(() => db.orders.where('status').equals(status).toArray())
+    );
   }
 
+  // db.orders.where('[status+customerName]')
+  // .equals(['completed', 'John Doe'])
+  // .toArray()
+  // .then(orders => {
+  //   console.log('Completed orders for John Doe:', orders);
+  // });
+
+  // db.orders.where('[date+status+customerName]')
+  // .equals(['2023-10-01', 'completed', 'John Doe'])
+  // .toArray()
+  // .then(orders => {
+  //   console.log('Orders on 2023-10-01 with status completed for John Doe:', orders);
+  // });
+
+  // getOrdersByDateAndStatus(
+  //   dateString: string,
+  //   status: IOrderStatus
+  // ): Observable<IOrder[]> {
+  //   const date = new Date(dateString);
+  //   const { start, end } = this.getCustomDateRange(date);
+
+  //   return from(
+  //     liveQuery(() =>
+  //       db.orders
+  //         .where('date')
+  //         .between(start.toISOString(), end.toISOString(), true, true)
+  //         .and((order) => order.status === status)
+  //         .toArray()
+  //     )
+  //   );
+  // }
+
+  // getCustomDateRange(date: Date): { start: Date; end: Date } {
+  //   const start = new Date(date);
+  //   start.setHours(7, 0, 0, 0); // Set start time to 7 AM
+
+  //   const end = new Date(start);
+  //   end.setDate(start.getDate() + 1);
+  //   end.setHours(6, 59, 59, 999); // Set end time to 6:59 AM next day
+
+  //   return { start, end };
+  // }
+
+  // getOrdersInDateRange(date: Date): Promise<IOrder[]> {
+  //   const { start, end } = this.getCustomDateRange(date);
+  //   return db.orders
+  //     .where('date')
+  //     .between(start.toISOString(), end.toISOString(), true, true)
+  //     .toArray();
+  // }
   // addOrders(orders: IOrder[]): Observable<void> {
   //   return defer(() => db.orders.bulkAdd(orders)).pipe(
   //     map(() => {}),
@@ -93,5 +149,4 @@ export class OrderService {
   //     })
   //   );
   // }
-
 }

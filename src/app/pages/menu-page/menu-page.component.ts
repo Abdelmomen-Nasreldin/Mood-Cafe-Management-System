@@ -6,12 +6,15 @@ import { OrderService } from '../../services/order.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrderSidebarComponent } from '../../components/order-sidebar/order-sidebar.component';
 import { IOrder } from '../../models/order';
-import { CATEGORIES, ENGLISH_CATEGORIES } from '../../defines/defines';
+import { CATEGORIES, ENGLISH_CATEGORIES, ROLES } from '../../defines/defines';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { ModalComponent } from "../../components/modal/modal.component";
 
 @Component({
   selector: 'app-menu-page',
   standalone: true,
-  imports: [MenuItemComponent, OrderSidebarComponent],
+  imports: [CommonModule, MenuItemComponent, OrderSidebarComponent, ModalComponent],
   templateUrl: './menu-page.component.html',
   styleUrl: './menu-page.component.scss',
 })
@@ -25,10 +28,26 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   selectedCategory = ENGLISH_CATEGORIES.ALL;
   @ViewChild('searchInput') searchInputElement!:ElementRef;
 
+  userRole : string | null = null;
+  isAdmin = false;
+  ROLES = ROLES;
+
+  // modal
+  isModalOpen = false;
+  // editMode
+  editMode = false;
+  editedMenuItem : IMenuItem | null = null;
+
   constructor(
     private _menuService: MenuService,
-    private _orderService: OrderService
-  ) { }
+    private _orderService: OrderService,
+    private _authService: AuthService
+  ) {
+    this.userRole = this._authService.getCurrentUserRole();
+    console.log(this.userRole, 'userRole');
+
+    this.isAdmin = this.userRole === ROLES.ADMIN;
+   }
 
   CreateOrder() {
     // this._orderService.setEnableOrdering(true);
@@ -40,10 +59,12 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.menuItems = this._menuService.getMenuItems();
-    this._menuService.resetSelectedItems();
-    this.menuCategories = CATEGORIES;
-    this.filteredItems = [...this.menuItems];
+    this._menuService.getMenuItems().pipe(takeUntil(this.destroy$)).subscribe((items) => {
+      this.menuItems = items;
+      this.filteredItems = items;
+      this._menuService.resetSelectedItems();
+      this.menuCategories = CATEGORIES;
+    });
 
     this._orderService.enableOrdering
       .pipe(takeUntil(this.destroy$))
@@ -82,6 +103,49 @@ export class MenuPageComponent implements OnInit, OnDestroy {
       );
     }
   }
+
+  addMenuItems() {
+    this._menuService.addMenuItems(this.menuItems);
+  }
+
+  addNewItemToMenu() {
+    // open add new item modal
+    // this._menuService.addMenuItem();
+  }
+
+  // modal
+  openAddMenuItemModal() {
+    this.editMode = false;
+    this.editedMenuItem = null;
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.editMode = false;
+    this.editedMenuItem = null;
+    this.isModalOpen = false;
+  }
+
+  onDeleteItem(item: IMenuItem) {
+    // open delete modal to emphasize the deletion
+    // this._menuService.deleteMenuItem(item.id);
+  }
+  onEditItem(item: IMenuItem) {
+    // open edit modal
+    console.log("edit item page", item);
+
+    this.editMode = true;
+    this.editedMenuItem = item;
+    this.isModalOpen = true;
+  }
+
+  saveMenuItem(){
+    this.closeModal();
+  };
+
+  // editMenuItem(){
+  //   this.closeModal();
+  // };
 
   ngOnDestroy(): void {
     this.destroy$.next();

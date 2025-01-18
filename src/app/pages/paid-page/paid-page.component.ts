@@ -27,7 +27,7 @@ export class PaidPageComponent implements OnInit {
   filteredOrders: IOrder[] = [];
   total = 0;
   selectedOrder = "old";
-  selectedTime = TRACKING_PERIODS.LAST_7_DAYS as string;
+  selectedTime = TRACKING_PERIODS.TODAY as string;
   // secondSelectedTime = TRACKING_PERIODS.FROM_1ST_OF_MONTH;
   timeArr = TRACKING_TIME;
 
@@ -38,6 +38,7 @@ export class PaidPageComponent implements OnInit {
   allQuantities!: Record<string, number>;
   printedOrder: IOrder | undefined;
   paidPostponedOrders: IOrder[] = [];
+  filteredPaidPostponedOrders: IOrder[] = [];
   totalPaidPostponedOrders = 0;
   isLoading = false;
   constructor(
@@ -45,10 +46,10 @@ export class PaidPageComponent implements OnInit {
     private _exportService: ExportService,
     private _orderService: OrderService,
     private _orderStatusService: OrderStatusService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.loadOrders(TRACKING_PERIODS.LAST_7_DAYS);
+    this.loadOrders(TRACKING_PERIODS.TODAY);
   }
 
   onDateChanged(date: string) {
@@ -92,6 +93,7 @@ export class PaidPageComponent implements OnInit {
 
     this._orderStatusService.paidPostponedOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
       this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
+      this.filteredPaidPostponedOrders = [...this.paidPostponedOrders];
       this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
     })
   }
@@ -100,7 +102,7 @@ export class PaidPageComponent implements OnInit {
     this.sortOrders();
   }
 
-  onTimeChange() : void {
+  onTimeChange(): void {
     this.reset();
     switch (this.selectedTime) {
       case TRACKING_PERIODS.CUSTOM_DAY:
@@ -114,7 +116,7 @@ export class PaidPageComponent implements OnInit {
     }
   }
 
-  reset() : void {
+  reset(): void {
     this.showSelectDate = false;
     this.showRangeSelectDate = false;
     this.selectedDate = "";
@@ -122,6 +124,7 @@ export class PaidPageComponent implements OnInit {
     this.allOrders = [];
     this.paidPostponedOrders = [];
     this.filteredOrders = [];
+    this.filteredPaidPostponedOrders = [];
     this.calcQuantities();
     this.total = 0;
     this.totalPaidPostponedOrders = 0;
@@ -132,11 +135,13 @@ export class PaidPageComponent implements OnInit {
 
   sortOrders() {
     this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
+    this.filteredPaidPostponedOrders = sortOrders(this.filteredPaidPostponedOrders, this.selectedOrder);
   }
 
   searchByCustomerName(event: Event) {
     const input = event.target as HTMLInputElement; // Type assertion
     this.filteredOrders = filterOrders(this.allOrders, input.value);
+    this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, input.value);
     this.calcQuantities();
   }
 

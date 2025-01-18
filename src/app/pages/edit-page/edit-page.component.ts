@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IOrder } from '../../models/order';
 import { OrderService } from '../../services/order.service';
 import { MenuService } from '../../services/menu.service';
@@ -7,6 +7,7 @@ import { MenuItemComponent } from "../../components/menu-item/menu-item.componen
 import { OrderSidebarComponent } from "../../components/order-sidebar/order-sidebar.component";
 import { ActivatedRoute, Router } from '@angular/router';
 import { CATEGORIES, ENGLISH_CATEGORIES, PAGES } from '../../defines/defines';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-page',
@@ -15,7 +16,8 @@ import { CATEGORIES, ENGLISH_CATEGORIES, PAGES } from '../../defines/defines';
   templateUrl: './edit-page.component.html',
   styleUrl: './edit-page.component.scss'
 })
-export class EditPageComponent {
+export class EditPageComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
 
   menuItems: IMenuItem[] = [];
   filteredItems: IMenuItem[] = [];
@@ -42,9 +44,11 @@ export class EditPageComponent {
   }
 
   ngOnInit(): void {
-    this.menuItems = this._menuService.getMenuItems();
-    this.menuCategories = CATEGORIES;
-    this.filteredItems = [...this.menuItems];
+    this._menuService.getMenuItems().pipe(takeUntil(this.destroy$)).subscribe((items) => {
+      this.menuItems = items;
+      this.filteredItems = items;
+      this.menuCategories = CATEGORIES;
+    })
     // get the orderId from the url
     this._activatedRoute.params.subscribe(async (data)=>{
       this.orderId = data['orderId'];
@@ -99,5 +103,10 @@ export class EditPageComponent {
         (item) => item.category === category
       );
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
