@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { IOrder } from "../models/order";
 import * as Papa from "papaparse";
-import { saveAs } from "file-saver";
+import { saveAs } from "file-saver-es";
 
 @Injectable({
   providedIn: "root",
