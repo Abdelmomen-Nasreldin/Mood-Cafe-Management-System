@@ -16,8 +16,10 @@
 </div>
 
 <ng-container *ngIf="canUseEdit">
-  <button class="px-4 py-2 rounded-full font-semibold bg-yellow-400 text-white hover:bg-yellow-600" (click)="onEditItem(item)">تعديل</button>
+  <button class="px-4 py-2 absolute top-1 right-0 rounded font-semibold bg-yellow-300 hover:bg-yellow-600" (click)="onEditItem(item)">تعديل</button>
 
-  <button class="px-4 py-2 rounded-full font-semibold bg-red-400 text-white hover:bg-red-600" (click)="onDeleteItem(item)">حذف</button>
+  @if (false) {
+    <button class="px-4 py-2 absolute top-1 left-0 rounded font-semibold bg-red-400 text-white hover:bg-red-600" (click)="onDeleteItem(item)">حذف</button>
+  }
 </ng-container>
 

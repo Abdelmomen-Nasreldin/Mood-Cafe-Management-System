@@ -36,7 +36,7 @@ export class TrackingService {
   }
 
   // Get orders for today starting from 7 AM
-  getTodayOrdersFrom7AM(orders: IOrder[]): IOrder[] {
+  getTodayOrdersFrom7AM(orders: IOrder[], isPaidPostponed = false): IOrder[] {
     const startHour = 7;
     const today = new Date();
     const now = new Date(); // Current time
@@ -47,7 +47,7 @@ export class TrackingService {
     } else {
       customStartTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHour, 0, 0);
     }
-    return this.getOrdersWithinRange(orders, customStartTime, now);
+    return this.getOrdersWithinRange(orders, customStartTime, now, isPaidPostponed);
   }
 
   getTodayOrdersFromCustomTime(orders: IOrder[], startHour: number): IOrder[] {
