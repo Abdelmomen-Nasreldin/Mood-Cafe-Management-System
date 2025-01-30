@@ -86,9 +86,66 @@ export class OrderService {
   // Query orders by status (e.g., "pending")
   getOrdersByStatus(status: IOrderStatus): Observable<IOrder[]> {
     return from(
-      liveQuery(() => db.orders.where('status').equals(status).toArray())
+      liveQuery(() => db.orders.where('status').equals(status).sortBy('date'))
     );
   }
+
+  getOrdersByStatusAndCustomerName(
+    status: IOrderStatus,
+    customerName: string
+  ): Observable<IOrder[]> {
+    return from(
+      liveQuery(() =>
+        db.orders
+          .where('[status+customerName]')
+          .equals([status, customerName])
+          .sortBy('date')
+      )
+    );
+  }
+
+  getOrdersByPeriod(
+    status: IOrderStatus,
+    startDateString: string,
+    endDateString?: string
+  ): Observable<IOrder[]> {
+    const startDate = new Date(startDateString);
+    const endDate = endDateString ? new Date(endDateString) : startDate;
+
+    // Get adjusted date ranges
+    const { start: startRange } = this.getCustomDateRange(startDate);
+    const { end: endRange } = this.getCustomDateRange(endDate);
+
+    return from(
+      liveQuery(() =>
+        db.orders
+          .where('date')
+          .between(startRange.toISOString(), endRange.toISOString(), true, true)
+          .filter((order) => order.status === status) // Ensures correct status filtering
+          .sortBy('date')
+      )
+    );
+  }
+
+
+  getCustomDateRange(date: Date): { start: Date; end: Date } {
+    const start = new Date(date);
+    start.setHours(7, 0, 0, 0); // Set start time to 7 AM
+
+    const end = new Date(date);
+    end.setDate(start.getDate() + 1);
+    end.setHours(6, 59, 59);
+
+    return { start, end };
+  }
+
+  // getOrdersInDateRange(date: Date): Promise<IOrder[]> {
+  //   const { start, end } = this.getCustomDateRange(date);
+  //   return db.orders
+  //     .where('date')
+  //     .between(start.toISOString(), end.toISOString(), true, true)
+  //     .toArray();
+  // }
 
   // db.orders.where('[status+customerName]')
   // .equals(['completed', 'John Doe'])
@@ -103,50 +160,4 @@ export class OrderService {
   // .then(orders => {
   //   console.log('Orders on 2023-10-01 with status completed for John Doe:', orders);
   // });
-
-  // getOrdersByDateAndStatus(
-  //   dateString: string,
-  //   status: IOrderStatus
-  // ): Observable<IOrder[]> {
-  //   const date = new Date(dateString);
-  //   const { start, end } = this.getCustomDateRange(date);
-
-  //   return from(
-  //     liveQuery(() =>
-  //       db.orders
-  //         .where('date')
-  //         .between(start.toISOString(), end.toISOString(), true, true)
-  //         .and((order) => order.status === status)
-  //         .toArray()
-  //     )
-  //   );
-  // }
-
-  // getCustomDateRange(date: Date): { start: Date; end: Date } {
-  //   const start = new Date(date);
-  //   start.setHours(7, 0, 0, 0); // Set start time to 7 AM
-
-  //   const end = new Date(start);
-  //   end.setDate(start.getDate() + 1);
-  //   end.setHours(6, 59, 59, 999); // Set end time to 6:59 AM next day
-
-  //   return { start, end };
-  // }
-
-  // getOrdersInDateRange(date: Date): Promise<IOrder[]> {
-  //   const { start, end } = this.getCustomDateRange(date);
-  //   return db.orders
-  //     .where('date')
-  //     .between(start.toISOString(), end.toISOString(), true, true)
-  //     .toArray();
-  // }
-  // addOrders(orders: IOrder[]): Observable<void> {
-  //   return defer(() => db.orders.bulkAdd(orders)).pipe(
-  //     map(() => {}),
-  //     catchError(error => {
-  //       console.error('Failed to add orders:', error);
-  //       throw error; // Re-throw the error for higher-level handling
-  //     })
-  //   );
-  // }
 }
