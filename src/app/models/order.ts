@@ -13,7 +13,7 @@ export interface IOrder {
   orderId: string;
   items: IOrderItem[];
   total: number;
-  date: Date;
+  date: string; // For querying old orders (iso string)
   timestamp : number;
   paidDate: number | null;
   orderNo : number;

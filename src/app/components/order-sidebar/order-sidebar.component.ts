@@ -115,7 +115,7 @@ if(this.orderedItems[itemIndex]){
         orderId: uuidv4(),
         items: [...this.orderedItems],
         total: this.OrderTotal,
-        date: new Date(), // For old orders
+        date: new Date().toISOString(), // For old orders
         timestamp: new Date().getTime(), // Efficient queries
         paidDate: null,
         orderNo: this.orders.length + 1,
