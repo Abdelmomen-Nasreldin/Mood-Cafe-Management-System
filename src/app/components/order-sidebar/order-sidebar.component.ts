@@ -115,13 +115,14 @@ if(this.orderedItems[itemIndex]){
         orderId: uuidv4(),
         items: [...this.orderedItems],
         total: this.OrderTotal,
-        date: new Date(),
+        date: new Date(), // For old orders
+        timestamp: new Date().getTime(), // Efficient queries
         paidDate: null,
         orderNo: this.orders.length + 1,
         customerName: this.customerName.nativeElement.value || '',
         status: this.orderStatus.PENDING,
         synced: false,
-        lastUpdated: new Date(),
+        lastUpdated: new Date().getTime(),
       };
       this.setOrder.emit(order);
     }

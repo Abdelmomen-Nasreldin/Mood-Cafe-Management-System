@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { OrderService } from "./order.service";
 import { BehaviorSubject, Observable } from "rxjs";
 import { IOrder, IOrderStatus } from "../models/order";
-import { OrderStatus } from "../defines/defines";
+import { OrderStatus, TRACKING_PERIODS } from "../defines/defines";
 
 @Injectable({
   providedIn: "root",
@@ -36,9 +36,14 @@ export class OrderStatusService {
     }
     // wantedOrder.status = orderStatusAndId.newStatus;
     if (orderStatusAndId.newStatus === this.orderStatus.PAID || orderStatusAndId.newStatus === this.orderStatus.PAID_POSTPONED) {
-      wantedOrder.paidDate = new Date();
+      wantedOrder.paidDate = new Date().getTime();
     }
 
     this._orderService.updateOrder(wantedOrder);
   }
+
+  // getPaidOrdersByDate(date: string) {
+  //   this.paidOrders$ = this._orderService.getOrdersByPeriod(this.orderStatus.PAID, date)
+  // }
+
 }

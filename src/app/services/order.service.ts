@@ -112,32 +112,41 @@ export class OrderService {
     const startDate = new Date(startDateString);
     const endDate = endDateString ? new Date(endDateString) : startDate;
 
-    // Get adjusted date ranges
-    const { start: startRange } = this.getCustomDateRange(startDate);
-    const { end: endRange } = this.getCustomDateRange(endDate);
+    const { start: startTimestamp } = this.getCustomDateRange(startDate);
+    const { end: endTimestamp } = this.getCustomDateRange(endDate);
 
     return from(
       liveQuery(() =>
         db.orders
-          .where('date')
-          .between(startRange.toISOString(), endRange.toISOString(), true, true)
-          .filter((order) => order.status === status) // Ensures correct status filtering
+          // .where('date') // Query existing 'date' field
+          // .between(new Date(startTimestamp).toISOString(), new Date(endTimestamp).toISOString(), true, true)
+
+          // .or('date') // Query existing 'date' field as date object
+          // .between(new Date(startTimestamp), new Date(endTimestamp), true, true)
+
+          .where('timestamp') // If 'timestamp' exists, use it for future queries
+          .between(startTimestamp, endTimestamp, true, true)
+
+          .filter(order => order.status === status)
           .sortBy('date')
       )
     );
   }
 
-
-  getCustomDateRange(date: Date): { start: Date; end: Date } {
+  getCustomDateRange(date: Date): { start: number; end: number } {
     const start = new Date(date);
-    start.setHours(7, 0, 0, 0); // Set start time to 7 AM
+    start.setHours(7, 0, 0, 0); // Start at 7 AM
+    const startTimestamp = start.getTime();
 
     const end = new Date(date);
-    end.setDate(start.getDate() + 1);
-    end.setHours(6, 59, 59);
+    end.setDate(end.getDate() + 1);
+    end.setHours(6, 59, 59, 999); // Ends at 6:59:59.999 AM next day
+    const endTimestamp = end.getTime();
 
-    return { start, end };
+    return { start: startTimestamp, end: endTimestamp };
   }
+
+
 
   // getOrdersInDateRange(date: Date): Promise<IOrder[]> {
   //   const { start, end } = this.getCustomDateRange(date);
