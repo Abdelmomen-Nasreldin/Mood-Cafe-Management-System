@@ -21,7 +21,7 @@ export class SyncService {
 
       // Fetch updates from the server
       const lastSync = await this.getLastSync();
-      const lastUpdated = lastSync?.lastUpdated || new Date(0);
+      const lastUpdated = new Date(lastSync?.lastUpdated || 0);
 
       const updatedOrders = await this.getUpdatedOrdersFromServer(lastUpdated);
 
@@ -58,7 +58,7 @@ export class SyncService {
   private async postOrdersToServer(orders: IOrder[]): Promise<void> {
     try {
       await this.http.post<IOrder[]>(this.backendUrl, orders).toPromise();
-      const syncedOrders = orders.map((order) => ({ ...order, synced: true, lastUpdated: new Date() }));
+      const syncedOrders = orders.map((order) => ({ ...order, synced: true, lastUpdated: new Date().getTime() }));
       await db.orders.bulkPut(syncedOrders);
     } catch (error) {
       console.error(`Failed to post orders to server: ${error}`);

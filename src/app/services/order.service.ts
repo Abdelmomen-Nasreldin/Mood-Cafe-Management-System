@@ -115,18 +115,20 @@ export class OrderService {
 
     const { start: startTimestamp } = this.getCustomDateRange(startDate);
     const { end: endTimestamp } = this.getCustomDateRange(endDate);
+    const dateField = status === OrderStatus.PAID_POSTPONED ? 'paidDate' : 'timestamp';
 
     return from(
       liveQuery(() =>
         db.orders
-          // .where('date') // Query existing 'date' field
+          .where(dateField) // If 'timestamp' exists, use it for future queries
+          .between(startTimestamp, endTimestamp, true, true)
+
+          // the decision is to use 'date' field as a fallback if 'timestamp' doesn't exist but not in case of 'paidDate'
+          // .or('date') // Query existing 'date' field as date object
           // .between(new Date(startTimestamp).toISOString(), new Date(endTimestamp).toISOString(), true, true)
 
-          // .or('date') // Query existing 'date' field as date object
-          // .between(new Date(startTimestamp), new Date(endTimestamp), true, true)
-
-          .where(status === OrderStatus.PAID_POSTPONED ? 'paidDate' : 'timestamp') // If 'timestamp' exists, use it for future queries
-          .between(startTimestamp, endTimestamp, true, true)
+          // .where('date') // Query existing 'date' field
+          // .between(new Date(startTimestamp).toISOString(), new Date(endTimestamp).toISOString(), true, true)
 
           .filter(order => order.status === status)
           .sortBy('date')
