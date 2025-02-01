@@ -4,6 +4,7 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 import { calculateItemTotal } from '../utils';
 import { db } from '../indexedDB/order-database';
 import { liveQuery } from 'dexie';
+import { OrderStatus } from '../defines/defines';
 
 @Injectable({
   providedIn: 'root',
@@ -124,7 +125,7 @@ export class OrderService {
           // .or('date') // Query existing 'date' field as date object
           // .between(new Date(startTimestamp), new Date(endTimestamp), true, true)
 
-          .where('timestamp') // If 'timestamp' exists, use it for future queries
+          .where(status === OrderStatus.PAID_POSTPONED ? 'paidDate' : 'timestamp') // If 'timestamp' exists, use it for future queries
           .between(startTimestamp, endTimestamp, true, true)
 
           .filter(order => order.status === status)

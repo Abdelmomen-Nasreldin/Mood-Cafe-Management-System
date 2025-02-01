@@ -73,6 +73,7 @@ export class PaidPageComponent implements OnInit {
     const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
     const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
 
+
     this._orderService.getOrdersByPeriod(OrderStatus.PAID, isCustomDay ? this.selectedDate : new Date().toString(), isRangeCustomDate ? this.secondSelectedDate : undefined).pipe(takeUntil(this.destroy$)).subscribe({
       next: (orders) => {
 
@@ -92,11 +93,21 @@ export class PaidPageComponent implements OnInit {
       }
     });
 
-    this._orderStatusService.paidPostponedOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
-      this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
-      this.filteredPaidPostponedOrders = [...this.paidPostponedOrders];
-      this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
-    })
+    // this._orderStatusService.paidPostponedOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
+    //   this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
+    //   this.filteredPaidPostponedOrders = [...this.paidPostponedOrders];
+    //   this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
+    // })
+
+    this._orderService.getOrdersByPeriod(OrderStatus.PAID_POSTPONED, isCustomDay ? this.selectedDate : new Date().toString(), isRangeCustomDate ? this.secondSelectedDate : undefined).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (orders) => {
+        this.paidPostponedOrders = orders;
+        this.filteredPaidPostponedOrders = orders;
+        this.totalPaidPostponedOrders = calculateOrderTotal(orders);
+      }, error: (err) => {
+        console.error(err);
+      }
+    });
   }
 
   onOrderChange() {
@@ -111,6 +122,15 @@ export class PaidPageComponent implements OnInit {
         break;
       case TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE:
         this.showRangeSelectDate = true;
+        break;
+      case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
+        this.loadOrders(TRACKING_PERIODS.FROM_1ST_OF_MONTH);
+        break;
+      case TRACKING_PERIODS.LAST_30_DAYS:
+        this.loadOrders(TRACKING_PERIODS.LAST_30_DAYS);
+        break;
+      case TRACKING_PERIODS.LAST_7_DAYS:
+        this.loadOrders(TRACKING_PERIODS.LAST_7_DAYS);
         break;
       default:
         this.loadOrders(this.selectedTime);
