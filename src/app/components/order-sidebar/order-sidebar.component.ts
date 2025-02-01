@@ -21,6 +21,7 @@ import { TrackingService } from '../../services/tracking.service';
 import { MenuService } from '../../services/menu.service';
 import { OrderStatus } from '../../defines/defines';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-order-sidebar',
@@ -34,6 +35,9 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
   @Input() updatedOrder : IOrder | undefined;
   @Output() setOrder = new EventEmitter<IOrder>();
   @ViewChild('customerName') customerName! : ElementRef<HTMLInputElement>;
+
+  userRole : string | null = null;
+
   orderedItems: IOrderItem[] = [];
   orders: IOrder[] = [];
   OrderTotal = 0;
@@ -42,9 +46,11 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
   constructor(
     private _orderService: OrderService,
     private _trackingService: TrackingService,
-    private _menuService:MenuService
-
-  ) {}
+    private _menuService:MenuService,
+    private _authService: AuthService
+  ) {
+    this.userRole = this._authService.getCurrentUserRole();
+  }
 
   ngOnInit(): void {
     this._orderService
@@ -123,6 +129,7 @@ if(this.orderedItems[itemIndex]){
         status: this.orderStatus.PENDING,
         synced: false,
         lastUpdated: new Date().getTime(),
+        createdBy: this.userRole ?? 'user',
       };
       this.setOrder.emit(order);
     }
