@@ -3,14 +3,15 @@ import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-w
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
 import { IOrder } from "../../models/order";
 import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
-import { TrackingService } from "../../services/tracking.service";
+// import { TrackingService } from "../../services/tracking.service";
 import { ExportService } from "../../services/export.service";
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
-import { OrderStatusService } from "../../services/order-status.service";
+// import { OrderStatusService } from "../../services/order-status.service";
+import { subDays, startOfMonth } from 'date-fns';
 
 @Component({
   selector: "app-paid-page",
@@ -42,10 +43,10 @@ export class PaidPageComponent implements OnInit {
   totalPaidPostponedOrders = 0;
   isLoading = false;
   constructor(
-    private _trackingService: TrackingService,
+    // private _trackingService: TrackingService,
     private _exportService: ExportService,
     private _orderService: OrderService,
-    private _orderStatusService: OrderStatusService
+    // private _orderStatusService: OrderStatusService
   ) { }
 
   ngOnInit(): void {
@@ -68,20 +69,33 @@ export class PaidPageComponent implements OnInit {
       this.loadOrders(TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE);
     }
   }
+
+  setDates(period: string) {
+    if (period === TRACKING_PERIODS.FROM_1ST_OF_MONTH) {
+      this.selectedDate = startOfMonth(new Date()).toString();
+      this.secondSelectedDate = new Date().toString();
+    } else if (period === TRACKING_PERIODS.LAST_7_DAYS) {
+      this.selectedDate = subDays(new Date(), 6).toString();
+      this.secondSelectedDate = new Date().toString();
+    } else if (period === TRACKING_PERIODS.LAST_30_DAYS) {
+      this.selectedDate = subDays(new Date(), 30).toString();
+      this.secondSelectedDate = new Date().toString();
+    } else if (period === TRACKING_PERIODS.TODAY) {
+      this.selectedDate = new Date().toString();
+    }
+  }
+
   loadOrders(period: string) {
     this.isLoading = true;
-    const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-    const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
 
-
-    this._orderService.getOrdersByPeriod(OrderStatus.PAID, isCustomDay ? this.selectedDate : new Date().toString(), isRangeCustomDate ? this.secondSelectedDate : undefined).pipe(takeUntil(this.destroy$)).subscribe({
+    this.setDates(period);
+    this._orderService.getOrdersByPeriod(OrderStatus.PAID, this.selectedDate, this.secondSelectedDate || undefined).pipe(takeUntil(this.destroy$)).subscribe({
       next: (orders) => {
 
         this.allOrders = orders;
         this.total = calculateOrderTotal(orders);
         this.filteredOrders = orders;
         this.calcQuantities();
-        // this.sortOrders();
         if (this.customerNameInput) {
           this.customerNameInput.nativeElement.value = "";
         }
@@ -93,13 +107,7 @@ export class PaidPageComponent implements OnInit {
       }
     });
 
-    // this._orderStatusService.paidPostponedOrders$.pipe(takeUntil(this.destroy$)).subscribe(orders => {
-    //   this.paidPostponedOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined, true);
-    //   this.filteredPaidPostponedOrders = [...this.paidPostponedOrders];
-    //   this.totalPaidPostponedOrders = calculateOrderTotal(this.paidPostponedOrders);
-    // })
-
-    this._orderService.getOrdersByPeriod(OrderStatus.PAID_POSTPONED, isCustomDay ? this.selectedDate : new Date().toString(), isRangeCustomDate ? this.secondSelectedDate : undefined).pipe(takeUntil(this.destroy$)).subscribe({
+    this._orderService.getOrdersByPeriod(OrderStatus.PAID_POSTPONED, this.selectedDate, this.secondSelectedDate || undefined).pipe(takeUntil(this.destroy$)).subscribe({
       next: (orders) => {
         this.paidPostponedOrders = orders;
         this.filteredPaidPostponedOrders = orders;
