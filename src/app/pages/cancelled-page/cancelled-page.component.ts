@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { IOrder } from '../../models/order';
-import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
+import { TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { ExportService } from '../../services/export.service';
 import { OrderService } from '../../services/order.service';

@@ -18,7 +18,6 @@ export class LoginComponent {
   async login(username: string, password: string): Promise<void> {
     this.error = false;
     const success = await this.authService.login(username, password);
-    console.log('Login attempt', success, username, password);
 
     if (success) {
       console.log('Login successful');

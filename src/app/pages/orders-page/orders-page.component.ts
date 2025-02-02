@@ -4,19 +4,19 @@ import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
 import { Router } from '@angular/router';
-import { OrderStatus, PAGES } from '../../defines/defines';
+import { PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
-import { OrderPrintComponent } from "../../components/order-print/order-print.component";
+// import { OrderPrintComponent } from "../../components/order-print/order-print.component";
 import { OrderService } from '../../services/order.service';
 import { ModalService } from '../../services/modal.service';
-import { OrderBoxComponent } from "../../components/order-box/order-box.component";
+// import { OrderBoxComponent } from "../../components/order-box/order-box.component";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { OrderStatusService } from '../../services/order-status.service';
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrderPrintComponent, OrderBoxComponent, OrdersWrapperComponent],
+  imports: [CommonModule, FormsModule, OrdersWrapperComponent],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })
