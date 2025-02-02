@@ -22,6 +22,7 @@ import { MenuService } from '../../services/menu.service';
 import { OrderStatus } from '../../defines/defines';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-order-sidebar',
@@ -36,7 +37,7 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
   @Output() setOrder = new EventEmitter<IOrder>();
   @ViewChild('customerName') customerName! : ElementRef<HTMLInputElement>;
 
-  userRole : string | null = null;
+  userRole : User | null = null;
 
   orderedItems: IOrderItem[] = [];
   orders: IOrder[] = [];
@@ -129,7 +130,7 @@ if(this.orderedItems[itemIndex]){
         status: this.orderStatus.PENDING,
         synced: false,
         lastUpdated: new Date().getTime(),
-        createdBy: this.userRole ?? 'user',
+        createdBy: this.userRole?.name ?? 'user',
       };
       this.setOrder.emit(order);
     }
