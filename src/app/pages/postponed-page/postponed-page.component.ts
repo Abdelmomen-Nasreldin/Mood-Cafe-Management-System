@@ -2,11 +2,11 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { IOrder } from '../../models/order';
 import {
+  OrderStatus,
   // OrderStatus,
   TRACKING_PERIODS,
   TRACKING_TIME,
 } from '../../defines/defines';
-import { TrackingService } from '../../services/tracking.service';
 import { ExportService } from '../../services/export.service';
 import {
   calculateOrderItemQuantity,
@@ -18,8 +18,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrdersWrapperComponent } from '../../components/orders-wrapper/orders-wrapper.component';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
-// import { OrderService } from '../../services/order.service';
-import { OrderStatusService } from '../../services/order-status.service';
+import { subDays, startOfMonth } from 'date-fns';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-postponed-page',
@@ -54,10 +54,8 @@ export class PostponedPageComponent implements OnInit {
   printedOrder: IOrder | undefined;
   isLoading = false;
   constructor(
-    private _trackingService: TrackingService,
     private _exportService: ExportService,
-    // private _orderService: OrderService,
-    private _orderStatusService: OrderStatusService
+    private _orderService: OrderService,
   ) {}
 
   ngOnInit(): void {
@@ -81,29 +79,36 @@ export class PostponedPageComponent implements OnInit {
     }
   }
 
+      setDates(period: string) {
+        if (period === TRACKING_PERIODS.FROM_1ST_OF_MONTH) {
+          this.selectedDate = startOfMonth(new Date()).toString();
+          this.secondSelectedDate = new Date().toString();
+        } else if (period === TRACKING_PERIODS.LAST_7_DAYS) {
+          this.selectedDate = subDays(new Date(), 6).toString();
+          this.secondSelectedDate = new Date().toString();
+        } else if (period === TRACKING_PERIODS.LAST_30_DAYS) {
+          this.selectedDate = subDays(new Date(), 30).toString();
+          this.secondSelectedDate = new Date().toString();
+        } else if (period === TRACKING_PERIODS.TODAY) {
+          this.selectedDate = new Date().toString();
+        }
+      }
+
   loadOrders(period: string) {
     this.isLoading = true;
-    const isCustomDay =
-      period === TRACKING_PERIODS.CUSTOM_DAY ||
-      period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-    const isRangeCustomDate =
-      period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
 
-    this._orderStatusService.postponedOrders$
+    this.setDates(period);
+    this._orderService.getOrdersByStatusAndPeriod(OrderStatus.POSTPONED, this.selectedDate, this.secondSelectedDate || undefined)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (orders) => {
-          this.allOrders = this._trackingService.getOrdersByPeriod(
-            orders,
-            period,
-            isCustomDay ? this.selectedDate : undefined,
-            isRangeCustomDate ? this.secondSelectedDate : undefined
-          );
-          this.total = calculateOrderTotal(this.allOrders);
-          this.filteredOrders = [...this.allOrders];
+
+          this.allOrders = orders;
+          this.total = calculateOrderTotal(orders);
+          this.filteredOrders = [...orders];
           this.totalFiltered = calculateOrderTotal(this.filteredOrders);
           this.calcQuantities();
-          this.sortOrders();
+          // this.sortOrders();
           if (this.customerNameInput?.nativeElement.value) {
             // this.customerNameInput.nativeElement.value = "";
             this.searchByCustomerName({
