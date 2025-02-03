@@ -131,15 +131,6 @@ export class PaidPageComponent implements OnInit {
       case TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE:
         this.showRangeSelectDate = true;
         break;
-      case TRACKING_PERIODS.FROM_1ST_OF_MONTH:
-        this.loadOrders(TRACKING_PERIODS.FROM_1ST_OF_MONTH);
-        break;
-      case TRACKING_PERIODS.LAST_30_DAYS:
-        this.loadOrders(TRACKING_PERIODS.LAST_30_DAYS);
-        break;
-      case TRACKING_PERIODS.LAST_7_DAYS:
-        this.loadOrders(TRACKING_PERIODS.LAST_7_DAYS);
-        break;
       default:
         this.loadOrders(this.selectedTime);
     }
