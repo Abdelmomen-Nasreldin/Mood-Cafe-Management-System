@@ -105,7 +105,7 @@ export class OrderService {
     );
   }
 
-  getOrdersByPeriod(
+  getOrdersByStatusAndPeriod(
     status: IOrderStatus,
     startDateString: string,
     endDateString?: string
@@ -115,22 +115,35 @@ export class OrderService {
 
     const { start: startTimestamp } = this.getCustomDateRange(startDate);
     const { end: endTimestamp } = this.getCustomDateRange(endDate);
-    const dateField = status === OrderStatus.PAID_POSTPONED ? 'paidDate' : 'timestamp';
+    const dateField =
+      status === OrderStatus.PAID_POSTPONED ? 'paidDate' : 'timestamp';
 
     return from(
       liveQuery(() =>
         db.orders
-          .where(dateField) // If 'timestamp' exists, use it for future queries
+          .where(dateField)
           .between(startTimestamp, endTimestamp, true, true)
+          .filter((order) => order.status === status)
+          .sortBy('date')
+      )
+    );
+  }
 
-          // the decision is to use 'date' field as a fallback if 'timestamp' doesn't exist but not in case of 'paidDate'
-          // .or('date') // Query existing 'date' field as date object
-          // .between(new Date(startTimestamp).toISOString(), new Date(endTimestamp).toISOString(), true, true)
+  getOrdersByPeriod(
+    startDateString: string,
+    endDateString?: string
+  ): Observable<IOrder[]> {
+    const startDate = new Date(startDateString);
+    const endDate = endDateString ? new Date(endDateString) : startDate;
 
-          // .where('date') // Query existing 'date' field
-          // .between(new Date(startTimestamp).toISOString(), new Date(endTimestamp).toISOString(), true, true)
+    const { start: startTimestamp } = this.getCustomDateRange(startDate);
+    const { end: endTimestamp } = this.getCustomDateRange(endDate);
 
-          .filter(order => order.status === status)
+    return from(
+      liveQuery(() =>
+        db.orders
+          .where('timestamp')
+          .between(startTimestamp, endTimestamp, true, true)
           .sortBy('date')
       )
     );
@@ -148,8 +161,6 @@ export class OrderService {
 
     return { start: startTimestamp, end: endTimestamp };
   }
-
-
 
   // getOrdersInDateRange(date: Date): Promise<IOrder[]> {
   //   const { start, end } = this.getCustomDateRange(date);

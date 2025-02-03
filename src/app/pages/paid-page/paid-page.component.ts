@@ -89,7 +89,7 @@ export class PaidPageComponent implements OnInit {
     this.isLoading = true;
 
     this.setDates(period);
-    this._orderService.getOrdersByPeriod(OrderStatus.PAID, this.selectedDate, this.secondSelectedDate || undefined).pipe(takeUntil(this.destroy$)).subscribe({
+    this._orderService.getOrdersByStatusAndPeriod(OrderStatus.PAID, this.selectedDate, this.secondSelectedDate || undefined).pipe(takeUntil(this.destroy$)).subscribe({
       next: (orders) => {
 
         this.allOrders = orders;
@@ -107,7 +107,7 @@ export class PaidPageComponent implements OnInit {
       }
     });
 
-    this._orderService.getOrdersByPeriod(OrderStatus.PAID_POSTPONED, this.selectedDate, this.secondSelectedDate || undefined).pipe(takeUntil(this.destroy$)).subscribe({
+    this._orderService.getOrdersByStatusAndPeriod(OrderStatus.PAID_POSTPONED, this.selectedDate, this.secondSelectedDate || undefined).pipe(takeUntil(this.destroy$)).subscribe({
       next: (orders) => {
         this.paidPostponedOrders = orders;
         this.filteredPaidPostponedOrders = orders;
