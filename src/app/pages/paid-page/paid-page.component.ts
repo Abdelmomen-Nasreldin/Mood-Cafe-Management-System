@@ -41,6 +41,7 @@ export class PaidPageComponent implements OnInit {
   paidPostponedOrders: IOrder[] = [];
   filteredPaidPostponedOrders: IOrder[] = [];
   totalPaidPostponedOrders = 0;
+  totalFilteredPaidPostponedOrders = 0;
   isLoading = false;
   constructor(
     // private _trackingService: TrackingService,
@@ -112,6 +113,7 @@ export class PaidPageComponent implements OnInit {
         this.paidPostponedOrders = orders;
         this.filteredPaidPostponedOrders = orders;
         this.totalPaidPostponedOrders = calculateOrderTotal(orders);
+        this.totalFilteredPaidPostponedOrders = calculateOrderTotal(orders);
       }, error: (err) => {
         console.error(err);
       }
@@ -148,6 +150,7 @@ export class PaidPageComponent implements OnInit {
     this.calcQuantities();
     this.total = 0;
     this.totalPaidPostponedOrders = 0;
+    this.totalFilteredPaidPostponedOrders = 0;
     if (this.customerNameInput) {
       this.customerNameInput.nativeElement.value = "";
     }
@@ -163,6 +166,7 @@ export class PaidPageComponent implements OnInit {
     this.filteredOrders = filterOrders(this.allOrders, input.value);
     this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, input.value);
     this.calcQuantities();
+    this.totalFilteredPaidPostponedOrders = calculateOrderTotal(this.filteredPaidPostponedOrders);
   }
 
   calcQuantities() {
