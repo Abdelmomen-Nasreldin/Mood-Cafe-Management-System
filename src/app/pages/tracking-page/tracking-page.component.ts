@@ -1,5 +1,4 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { TrackingService } from '../../services/tracking.service';
 import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +9,7 @@ import { ExportService } from '../../services/export.service';
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { Subject, takeUntil } from 'rxjs';
 import { OrderService } from '../../services/order.service';
+import { subDays, startOfMonth } from 'date-fns';
 
 @Component({
   selector: 'app-tracking-page',
@@ -43,7 +43,6 @@ export class TrackingPageComponent implements OnInit {
   showCurrentOrderStatus = true;
   isLoading = false;
   constructor(
-    private _trackingService: TrackingService,
     private _exportService: ExportService,
     private _orderService: OrderService,
   ) {}
@@ -69,24 +68,38 @@ export class TrackingPageComponent implements OnInit {
     }
   }
 
+    setDates(period: string) {
+      if (period === TRACKING_PERIODS.FROM_1ST_OF_MONTH) {
+        this.selectedDate = startOfMonth(new Date()).toString();
+        this.secondSelectedDate = new Date().toString();
+      } else if (period === TRACKING_PERIODS.LAST_7_DAYS) {
+        this.selectedDate = subDays(new Date(), 6).toString();
+        this.secondSelectedDate = new Date().toString();
+      } else if (period === TRACKING_PERIODS.LAST_30_DAYS) {
+        this.selectedDate = subDays(new Date(), 30).toString();
+        this.secondSelectedDate = new Date().toString();
+      } else if (period === TRACKING_PERIODS.TODAY) {
+        this.selectedDate = new Date().toString();
+      }
+    }
+
   loadOrders(period: string) {
     this.isLoading = true;
 
-    this._orderService.getAllOrders().pipe(takeUntil(this.destroy$)).subscribe({
+    this.setDates(period);
+    this._orderService.getOrdersByPeriod(this.selectedDate, this.secondSelectedDate || undefined).pipe(takeUntil(this.destroy$)).subscribe({
       next: (orders) => {
-        const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY || period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-        const isRangeCustomDate = period === TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE;
-        this.allOrders = this._trackingService.getOrdersByPeriod(orders, period, isCustomDay ? this.selectedDate : undefined, isRangeCustomDate ? this.secondSelectedDate : undefined);
-        this.total = calculateOrderTotal(this.allOrders);
-        this.filteredOrders = [...this.allOrders];
+        this.allOrders = orders;
+        this.total = calculateOrderTotal(orders);
+        this.filteredOrders = [...orders];
         this.calcQuantities();
-        this.sortOrders();
+        // this.sortOrders();
         if (this.customerNameInput) {
           this.customerNameInput.nativeElement.value = "";
         }
         this.isLoading = false;
         console.log('====================================');
-        console.log('Orders', this.allOrders);
+        console.log('Orders', orders);
         console.log('====================================');
       },
       error: (err) => {

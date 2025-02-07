@@ -10,6 +10,7 @@ import { CATEGORIES, ENGLISH_CATEGORIES, ROLES } from '../../defines/defines';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from "../../components/modal/modal.component";
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-menu-page',
@@ -28,7 +29,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   selectedCategory = ENGLISH_CATEGORIES.ALL;
   @ViewChild('searchInput') searchInputElement!:ElementRef;
 
-  userRole : string | null = null;
+  userRole : User | null = null;
   isAdmin = false;
   ROLES = ROLES;
 
@@ -46,7 +47,7 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     this.userRole = this._authService.getCurrentUserRole();
     console.log(this.userRole, 'userRole');
 
-    this.isAdmin = this.userRole === ROLES.ADMIN;
+    this.isAdmin = this.userRole?.role === ROLES.ADMIN;
    }
 
   CreateOrder() {

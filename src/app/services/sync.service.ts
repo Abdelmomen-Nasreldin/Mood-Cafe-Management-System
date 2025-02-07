@@ -12,68 +12,95 @@ export class SyncService {
   constructor(private http: HttpClient) {}
 
   async syncOrders(): Promise<void> {
-    // Fetch unsynced orders
-    const unsyncedOrders = await db.orders
+    try {
+      // Fetch unsynced orders
+      const unsyncedOrders = await this.getUnsyncedOrders();
+
+      // Push unsynced orders to the backend
+      await this.postOrdersToServer(unsyncedOrders);
+
+      // Fetch updates from the server
+      const lastSync = await this.getLastSync();
+      const lastUpdated = new Date(lastSync?.lastUpdated || 0);
+
+      const updatedOrders = await this.getUpdatedOrdersFromServer(lastUpdated);
+
+      // Resolve conflicts
+      await this.resolveConflicts(updatedOrders);
+    } catch (error) {
+      console.error('Error syncing orders:', error);
+    }
+  }
+
+  private async getUnsyncedOrders(): Promise<IOrder[]> {
+    return await db.orders
       .where('synced')
       .equals('false')
       .toArray();
+  }
 
-    // Push unsynced orders to the backend
-    for (const order of unsyncedOrders) {
-      await this.syncOrderToServer(order);
-    }
+  private async getLastSync(): Promise<IOrder | undefined> {
+    return await db.orders.orderBy('lastUpdated').last();
+  }
 
-    // Fetch updates from the server
-    const lastSync = await db.orders.orderBy('lastUpdated').last();
-    const lastUpdated = lastSync?.lastUpdated || new Date(0);
-
+  private async getUpdatedOrdersFromServer(lastUpdated: Date): Promise<IOrder[]> {
     try {
-      const updatedOrders = await this.http
+      const response = await this.http
         .get<IOrder[]>(`${this.backendUrl}?lastUpdated=${lastUpdated}`)
         .toPromise();
-      if (updatedOrders) {
-        for (const serverOrder of updatedOrders) {
-          await this.resolveConflict(serverOrder);
-        }
-      }
+      return response || [];
     } catch (error) {
       console.error('Error fetching updates from the server:', error);
+      throw error;
     }
   }
 
-  private async syncOrderToServer(order: IOrder): Promise<void> {
+  private async postOrdersToServer(orders: IOrder[]): Promise<void> {
     try {
-      await this.http.post(`${this.backendUrl}`, order).toPromise();
-      order.synced = true;
-      order.lastUpdated = new Date();
-      await db.orders.put(order);
+      await this.http.post<IOrder[]>(this.backendUrl, orders).toPromise();
+      const syncedOrders = orders.map((order) => ({ ...order, synced: true, lastUpdated: new Date().getTime() }));
+      await db.orders.bulkPut(syncedOrders);
     } catch (error) {
-      console.error('Failed to sync order:', order.orderId, error);
+      console.error(`Failed to post orders to server: ${error}`);
+      throw error;
     }
   }
 
-  private async resolveConflict(serverOrder: IOrder): Promise<void> {
-    // Fetch the local version of the order
-    const localOrder = await db.orders.get(serverOrder.orderId);
+  private async resolveConflicts(updatedOrders: IOrder[]): Promise<void> {
+    for (const serverOrder of updatedOrders) {
+      // Fetch the local version of the order
+      const localOrder = await db.orders.get(serverOrder.orderId);
 
-    if (!localOrder) {
-      // If no local order exists, add the server order to IndexedDB
-      await db.orders.put({ ...serverOrder, synced: true });
-      return;
+      if (!localOrder) {
+        // If no local order exists, add the server order to IndexedDB
+        await db.orders.put({ ...serverOrder, synced: true });
+        continue;
+      }
+
+      if (new Date(serverOrder.lastUpdated) > new Date(localOrder.lastUpdated)) {
+        // Server version is newer, overwrite the local version
+        await db.orders.put({ ...serverOrder, synced: true });
+      } else if (
+        new Date(serverOrder.lastUpdated) < new Date(localOrder.lastUpdated)
+      ) {
+        // Local version is newer, push it to the server
+        await this.syncOrderToServer(localOrder);
+      } else {
+        // Timestamps are equal, consider them synchronized
+        localOrder.synced = true;
+        await db.orders.put(localOrder);
+      }
     }
+  }
 
-    if (new Date(serverOrder.lastUpdated) > new Date(localOrder.lastUpdated)) {
-      // Server version is newer, overwrite the local version
-      await db.orders.put({ ...serverOrder, synced: true });
-    } else if (
-      new Date(serverOrder.lastUpdated) < new Date(localOrder.lastUpdated)
-    ) {
-      // Local version is newer, push it to the server
-      await this.syncOrderToServer(localOrder);
-    } else {
-      // Timestamps are equal, consider them synchronized
+  private async syncOrderToServer(localOrder: IOrder): Promise<void> {
+    try {
+      await this.http.put<IOrder>(`${this.backendUrl}/${localOrder.orderId}`, localOrder).toPromise();
       localOrder.synced = true;
       await db.orders.put(localOrder);
+    } catch (error) {
+      console.error(`Failed to sync order to server: ${error}`);
+      throw error;
     }
   }
 }
