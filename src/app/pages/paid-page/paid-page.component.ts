@@ -3,14 +3,12 @@ import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-w
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
 import { IOrder } from "../../models/order";
 import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
-// import { TrackingService } from "../../services/tracking.service";
 import { ExportService } from "../../services/export.service";
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
-// import { OrderStatusService } from "../../services/order-status.service";
 import { subDays, startOfMonth } from 'date-fns';
 
 @Component({
@@ -44,10 +42,8 @@ export class PaidPageComponent implements OnInit {
   totalFilteredPaidPostponedOrders = 0;
   isLoading = false;
   constructor(
-    // private _trackingService: TrackingService,
     private _exportService: ExportService,
     private _orderService: OrderService,
-    // private _orderStatusService: OrderStatusService
   ) { }
 
   ngOnInit(): void {

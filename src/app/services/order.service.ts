@@ -118,6 +118,11 @@ export class OrderService {
     const dateField =
       status === OrderStatus.PAID_POSTPONED ? 'paidDate' : 'timestamp';
 
+      console.log('====================================');
+      console.log('startTimestamp Date', new Date(startTimestamp));
+      console.log('Second endTimestamp Date', new Date(endTimestamp));
+      console.log('====================================');
+
     return from(
       liveQuery(() =>
         db.orders
@@ -139,6 +144,11 @@ export class OrderService {
     const { start: startTimestamp } = this.getCustomDateRange(startDate);
     const { end: endTimestamp } = this.getCustomDateRange(endDate);
 
+    console.log('====================================');
+    console.log('startTimestamp Date', new Date(startTimestamp));
+    console.log('Second endTimestamp Date', new Date(endTimestamp));
+    console.log('====================================');
+    
     return from(
       liveQuery(() =>
         db.orders
