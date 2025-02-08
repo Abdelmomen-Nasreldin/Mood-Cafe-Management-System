@@ -90,7 +90,12 @@ export class PostponedPageComponent implements OnInit {
           this.selectedDate = subDays(new Date(), 30).toString();
           this.secondSelectedDate = new Date().toString();
         } else if (period === TRACKING_PERIODS.TODAY) {
-          this.selectedDate = new Date().toString();
+          const today = new Date();
+          let customStartTime = new Date();
+          if (today.getHours() <= 6) {
+            customStartTime.setDate(customStartTime.getDate() - 1);
+          }
+          this.selectedDate = customStartTime.toString();
         }
       }
 
