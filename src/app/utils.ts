@@ -1,4 +1,6 @@
+import { TRACKING_PERIODS } from './defines/defines';
 import { IOrder, IOrderItem } from './models/order';
+import { subDays, startOfMonth } from 'date-fns';
 
 export function calculateItemTotal(item: IOrderItem): number {
   return item.price * item.quantity;
@@ -58,6 +60,27 @@ export function sortOrders(orders: IOrder[], selectedOrder: string): IOrder[] {
     }
   });
 }
+
+export const setDates = (period: string, selectedDate: string, secondSelectedDate: string) => {
+    if (period === TRACKING_PERIODS.FROM_1ST_OF_MONTH) {
+      selectedDate = startOfMonth(new Date()).toString();
+      secondSelectedDate = new Date().toString();
+    } else if (period === TRACKING_PERIODS.LAST_7_DAYS) {
+      selectedDate = subDays(new Date(), 6).toString();
+      secondSelectedDate = new Date().toString();
+    } else if (period === TRACKING_PERIODS.LAST_30_DAYS) {
+      selectedDate = subDays(new Date(), 30).toString();
+      secondSelectedDate = new Date().toString();
+    } else if (period === TRACKING_PERIODS.TODAY) {
+      const today = new Date();
+      let customStartTime = new Date();
+      if (today.getHours() <= 6) {
+        customStartTime.setDate(customStartTime.getDate() - 1);
+      }
+      selectedDate = customStartTime.toString();
+    }
+    return { selectedDate, secondSelectedDate };
+  }
 
 // export function printReceipt() {
 //   const printContents = document.querySelector('.receipt')?.innerHTML;
