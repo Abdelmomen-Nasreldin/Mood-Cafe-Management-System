@@ -12,6 +12,7 @@ import {
   calculateOrderItemQuantity,
   calculateOrderTotal,
   filterOrders,
+  setDates,
   sortOrders,
 } from '../../utils';
 import { CommonModule } from '@angular/common';
@@ -79,31 +80,11 @@ export class PostponedPageComponent implements OnInit {
     }
   }
 
-      setDates(period: string) {
-        if (period === TRACKING_PERIODS.FROM_1ST_OF_MONTH) {
-          this.selectedDate = startOfMonth(new Date()).toString();
-          this.secondSelectedDate = new Date().toString();
-        } else if (period === TRACKING_PERIODS.LAST_7_DAYS) {
-          this.selectedDate = subDays(new Date(), 6).toString();
-          this.secondSelectedDate = new Date().toString();
-        } else if (period === TRACKING_PERIODS.LAST_30_DAYS) {
-          this.selectedDate = subDays(new Date(), 30).toString();
-          this.secondSelectedDate = new Date().toString();
-        } else if (period === TRACKING_PERIODS.TODAY) {
-          const today = new Date();
-          let customStartTime = new Date();
-          if (today.getHours() <= 6) {
-            customStartTime.setDate(customStartTime.getDate() - 1);
-          }
-          this.selectedDate = customStartTime.toString();
-        }
-      }
-
   loadOrders(period: string) {
     this.isLoading = true;
 
-    this.setDates(period);
-    this._orderService.getOrdersByStatusAndPeriod(OrderStatus.POSTPONED, this.selectedDate, this.secondSelectedDate || undefined)
+    const { selectedDate, secondSelectedDate } = setDates(period, this.selectedDate, this.secondSelectedDate);
+    this._orderService.getOrdersByStatusAndPeriod(OrderStatus.POSTPONED, selectedDate, secondSelectedDate || undefined)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (orders) => {
