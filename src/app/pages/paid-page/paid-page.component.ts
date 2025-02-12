@@ -9,7 +9,6 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
-import { subDays, startOfMonth } from 'date-fns';
 
 @Component({
   selector: "app-paid-page",
@@ -66,26 +65,6 @@ export class PaidPageComponent implements OnInit {
       this.loadOrders(TRACKING_PERIODS.FROM_CUSTOM_DATE_TO_DATE);
     }
   }
-
-  // setDates(period: string) {
-  //   if (period === TRACKING_PERIODS.FROM_1ST_OF_MONTH) {
-  //     this.selectedDate = startOfMonth(new Date()).toString();
-  //     this.secondSelectedDate = new Date().toString();
-  //   } else if (period === TRACKING_PERIODS.LAST_7_DAYS) {
-  //     this.selectedDate = subDays(new Date(), 6).toString();
-  //     this.secondSelectedDate = new Date().toString();
-  //   } else if (period === TRACKING_PERIODS.LAST_30_DAYS) {
-  //     this.selectedDate = subDays(new Date(), 30).toString();
-  //     this.secondSelectedDate = new Date().toString();
-  //   } else if (period === TRACKING_PERIODS.TODAY) {
-  //     const today = new Date();
-  //     let customStartTime = new Date();
-  //     if (today.getHours() <= 6) {
-  //       customStartTime.setDate(customStartTime.getDate() - 1);
-  //     }
-  //     this.selectedDate = customStartTime.toString();
-  //   }
-  // }
 
   loadOrders(period: string) {
     this.isLoading = true;
