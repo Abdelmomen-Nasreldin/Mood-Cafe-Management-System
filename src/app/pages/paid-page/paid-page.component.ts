@@ -7,7 +7,7 @@ import { ExportService } from "../../services/export.service";
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
 
 @Component({
@@ -18,7 +18,7 @@ import { OrderService } from "../../services/order.service";
   styleUrl: "./paid-page.component.scss",
 })
 export class PaidPageComponent implements OnInit {
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   @ViewChild("customerNameInput") customerNameInput!: ElementRef<HTMLInputElement>;
   allOrders: IOrder[] = [];
@@ -40,13 +40,16 @@ export class PaidPageComponent implements OnInit {
   totalPaidPostponedOrders = 0;
   totalFilteredPaidPostponedOrders = 0;
   isLoading = false;
+  private readonly customerNameInput$ = new Subject<string>();
+
   constructor(
     private _exportService: ExportService,
-    private _orderService: OrderService,
+    private readonly _orderService: OrderService,
   ) { }
 
   ngOnInit(): void {
     this.loadOrders(TRACKING_PERIODS.TODAY);
+    this.setupCustomerNameSearch();
   }
 
   onDateChanged(date: string) {
@@ -141,12 +144,33 @@ export class PaidPageComponent implements OnInit {
     this.filteredPaidPostponedOrders = sortOrders(this.filteredPaidPostponedOrders, this.selectedOrder);
   }
 
-  searchByCustomerName(event: Event) {
-    const input = event.target as HTMLInputElement; // Type assertion
-    this.filteredOrders = filterOrders(this.allOrders, input.value);
-    this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, input.value);
-    this.calcQuantities();
-    this.totalFilteredPaidPostponedOrders = calculateOrderTotal(this.filteredPaidPostponedOrders);
+  private setupCustomerNameSearch(): void {
+    this.customerNameInput$.pipe(
+      debounceTime(1000),
+      switchMap((value) => {
+        this.filteredOrders = filterOrders(this.allOrders, value);
+        this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, value);
+
+        this.calcQuantities();
+        this.totalFilteredPaidPostponedOrders = calculateOrderTotal(this.filteredPaidPostponedOrders);
+
+        return of(value);
+      }),
+      takeUntil(this.destroy$) // <-- Important!
+    )
+    .subscribe({
+      next: (value) => {
+        console.log('Final emitted value after filtering:', value);
+      },
+      error: (error) => {
+        console.error('Error during customer name search:', error);
+      }
+    });
+  }
+
+  searchByCustomerName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.customerNameInput$.next(input.value);
   }
 
   calcQuantities() {
