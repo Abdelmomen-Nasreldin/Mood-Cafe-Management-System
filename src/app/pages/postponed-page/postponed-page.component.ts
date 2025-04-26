@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { IOrder } from '../../models/order';
 import {
   OrderStatus,
@@ -53,6 +53,8 @@ export class PostponedPageComponent implements OnInit {
   allQuantities!: Record<string, number>;
   printedOrder: IOrder | undefined;
   isLoading = false;
+  private readonly customerNameInput$ = new Subject<string>();
+
   constructor(
     private _exportService: ExportService,
     private _orderService: OrderService,
@@ -60,6 +62,7 @@ export class PostponedPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOrders(TRACKING_PERIODS.TODAY);
+    this.setupCustomerNameSearch();
   }
 
   onDateChanged(date: string) {
@@ -148,11 +151,30 @@ export class PostponedPageComponent implements OnInit {
     this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
   }
 
-  searchByCustomerName(event: Event) {
-    const input = event.target as HTMLInputElement; // Type assertion
-    this.filteredOrders = filterOrders(this.allOrders, input.value.trim());
-    this.calcQuantities();
-    this.totalFiltered = calculateOrderTotal(this.filteredOrders);
+  private setupCustomerNameSearch(): void {
+    this.customerNameInput$.pipe(
+      debounceTime(1000),
+      switchMap((value) => {
+        this.filteredOrders = filterOrders(this.allOrders, value);
+        this.calcQuantities();
+        this.totalFiltered = calculateOrderTotal(this.filteredOrders);
+        return of(value);
+      }),
+      takeUntil(this.destroy$) // <-- Important!
+    )
+    .subscribe({
+      next: (value) => {
+        console.log('Final emitted value after filtering:', value);
+      },
+      error: (error) => {
+        console.error('Error during customer name search:', error);
+      }
+    });
+  }
+
+  searchByCustomerName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.customerNameInput$.next(input.value);
   }
 
   calcQuantities() {

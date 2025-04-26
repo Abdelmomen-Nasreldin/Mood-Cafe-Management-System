@@ -7,7 +7,7 @@ import { DatePickerComponent } from '../../components/date-picker/date-picker.co
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from '../../utils';
 import { ExportService } from '../../services/export.service';
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { OrderService } from '../../services/order.service';
 
 @Component({
@@ -41,6 +41,8 @@ export class TrackingPageComponent implements OnInit {
   printedOrder: IOrder | undefined;
   showCurrentOrderStatus = true;
   isLoading = false;
+  private readonly customerNameInput$ = new Subject<string>();
+
   constructor(
     private _exportService: ExportService,
     private _orderService: OrderService,
@@ -48,6 +50,7 @@ export class TrackingPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOrders(TRACKING_PERIODS.TODAY);
+    this.setupCustomerNameSearch();
   }
 
   onDateChanged(date: string) {
@@ -128,11 +131,29 @@ export class TrackingPageComponent implements OnInit {
   sortOrders() {
     this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
   }
+  private setupCustomerNameSearch(): void {
+    this.customerNameInput$.pipe(
+      debounceTime(1000),
+      switchMap((value) => {
+        this.filteredOrders = filterOrders(this.allOrders, value);
+        this.calcQuantities();
+        return of(value);
+      }),
+      takeUntil(this.destroy$) // <-- Important!
+    )
+    .subscribe({
+      next: (value) => {
+        console.log('Final emitted value after filtering:', value);
+      },
+      error: (error) => {
+        console.error('Error during customer name search:', error);
+      }
+    });
+  }
 
-  searchByCustomerName(event: Event) {
-    const input = event.target as HTMLInputElement; // Type assertion
-    this.filteredOrders = filterOrders(this.allOrders, input.value);
-    this.calcQuantities();
+  searchByCustomerName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.customerNameInput$.next(input.value);
   }
 
   calcQuantities() {

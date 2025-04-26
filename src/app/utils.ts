@@ -33,7 +33,8 @@ export function sortObjectByValues(obj: Record<string, number>) {
 }
 
 export function filterOrders(orders: IOrder[], searchTerm: string): IOrder[] {
-  if (!orders || !searchTerm) {
+  if (!orders || !searchTerm.trim()) {
+    // If no orders or empty search term, return the original orders array
     return orders;
   }
 
