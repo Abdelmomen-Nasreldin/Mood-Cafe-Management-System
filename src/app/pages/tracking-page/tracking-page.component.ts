@@ -7,7 +7,7 @@ import { DatePickerComponent } from '../../components/date-picker/date-picker.co
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from '../../utils';
 import { ExportService } from '../../services/export.service';
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
-import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { OrderService } from '../../services/order.service';
 
 @Component({
@@ -133,6 +133,9 @@ export class TrackingPageComponent implements OnInit {
   }
   private setupCustomerNameSearch(): void {
     this.customerNameInput$.pipe(
+      tap((value) => {
+        this.isLoading = true;
+      }),
       debounceTime(DEBOUNCE_TIME),
       switchMap((value) => {
         this.filteredOrders = filterOrders(this.allOrders, value);
@@ -143,9 +146,11 @@ export class TrackingPageComponent implements OnInit {
     )
     .subscribe({
       next: (value) => {
+        this.isLoading = false;
         console.log('Final emitted value after filtering:', value);
       },
       error: (error) => {
+        this.isLoading = false;
         console.error('Error during customer name search:', error);
       }
     });

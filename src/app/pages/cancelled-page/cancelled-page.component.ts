@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { IOrder } from '../../models/order';
 import { DEBOUNCE_TIME, OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { ExportService } from '../../services/export.service';
@@ -123,6 +123,9 @@ export class CancelledPageComponent implements OnInit {
       }
       private setupCustomerNameSearch(): void {
         this.customerNameInput$.pipe(
+          tap((value) => {
+            this.isLoading = true;
+          }),
           debounceTime(DEBOUNCE_TIME),
           switchMap((value) => {
             this.filteredOrders = filterOrders(this.allOrders, value);
@@ -133,9 +136,11 @@ export class CancelledPageComponent implements OnInit {
         )
         .subscribe({
           next: (value) => {
+            this.isLoading = false;
             console.log('Final emitted value after filtering:', value);
           },
           error: (error) => {
+            this.isLoading = false;
             console.error('Error during customer name search:', error);
           }
         });
