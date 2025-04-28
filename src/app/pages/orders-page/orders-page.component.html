@@ -52,7 +52,7 @@
     <h3 class="p-2 m-5 text-3xl text-center text-roseDark-100">لا يوجد طلبات</h3>
     } -->
     @if(isLoading){
-      <span>loading...</span>
+      <div class="loader"></div>
     } @else {
       <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders" [isEditAllowed]="true" (editOrder)="editOrder($event)"></app-orders-wrapper>
     }

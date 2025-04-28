@@ -4,10 +4,10 @@ import { DatePickerComponent } from "../../components/date-picker/date-picker.co
 import { IOrder } from "../../models/order";
 import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
 import { ExportService } from "../../services/export.service";
-import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from "../../utils";
+import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, setupCustomerNameSearch, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
 
 @Component({
@@ -18,7 +18,7 @@ import { OrderService } from "../../services/order.service";
   styleUrl: "./paid-page.component.scss",
 })
 export class PaidPageComponent implements OnInit {
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   @ViewChild("customerNameInput") customerNameInput!: ElementRef<HTMLInputElement>;
   allOrders: IOrder[] = [];
@@ -40,13 +40,16 @@ export class PaidPageComponent implements OnInit {
   totalPaidPostponedOrders = 0;
   totalFilteredPaidPostponedOrders = 0;
   isLoading = false;
+  private readonly customerNameInput$ = new BehaviorSubject<string>('');
+
   constructor(
     private _exportService: ExportService,
-    private _orderService: OrderService,
+    private readonly _orderService: OrderService,
   ) { }
 
   ngOnInit(): void {
     this.loadOrders(TRACKING_PERIODS.TODAY);
+    this.setupCustomerNameSearch();
   }
 
   onDateChanged(date: string) {
@@ -141,12 +144,21 @@ export class PaidPageComponent implements OnInit {
     this.filteredPaidPostponedOrders = sortOrders(this.filteredPaidPostponedOrders, this.selectedOrder);
   }
 
-  searchByCustomerName(event: Event) {
-    const input = event.target as HTMLInputElement; // Type assertion
-    this.filteredOrders = filterOrders(this.allOrders, input.value);
-    this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, input.value);
+  setupCustomerNameSearch(): void {
+    setupCustomerNameSearch(this.customerNameInput$, this.filterOrdersByCustomerName.bind(this), this.destroy$);
+  }
+
+  filterOrdersByCustomerName(value: string) {
+    this.filteredOrders = filterOrders(this.allOrders, value);
+    this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, value);
+
     this.calcQuantities();
     this.totalFilteredPaidPostponedOrders = calculateOrderTotal(this.filteredPaidPostponedOrders);
+  }
+
+  searchByCustomerName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.customerNameInput$.next(input.value);
   }
 
   calcQuantities() {

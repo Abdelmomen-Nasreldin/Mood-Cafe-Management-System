@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IOrder } from '../../models/order';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
 import { Router } from '@angular/router';
-import { PAGES } from '../../defines/defines';
+import { DEBOUNCE_TIME, PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 // import { OrderPrintComponent } from "../../components/order-print/order-print.component";
@@ -32,6 +32,7 @@ export class OrdersPageComponent implements OnInit {
   selectedOrder = 'old'
   printedOrder: IOrder | undefined;
   isLoading = false;
+  private readonly customerNameInput$ = new Subject<string>();
   constructor(
     private _trackingService: TrackingService,
     private _orderService: OrderService,
@@ -42,6 +43,7 @@ export class OrdersPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOrders();
+    this.setupCustomerNameSearch();
   }
 
   loadOrders() {
@@ -93,12 +95,29 @@ export class OrdersPageComponent implements OnInit {
     });
   }
 
-  searchByCustomerName(event: Event) {
-    const input = event.target as HTMLInputElement; // Type assertion
-    this.filteredOrders = filterOrders(this.allOrders, input.value);
-    // this.calcQuantities();
+  private setupCustomerNameSearch(): void {
+    this.customerNameInput$.pipe(
+      debounceTime(DEBOUNCE_TIME),
+      switchMap((value) => {
+        this.filteredOrders = filterOrders(this.allOrders, value);
+        return of(value);
+      }),
+      takeUntil(this.destroy$) // <-- Important!
+    )
+    .subscribe({
+      next: (value) => {
+        console.log('Final emitted value after filtering:', value);
+      },
+      error: (error) => {
+        console.error('Error during customer name search:', error);
+      }
+    });
   }
 
+  searchByCustomerName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.customerNameInput$.next(input.value);
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

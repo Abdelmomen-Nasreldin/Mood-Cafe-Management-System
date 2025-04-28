@@ -97,5 +97,8 @@
     </nav>
   </div>
   <!-- End Content -->
+   @if (user) {
+     <p class="text-beige text-center">welcome {{user.name}}</p>
+    }
   <button class="py-2 px-2.5 text-sm rounded-lg bg-gray-100 mx-auto my-2 w-3/4 text-grey text-center cursor-pointer" (click)="logout()">تسجيل الخروج</button>
 </div>

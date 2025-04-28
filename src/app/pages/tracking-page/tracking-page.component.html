@@ -206,7 +206,7 @@
             aria-labelledby="hs-basic-heading-two"
           >
           @if(isLoading){
-          <span>loading...</span>
+            <div class="loader"></div>
           } @else {
           <app-orders-wrapper [showCurrentOrderStatus]="showCurrentOrderStatus" [allOrders]="allOrders"
             [filteredOrders]="filteredOrders"></app-orders-wrapper>

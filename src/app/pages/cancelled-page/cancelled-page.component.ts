@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { IOrder } from '../../models/order';
-import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
+import { DEBOUNCE_TIME, OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { ExportService } from '../../services/export.service';
 import { OrderService } from '../../services/order.service';
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from '../../utils';
@@ -35,6 +35,7 @@ export class CancelledPageComponent implements OnInit {
       allQuantities!: Record<string, number>;
       printedOrder: IOrder | undefined;
       isLoading = false;
+      private readonly customerNameInput$ = new Subject<string>();
       constructor(
         private _exportService: ExportService,
         private _orderService: OrderService,
@@ -42,6 +43,7 @@ export class CancelledPageComponent implements OnInit {
 
       ngOnInit(): void {
         this.loadOrders(TRACKING_PERIODS.TODAY);
+        this.setupCustomerNameSearch()
       }
 
       onDateChanged(date: string) {
@@ -119,11 +121,29 @@ export class CancelledPageComponent implements OnInit {
       sortOrders() {
         this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
       }
+      private setupCustomerNameSearch(): void {
+        this.customerNameInput$.pipe(
+          debounceTime(DEBOUNCE_TIME),
+          switchMap((value) => {
+            this.filteredOrders = filterOrders(this.allOrders, value);
+            this.calcQuantities();
+            return of(value);
+          }),
+          takeUntil(this.destroy$) // <-- Important!
+        )
+        .subscribe({
+          next: (value) => {
+            console.log('Final emitted value after filtering:', value);
+          },
+          error: (error) => {
+            console.error('Error during customer name search:', error);
+          }
+        });
+      }
 
-      searchByCustomerName(event: Event) {
-        const input = event.target as HTMLInputElement; // Type assertion
-        this.filteredOrders = filterOrders(this.allOrders, input.value);
-        this.calcQuantities();
+      searchByCustomerName(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        this.customerNameInput$.next(input.value);
       }
 
       calcQuantities() {

@@ -1,4 +1,5 @@
-import { TRACKING_PERIODS } from './defines/defines';
+import { BehaviorSubject, debounceTime, Observable, of, switchMap, takeUntil } from 'rxjs';
+import { DEBOUNCE_TIME, TRACKING_PERIODS } from './defines/defines';
 import { IOrder, IOrderItem } from './models/order';
 import { subDays, startOfMonth } from 'date-fns';
 
@@ -33,7 +34,8 @@ export function sortObjectByValues(obj: Record<string, number>) {
 }
 
 export function filterOrders(orders: IOrder[], searchTerm: string): IOrder[] {
-  if (!orders || !searchTerm) {
+  if (!orders || !searchTerm.trim()) {
+    // If no orders or empty search term, return the original orders array
     return orders;
   }
 
@@ -82,7 +84,26 @@ export const setDates = (period: string, selectedDate: string, secondSelectedDat
     return { selectedDate, secondSelectedDate };
   }
 
-// export function printReceipt() {
+  export const setupCustomerNameSearch = (subject: BehaviorSubject<string>, calledFunction: (value: string) => void, destroy$: Observable<void> ) => {
+    subject.pipe(
+      debounceTime(DEBOUNCE_TIME),
+      switchMap((value : string) => {
+        calledFunction(value);
+        return of(value); // Return the value for further processing if needed
+      }),
+      takeUntil(destroy$) // <-- Important!
+    )
+    .subscribe({
+      next: (value) => {
+        console.log('Final emitted value after filtering:', value);
+      },
+      error: (error) => {
+        console.error('Error during customer name search:', error);
+      }
+    });
+  }
+
+  // export function printReceipt() {
 //   const printContents = document.querySelector('.receipt')?.innerHTML;
 
 //   if (printContents) {
@@ -96,5 +117,3 @@ export const setDates = (period: string, selectedDate: string, secondSelectedDat
 //     console.error('Receipt content not found!');
 //   }
 // }
-
-

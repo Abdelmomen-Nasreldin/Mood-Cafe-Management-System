@@ -6,3 +6,18 @@
 html {
   direction: rtl;
 }
+
+.loader {
+  border: 8px solid #815238;
+  border-top: 8px solid #f7ecd8;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin: auto; /* Center the loader horizontally */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -51,7 +51,9 @@
   <!-- your content goes here ... -->
   <div class="">
     <!-- routing pages -->
-
+    @if (user) {
+      <p class="">welcome {{user.name}}</p>
+     }
     <router-outlet></router-outlet>
   </div>
 </div>

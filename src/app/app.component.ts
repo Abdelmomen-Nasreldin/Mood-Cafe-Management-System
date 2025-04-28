@@ -4,6 +4,8 @@ import { Router, Event, NavigationEnd } from '@angular/router';
 import { IStaticMethods } from 'preline/preline';
 import { MenuPageComponent } from './pages/menu-page/menu-page.component';
 import { AsideComponent } from './components/aside/aside.component';
+import { User } from './models/user';
+import { AuthService } from './services/auth.service';
 declare global {
   interface Window {
     HSStaticMethods: IStaticMethods;
@@ -19,7 +21,12 @@ declare global {
 })
 export class AppComponent {
   title = 'moods-cafe';
-  constructor(private router: Router) {}
+  user : User | null = null;
+
+  constructor(
+    private readonly router: Router,
+    private readonly _authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.router.events.subscribe((event: Event) => {
@@ -28,6 +35,10 @@ export class AppComponent {
           window.HSStaticMethods.autoInit();
         }, 100);
       }
+    });
+
+    this._authService.getCurrentUserRole().subscribe((user) => {
+      this.user = user;
     });
   }
 }
