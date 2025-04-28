@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { PAGES, Roles, ROLES } from '../defines/defines';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,12 +20,12 @@ export class AuthService {
     },
   ];
 
-  private currentUser: User | null = null;
+  private currentUser = new BehaviorSubject<User | null>(null);
 
   constructor(private _router: Router) {}
 
-  public getCurrentUserRole(): User | null {
-    return this.currentUser;
+  public getCurrentUserRole(): Observable<User | null> {
+    return this.currentUser.asObservable();
   }
 
   public async login(username: string, password: string): Promise<boolean> {
@@ -33,19 +34,20 @@ export class AuthService {
         account.username === username && account.password === password
     );
     if (user) {
-      this.currentUser = { name: user.username, role: user.role };
+      console.log('User found:', user);
+      this.currentUser.next({ name: user.username, role: user.role })
       return true;
     }
-    this.currentUser = null;
+    this.currentUser.next(null);
     return false;
   }
 
   public logout(): void {
-    this.currentUser = null;
+    this.currentUser.next(null);
     this._router.navigate([PAGES.LOGIN]);
   }
 
   public isLoggedIn(): boolean {
-    return this.currentUser !== null;
+    return this.currentUser.getValue() !== null;
   }
 }

@@ -44,7 +44,9 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     private _orderService: OrderService,
     private _authService: AuthService
   ) {
-    this.userRole = this._authService.getCurrentUserRole();
+    this._authService.getCurrentUserRole().subscribe((user) => {
+      this.userRole = user;
+    });
     console.log(this.userRole, 'userRole');
 
     this.isAdmin = this.userRole?.role === ROLES.ADMIN;

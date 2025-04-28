@@ -50,7 +50,9 @@ export class OrderSidebarComponent implements OnInit, AfterViewInit , OnDestroy 
     private _menuService:MenuService,
     private _authService: AuthService
   ) {
-    this.userRole = this._authService.getCurrentUserRole();
+    this._authService.getCurrentUserRole().subscribe((user) => {
+      this.userRole = user;
+    });
   }
 
   ngOnInit(): void {

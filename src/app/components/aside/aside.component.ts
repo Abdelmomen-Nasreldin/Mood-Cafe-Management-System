@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PAGES } from '../../defines/defines';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-aside',
@@ -10,8 +11,18 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './aside.component.html',
   styleUrl: './aside.component.scss',
 })
-export class AsideComponent {
-  constructor(private _authService: AuthService) {}
+export class AsideComponent implements OnInit {
+  user : User | null = null;
+
+  constructor(private _authService: AuthService) {
+  }
+  ngOnInit(): void {
+    console.log('AsideComponent initialized');
+
+    this._authService.getCurrentUserRole().subscribe((user) => {
+      this.user = user;
+    });
+  }
 
   pages = [
     {
