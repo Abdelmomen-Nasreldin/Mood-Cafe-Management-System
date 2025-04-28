@@ -2,12 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
 import { IOrder } from "../../models/order";
-import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
+import { DEBOUNCE_TIME, OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
 import { ExportService } from "../../services/export.service";
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, setupCustomerNameSearch, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { BehaviorSubject, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
+import { BehaviorSubject, debounceTime, of, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { OrderService } from "../../services/order.service";
 
 @Component({
@@ -144,10 +144,32 @@ export class PaidPageComponent implements OnInit {
     this.filteredPaidPostponedOrders = sortOrders(this.filteredPaidPostponedOrders, this.selectedOrder);
   }
 
-  setupCustomerNameSearch(): void {
-    setupCustomerNameSearch(this.customerNameInput$, this.filterOrdersByCustomerName.bind(this), this.destroy$);
-  }
-
+  // setupCustomerNameSearch(): void {
+  //   setupCustomerNameSearch(this.customerNameInput$, this.filterOrdersByCustomerName.bind(this), this.destroy$);
+  // }
+private setupCustomerNameSearch(): void {
+        this.customerNameInput$.pipe(
+          tap((value) => {
+            this.isLoading = true;
+          }),
+          debounceTime(DEBOUNCE_TIME),
+          switchMap((value) => {
+            this.filterOrdersByCustomerName(value);
+            return of(value);
+          }),
+          takeUntil(this.destroy$) // <-- Important!
+        )
+        .subscribe({
+          next: (value) => {
+            this.isLoading = false;
+            console.log('Final emitted value after filtering:', value);
+          },
+          error: (error) => {
+            this.isLoading = false;
+            console.error('Error during customer name search:', error);
+          }
+        });
+      }
   filterOrdersByCustomerName(value: string) {
     this.filteredOrders = filterOrders(this.allOrders, value);
     this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, value);

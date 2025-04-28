@@ -15,6 +15,7 @@ html {
   height: 60px;
   animation: spin 1s linear infinite;
   margin: auto; /* Center the loader horizontally */
+  margin: 2rem auto; /* Center the loader vertically */
 }
 
 @keyframes spin {
