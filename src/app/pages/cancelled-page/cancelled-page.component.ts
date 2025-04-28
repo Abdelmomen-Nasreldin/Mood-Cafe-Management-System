@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { IOrder } from '../../models/order';
-import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
+import { DEBOUNCE_TIME, OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { ExportService } from '../../services/export.service';
 import { OrderService } from '../../services/order.service';
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from '../../utils';
@@ -123,7 +123,7 @@ export class CancelledPageComponent implements OnInit {
       }
       private setupCustomerNameSearch(): void {
         this.customerNameInput$.pipe(
-          debounceTime(1000),
+          debounceTime(DEBOUNCE_TIME),
           switchMap((value) => {
             this.filteredOrders = filterOrders(this.allOrders, value);
             this.calcQuantities();

@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IOrder } from '../../models/order';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {  TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
+import {  DEBOUNCE_TIME, TRACKING_PERIODS, TRACKING_TIME } from '../../defines/defines';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
 import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from '../../utils';
 import { ExportService } from '../../services/export.service';
@@ -133,7 +133,7 @@ export class TrackingPageComponent implements OnInit {
   }
   private setupCustomerNameSearch(): void {
     this.customerNameInput$.pipe(
-      debounceTime(1000),
+      debounceTime(DEBOUNCE_TIME),
       switchMap((value) => {
         this.filteredOrders = filterOrders(this.allOrders, value);
         this.calcQuantities();

@@ -2,12 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
 import { IOrder } from "../../models/order";
-import { OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
+import { DEBOUNCE_TIME, OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
 import { ExportService } from "../../services/export.service";
-import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from "../../utils";
+import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, setupCustomerNameSearch, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
+import { BehaviorSubject, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
 import { OrderService } from "../../services/order.service";
 
 @Component({
@@ -40,7 +40,7 @@ export class PaidPageComponent implements OnInit {
   totalPaidPostponedOrders = 0;
   totalFilteredPaidPostponedOrders = 0;
   isLoading = false;
-  private readonly customerNameInput$ = new Subject<string>();
+  private readonly customerNameInput$ = new BehaviorSubject<string>('');
 
   constructor(
     private _exportService: ExportService,
@@ -144,28 +144,16 @@ export class PaidPageComponent implements OnInit {
     this.filteredPaidPostponedOrders = sortOrders(this.filteredPaidPostponedOrders, this.selectedOrder);
   }
 
-  private setupCustomerNameSearch(): void {
-    this.customerNameInput$.pipe(
-      debounceTime(1000),
-      switchMap((value) => {
-        this.filteredOrders = filterOrders(this.allOrders, value);
-        this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, value);
+  setupCustomerNameSearch(): void {
+    setupCustomerNameSearch(this.customerNameInput$, this.filterOrdersByCustomerName.bind(this), this.destroy$);
+  }
 
-        this.calcQuantities();
-        this.totalFilteredPaidPostponedOrders = calculateOrderTotal(this.filteredPaidPostponedOrders);
+  filterOrdersByCustomerName(value: string) {
+    this.filteredOrders = filterOrders(this.allOrders, value);
+    this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, value);
 
-        return of(value);
-      }),
-      takeUntil(this.destroy$) // <-- Important!
-    )
-    .subscribe({
-      next: (value) => {
-        console.log('Final emitted value after filtering:', value);
-      },
-      error: (error) => {
-        console.error('Error during customer name search:', error);
-      }
-    });
+    this.calcQuantities();
+    this.totalFilteredPaidPostponedOrders = calculateOrderTotal(this.filteredPaidPostponedOrders);
   }
 
   searchByCustomerName(event: Event): void {

@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { IOrder } from '../../models/order';
 import {
+  DEBOUNCE_TIME,
   OrderStatus,
   // OrderStatus,
   TRACKING_PERIODS,
@@ -153,7 +154,7 @@ export class PostponedPageComponent implements OnInit {
 
   private setupCustomerNameSearch(): void {
     this.customerNameInput$.pipe(
-      debounceTime(1000),
+      debounceTime(DEBOUNCE_TIME),
       switchMap((value) => {
         this.filteredOrders = filterOrders(this.allOrders, value);
         this.calcQuantities();

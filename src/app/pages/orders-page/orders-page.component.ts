@@ -4,7 +4,7 @@ import { debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';    // Import FormsModule for ngModel
 import { Router } from '@angular/router';
-import { PAGES } from '../../defines/defines';
+import { DEBOUNCE_TIME, PAGES } from '../../defines/defines';
 import { TrackingService } from '../../services/tracking.service';
 import { calculateOrderTotal, filterOrders, sortOrders } from '../../utils';
 // import { OrderPrintComponent } from "../../components/order-print/order-print.component";
@@ -97,7 +97,7 @@ export class OrdersPageComponent implements OnInit {
 
   private setupCustomerNameSearch(): void {
     this.customerNameInput$.pipe(
-      debounceTime(1000),
+      debounceTime(DEBOUNCE_TIME),
       switchMap((value) => {
         this.filteredOrders = filterOrders(this.allOrders, value);
         return of(value);
