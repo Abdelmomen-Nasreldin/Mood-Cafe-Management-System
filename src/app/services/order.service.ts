@@ -84,6 +84,73 @@ export class OrderService {
     }
   }
 
+  // async deleteAllOrders() {
+  //   try {
+  //     await db.orders.clear();
+  //     console.log('All orders deleted successfully!');
+  //   } catch (error) {
+  //     console.error('Failed to delete all orders:', error);
+  //   }
+  // }
+
+  // async deleteOrdersByStatus(status: IOrderStatus) {
+  //   try {
+  //     const orders = await db.orders.where('status').equals(status).toArray();
+  //     const orderIds = orders.map((order) => order.id);
+  //     await db.orders.bulkDelete(orderIds);
+  //     console.log(`Orders with status ${status} deleted successfully!`);
+  //   } catch (error) {
+  //     console.error(`Failed to delete orders with status ${status}:`, error);
+  //   }
+  // }
+
+  // async deleteOrdersByCustomerName(customerName: string) {
+  //   try {
+  //     const orders = await db.orders
+  //       .where('customerName')
+  //       .equals(customerName)
+  //       .toArray();
+  //     const orderIds = orders.map((order) => order.id);
+  //     await db.orders.bulkDelete(orderIds);
+  //     console.log(
+  //       `Orders with customer name ${customerName} deleted successfully!`
+  //     );
+  //   } catch (error) {
+  //     console.error(
+  //       `Failed to delete orders with customer name ${customerName}:`,
+  //       error
+  //     );
+  //   }
+  // }
+
+  async deleteOrdersByStatusAndPeriod(
+    status: IOrderStatus,
+    startDateString: string,
+    endDateString?: string
+  ) {
+    const startDate = new Date(startDateString);
+    const endDate = endDateString ? new Date(endDateString) : startDate;
+
+    const { start: startTimestamp } = this.getCustomDateRange(startDate);
+    const { end: endTimestamp } = this.getCustomDateRange(endDate);
+
+    try {
+      const orders = await db.orders
+        .where('timestamp')
+        .between(startTimestamp, endTimestamp, true, true)
+        .filter((order) => order.status === status)
+        .toArray();
+      const orderIds = orders.map((order) => order.orderId);
+      await db.orders.bulkDelete(orderIds);
+      console.log(
+        `Orders with status ${status} deleted successfully! for period ${startDateString} to ${endDateString}`,
+        orderIds
+      );
+    } catch (error) {
+      console.error(`Failed to delete orders with status ${status}:`, error);
+    }
+  }
+
   // Query orders by status (e.g., "pending")
   getOrdersByStatus(status: IOrderStatus): Observable<IOrder[]> {
     return from(

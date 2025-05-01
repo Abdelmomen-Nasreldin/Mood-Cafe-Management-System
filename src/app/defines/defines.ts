@@ -101,4 +101,4 @@ export const ROLES = {
 
 export type Roles = typeof ROLES[keyof typeof ROLES];
 
-export const DEBOUNCE_TIME = 500; // milliseconds
+export const DEBOUNCE_TIME = 800; // milliseconds
