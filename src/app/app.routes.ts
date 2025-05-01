@@ -9,6 +9,8 @@ import { PaidPageComponent } from './pages/paid-page/paid-page.component';
 import { PostponedPageComponent } from './pages/postponed-page/postponed-page.component';
 import { CancelledPageComponent } from './pages/cancelled-page/cancelled-page.component';
 import { LoginComponent } from './pages/login/login.component';
+import { ControllingPageComponent } from './pages/controlling-page/controlling-page.component';
+import { managerGuard } from './guards/manager.guard';
 
 // it's an offline based app, and I want all the app to be rendered at the first time. that's why no need for lazy loading. (for now)
 export const routes: Routes = [
@@ -21,6 +23,7 @@ export const routes: Routes = [
   { path: PAGES.PAID, component: PaidPageComponent, canActivate: [AuthGuard] },
   { path: PAGES.POSTPONED, component: PostponedPageComponent, canActivate: [AuthGuard] },
   { path: PAGES.CANCELLED, component: CancelledPageComponent, canActivate: [AuthGuard] },
+  {path: PAGES.CONTROLLING, component: ControllingPageComponent, canActivate: [AuthGuard,managerGuard] },
   { path: '**', redirectTo: PAGES.LOGIN },
 ];
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PAGES } from '../../defines/defines';
+import { ASIDE_PAGES, PAGES, ROLES } from '../../defines/defines';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user';
@@ -13,43 +13,28 @@ import { User } from '../../models/user';
 })
 export class AsideComponent implements OnInit {
   user : User | null = null;
-
-  constructor(private _authService: AuthService) {
+  ROLES = ROLES;
+  pages : {name: string, path: string}[] = [];
+  constructor(private readonly _authService: AuthService) {
   }
   ngOnInit(): void {
     console.log('AsideComponent initialized');
-
     this._authService.getCurrentUserRole().subscribe((user) => {
       this.user = user;
+      this.initPages();
     });
   }
 
-  pages = [
-    {
-      name: 'المنيو',
-      path: PAGES.MENU,
-    },
-    {
-      name: 'طلبات اليوم',
-      path: PAGES.ORDERS,
-    },
-    {
-      name: 'المدفوعات',
-      path: PAGES.PAID,
-    },
-    {
-      name: 'temp',
-      path: PAGES.POSTPONED,
-    },
-    {
-      name: 'الملغية',
-      path: PAGES.CANCELLED,
-    },
-    {
-      name: 'tracking',
-      path: PAGES.TRACKING,
-    },
-  ];
+
+  initPages(){
+    this.pages = ASIDE_PAGES.filter((page) => {
+      if (this.user?.role !== ROLES.MANAGER) {
+        return page.path !== PAGES.CONTROLLING;
+      } else{
+        return true;
+      }
+    });
+  }
 
   logout() {
     this._authService.logout();

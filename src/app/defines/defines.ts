@@ -9,7 +9,39 @@ export const PAGES = {
   POSTPONED : 'postponed',
   CANCELLED : 'cancelled',
   LOGIN : 'login',
+  CONTROLLING : 'controlling',
  } as const;
+
+ export const ASIDE_PAGES = [
+  {
+    name: 'المنيو',
+    path: PAGES.MENU,
+  },
+  {
+    name: 'طلبات اليوم',
+    path: PAGES.ORDERS,
+  },
+  {
+    name: 'المدفوعات',
+    path: PAGES.PAID,
+  },
+  {
+    name: 'temp',
+    path: PAGES.POSTPONED,
+  },
+  {
+    name: 'الملغية',
+    path: PAGES.CANCELLED,
+  },
+  {
+    name: 'tracking',
+    path: PAGES.TRACKING,
+  },
+  {
+    name: 'controlling',
+    path: PAGES.CONTROLLING,
+  },
+];
 
  export const TRACKING_PERIODS = {
   TODAY : "today",
@@ -96,9 +128,10 @@ export const ROLES = {
   ADMIN : 'admin',
   OWNER : 'owner',
   CASHIER : 'cashier',
-  READ_ONLY : 'read-only'
+  READ_ONLY : 'read-only',
+  MANAGER : 'manager',
 } as const;
 
 export type Roles = typeof ROLES[keyof typeof ROLES];
 
-export const DEBOUNCE_TIME = 500; // milliseconds
+export const DEBOUNCE_TIME = 800; // milliseconds
