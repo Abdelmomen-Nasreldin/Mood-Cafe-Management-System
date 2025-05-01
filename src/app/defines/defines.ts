@@ -9,6 +9,7 @@ export const PAGES = {
   POSTPONED : 'postponed',
   CANCELLED : 'cancelled',
   LOGIN : 'login',
+  CONTROLLING : 'controlling',
  } as const;
 
  export const TRACKING_PERIODS = {

@@ -49,6 +49,10 @@ export class AsideComponent implements OnInit {
       name: 'tracking',
       path: PAGES.TRACKING,
     },
+    {
+      name: 'controlling',
+      path: PAGES.CONTROLLING,
+    },
   ];
 
   logout() {
