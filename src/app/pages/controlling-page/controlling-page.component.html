@@ -2,7 +2,16 @@
 
 <!-- start delete component -->
 <div class="flex flex-col items-center justify-center gap-6 w-full h-full p-4 bg-white rounded-lg shadow-md">
-  <h2 class="text-lg font-bold text-gray-800">حذف الطلبات</h2>
+  <div>
+    <h2 class="text-lg font-bold text-gray-800">حذف الطلبات</h2>
+    <select [(ngModel)]="DeletedStatus" class="px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:ring-secondary">
+      <option value="" disabled selected>اختر حالة الطلب</option>
+      @for (status of deletedOrderStatus; track $index) {
+        <option [value]="status">{{status}}</option>
+      }
+    </select>
+  </div>
+
   <div class="flex items-center justify-center w-full gap-6">
     <div>
       <!-- select date -->
@@ -16,7 +25,7 @@
     </div>
   </div>
   <button class="px-4 py-2 mx-2 w-[200px] rounded-full font-semibold bg-roseDark-100 text-white hover:bg-secondary"
-    (click)="deleteOrdersByStatusAndPeriod()"
+    (click)="deleteOrdersByStatusAndPeriod(DeletedStatus)"
     [disabled]="!selectedDate || !secondSelectedDate"
     >حذف</button>
 </div>
