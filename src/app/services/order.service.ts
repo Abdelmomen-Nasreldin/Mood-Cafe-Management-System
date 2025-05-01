@@ -143,9 +143,10 @@ export class OrderService {
       const orderIds = orders.map((order) => order.orderId);
       await db.orders.bulkDelete(orderIds);
       console.log(
-        `Orders with status ${status} deleted successfully! for period ${startDateString} to ${endDateString}`,
+        `Orders with status ${status} deleted successfully! for period ${startDateString} to ${endDateString} with length ${orderIds.length}`,
         orderIds
       );
+
     } catch (error) {
       console.error(`Failed to delete orders with status ${status}:`, error);
     }
@@ -215,7 +216,7 @@ export class OrderService {
     console.log('startTimestamp Date', new Date(startTimestamp));
     console.log('Second endTimestamp Date', new Date(endTimestamp));
     console.log('====================================');
-    
+
     return from(
       liveQuery(() =>
         db.orders

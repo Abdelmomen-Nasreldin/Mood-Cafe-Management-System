@@ -25,7 +25,6 @@ export class AsideComponent implements OnInit {
     });
   }
 
-
   initPages(){
     this.pages = ASIDE_PAGES.filter((page) => {
       if (this.user?.role !== ROLES.MANAGER) {
