@@ -26,6 +26,7 @@ export class ControllingPageComponent implements OnInit {
   }
 
   deleteOrdersByStatusAndPeriod(status = OrderStatus.PAID) {
+    // I want to make sure when deleting paid_postponed orders, the paid date is within the selected date range
     this._orderService.deleteOrdersByStatusAndPeriod(status, this.selectedDate, this.secondSelectedDate || undefined)
   }
 

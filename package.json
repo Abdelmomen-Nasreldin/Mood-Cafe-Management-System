@@ -24,6 +24,7 @@
     "date-fns": "^4.1.0",
     "dexie": "^4.0.10",
     "file-saver-es": "^2.0.5",
+    "ngx-infinite-scroll": "^18.0.0",
     "papaparse": "^5.4.1",
     "preline": "^2.5.1",
     "rxjs": "~7.8.0",
