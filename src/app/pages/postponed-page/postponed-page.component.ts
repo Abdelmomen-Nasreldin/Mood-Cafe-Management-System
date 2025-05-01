@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { OrdersWrapperComponent } from '../../components/orders-wrapper/orders-wrapper.component';
 import { DatePickerComponent } from '../../components/date-picker/date-picker.component';
 import { OrderService } from '../../services/order.service';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'app-postponed-page',
@@ -30,6 +31,7 @@ import { OrderService } from '../../services/order.service';
     FormsModule,
     OrdersWrapperComponent,
     DatePickerComponent,
+    InfiniteScrollDirective
   ],
   templateUrl: './postponed-page.component.html',
   styleUrl: './postponed-page.component.scss',
@@ -54,6 +56,11 @@ export class PostponedPageComponent implements OnInit {
   allQuantities!: Record<string, number>;
   printedOrder: IOrder | undefined;
   isLoading = false;
+
+  displayedOrders: IOrder[] = [];
+  limit = 20;
+  step = 10;
+
   private readonly customerNameInput$ = new Subject<string>();
 
   constructor(
@@ -95,6 +102,7 @@ export class PostponedPageComponent implements OnInit {
           this.allOrders = orders;
           this.total = calculateOrderTotal(orders);
           this.filteredOrders = [...orders];
+          this.displayedOrders = this.filteredOrders.slice(0, this.limit);
           this.totalFiltered = calculateOrderTotal(this.filteredOrders);
           this.calcQuantities();
           // this.sortOrders();
@@ -141,6 +149,7 @@ export class PostponedPageComponent implements OnInit {
     this.secondSelectedDate = '';
     this.allOrders = [];
     this.filteredOrders = [];
+    this.displayedOrders = [];
     this.calcQuantities();
     this.total = 0;
     this.totalFiltered = 0;
@@ -150,6 +159,7 @@ export class PostponedPageComponent implements OnInit {
   }
   sortOrders() {
     this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
+    this.displayedOrders = this.filteredOrders.slice(0, this.limit);
   }
 
   private setupCustomerNameSearch(): void {
@@ -160,6 +170,7 @@ export class PostponedPageComponent implements OnInit {
       debounceTime(DEBOUNCE_TIME),
       switchMap((value) => {
         this.filteredOrders = filterOrders(this.allOrders, value);
+        this.displayedOrders = this.filteredOrders.slice(0, this.limit);
         this.calcQuantities();
         this.totalFiltered = calculateOrderTotal(this.filteredOrders);
         return of(value);
@@ -189,6 +200,26 @@ export class PostponedPageComponent implements OnInit {
 
   exportOrdersToCSV() {
     this._exportService.exportOrdersToCSV(this.allOrders);
+  }
+
+  loadMore(): void {
+    if (this.isLoading || this.displayedOrders.length >= this.filteredOrders.length) {
+      return;
+    }
+    console.log('Loading more orders...');
+
+    this.isLoading = true;
+
+    const nextItems = this.filteredOrders.slice(
+      this.displayedOrders.length,
+      this.displayedOrders.length + this.step
+    );
+
+    if (nextItems.length > 0) {
+      this.displayedOrders = [...this.displayedOrders, ...nextItems];
+    }
+
+    this.isLoading = false;
   }
 
   ngOnDestroy(): void {

@@ -4,16 +4,17 @@ import { DatePickerComponent } from "../../components/date-picker/date-picker.co
 import { IOrder } from "../../models/order";
 import { DEBOUNCE_TIME, OrderStatus, TRACKING_PERIODS, TRACKING_TIME } from "../../defines/defines";
 import { ExportService } from "../../services/export.service";
-import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, setupCustomerNameSearch, sortOrders } from "../../utils";
+import { calculateOrderItemQuantity, calculateOrderTotal, filterOrders, setDates, sortOrders } from "../../utils";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { BehaviorSubject, debounceTime, of, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { OrderService } from "../../services/order.service";
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: "app-paid-page",
   standalone: true,
-  imports: [CommonModule, FormsModule, OrdersWrapperComponent, DatePickerComponent],
+  imports: [CommonModule, FormsModule, OrdersWrapperComponent, DatePickerComponent, InfiniteScrollDirective],
   templateUrl: "./paid-page.component.html",
   styleUrl: "./paid-page.component.scss",
 })
@@ -40,6 +41,12 @@ export class PaidPageComponent implements OnInit {
   totalPaidPostponedOrders = 0;
   totalFilteredPaidPostponedOrders = 0;
   isLoading = false;
+
+  displayedOrders: IOrder[] = [];
+  displayedPaidPostponedOrders: IOrder[] = [];
+  limit = 20;
+  step = 10;
+
   private readonly customerNameInput$ = new BehaviorSubject<string>('');
 
   constructor(
@@ -79,6 +86,7 @@ export class PaidPageComponent implements OnInit {
         this.allOrders = orders;
         this.total = calculateOrderTotal(orders);
         this.filteredOrders = orders;
+        this.displayedOrders = this.filteredOrders.slice(0, this.limit);
         this.calcQuantities();
         if (this.customerNameInput) {
           this.customerNameInput.nativeElement.value = "";
@@ -129,6 +137,7 @@ export class PaidPageComponent implements OnInit {
     this.allOrders = [];
     this.paidPostponedOrders = [];
     this.filteredOrders = [];
+    this.displayedOrders = [];
     this.filteredPaidPostponedOrders = [];
     this.calcQuantities();
     this.total = 0;
@@ -141,6 +150,7 @@ export class PaidPageComponent implements OnInit {
 
   sortOrders() {
     this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
+    this.displayedOrders = this.filteredOrders.slice(0, this.limit);
     this.filteredPaidPostponedOrders = sortOrders(this.filteredPaidPostponedOrders, this.selectedOrder);
   }
 
@@ -172,6 +182,7 @@ private setupCustomerNameSearch(): void {
       }
   filterOrdersByCustomerName(value: string) {
     this.filteredOrders = filterOrders(this.allOrders, value);
+    this.displayedOrders = this.filteredOrders.slice(0, this.limit);
     this.filteredPaidPostponedOrders = filterOrders(this.paidPostponedOrders, value);
 
     this.calcQuantities();
@@ -189,6 +200,26 @@ private setupCustomerNameSearch(): void {
 
   exportOrdersToCSV() {
     this._exportService.exportOrdersToCSV(this.allOrders);
+  }
+
+  loadMore(): void {
+    if (this.isLoading || this.displayedOrders.length >= this.filteredOrders.length) {
+      return;
+    }
+    console.log('Loading more orders...');
+
+    this.isLoading = true;
+
+    const nextItems = this.filteredOrders.slice(
+      this.displayedOrders.length,
+      this.displayedOrders.length + this.step
+    );
+
+    if (nextItems.length > 0) {
+      this.displayedOrders = [...this.displayedOrders, ...nextItems];
+    }
+
+    this.isLoading = false;
   }
 
   ngOnDestroy(): void {

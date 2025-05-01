@@ -204,12 +204,16 @@
             class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
             role="region"
             aria-labelledby="hs-basic-heading-two"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="150"
+            (scrolled)="loadMore()"
           >
           @if(isLoading){
             <div class="loader"></div>
           } @else {
           <app-orders-wrapper [showCurrentOrderStatus]="showCurrentOrderStatus" [allOrders]="allOrders"
-            [filteredOrders]="filteredOrders"></app-orders-wrapper>
+            [filteredOrders]="displayedOrders"></app-orders-wrapper>
           }
           </div>
         </div>

@@ -9,6 +9,7 @@ import { ExportService } from '../../services/export.service';
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { debounceTime, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { OrderService } from '../../services/order.service';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'app-tracking-page',
@@ -17,7 +18,8 @@ import { OrderService } from '../../services/order.service';
     CommonModule,
     FormsModule,
     DatePickerComponent,
-    OrdersWrapperComponent
+    OrdersWrapperComponent,
+    InfiniteScrollDirective
 ],
   templateUrl: './tracking-page.component.html',
   styleUrl: './tracking-page.component.scss',
@@ -41,6 +43,11 @@ export class TrackingPageComponent implements OnInit {
   printedOrder: IOrder | undefined;
   showCurrentOrderStatus = true;
   isLoading = false;
+
+  displayedOrders: IOrder[] = [];
+  limit = 20;
+  step = 10;
+
   private readonly customerNameInput$ = new Subject<string>();
 
   constructor(
@@ -79,6 +86,7 @@ export class TrackingPageComponent implements OnInit {
         this.allOrders = orders;
         this.total = calculateOrderTotal(orders);
         this.filteredOrders = [...orders];
+        this.displayedOrders = this.filteredOrders.slice(0, this.limit);
         this.calcQuantities();
         // this.sortOrders();
         if (this.customerNameInput) {
@@ -121,6 +129,7 @@ export class TrackingPageComponent implements OnInit {
     this.secondSelectedDate = "";
     this.allOrders = [];
     this.filteredOrders = [];
+    this.displayedOrders = [];
     this.calcQuantities();
     this.total = 0;
     if (this.customerNameInput) {
@@ -130,6 +139,7 @@ export class TrackingPageComponent implements OnInit {
 
   sortOrders() {
     this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
+    this.displayedOrders = this.filteredOrders.slice(0, this.limit);
   }
   private setupCustomerNameSearch(): void {
     this.customerNameInput$.pipe(
@@ -139,6 +149,7 @@ export class TrackingPageComponent implements OnInit {
       debounceTime(DEBOUNCE_TIME),
       switchMap((value) => {
         this.filteredOrders = filterOrders(this.allOrders, value);
+        this.displayedOrders = this.filteredOrders.slice(0, this.limit);
         this.calcQuantities();
         return of(value);
       }),
@@ -167,6 +178,26 @@ export class TrackingPageComponent implements OnInit {
 
   exportOrdersToCSV() {
     this._exportService.exportOrdersToCSV(this.allOrders);
+  }
+
+  loadMore(): void {
+    if (this.isLoading || this.displayedOrders.length >= this.filteredOrders.length) {
+      return;
+    }
+    console.log('Loading more orders...');
+
+    this.isLoading = true;
+
+    const nextItems = this.filteredOrders.slice(
+      this.displayedOrders.length,
+      this.displayedOrders.length + this.step
+    );
+
+    if (nextItems.length > 0) {
+      this.displayedOrders = [...this.displayedOrders, ...nextItems];
+    }
+
+    this.isLoading = false;
   }
 
   ngOnDestroy(): void {
