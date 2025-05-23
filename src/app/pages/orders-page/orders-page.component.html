@@ -1,5 +1,5 @@
-
-  <div class="p-3 bg-white rounded shadow-sm">
+  <div class="p-3 bg-white rounded shadow-sm"
+  >
     <div class="flex items-center justify-between">
       <h3 class="my-3 text-xl font-bold text-secondary">
         {{ "طلبات اليوم" + " (" + allOrders.length + ")" }}
@@ -51,10 +51,21 @@
     @if (!allOrders.length) {
     <h3 class="p-2 m-5 text-3xl text-center text-roseDark-100">لا يوجد طلبات</h3>
     } -->
-    @if(isLoading){
-      <div class="loader"></div>
-    } @else {
-      <app-orders-wrapper [allOrders]="allOrders" [filteredOrders]="filteredOrders" [isEditAllowed]="true" (editOrder)="editOrder($event)"></app-orders-wrapper>
-    }
+    <div class="orders-container"
+         infiniteScroll
+         [infiniteScrollDistance]="2"
+         [infiniteScrollThrottle]="150"
+         (scrolled)="loadMore()">
+      @if(isLoading){
+        <div class="loader"></div>
+      } @else {
+        <app-orders-wrapper
+          [allOrders]="allOrders"
+          [filteredOrders]="displayedOrders"
+          [isEditAllowed]="true"
+          (editOrder)="editOrder($event)">
+        </app-orders-wrapper>
+      }
+    </div>
   </div>
 

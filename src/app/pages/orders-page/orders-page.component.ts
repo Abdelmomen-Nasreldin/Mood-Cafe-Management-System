@@ -13,10 +13,11 @@ import { ModalService } from '../../services/modal.service';
 // import { OrderBoxComponent } from "../../components/order-box/order-box.component";
 import { OrdersWrapperComponent } from "../../components/orders-wrapper/orders-wrapper.component";
 import { OrderStatusService } from '../../services/order-status.service';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, OrdersWrapperComponent],
+  imports: [CommonModule, FormsModule, OrdersWrapperComponent, InfiniteScrollDirective],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })
@@ -26,12 +27,18 @@ export class OrdersPageComponent implements OnInit {
 
   allOrders: IOrder[] = [];
   filteredOrders: IOrder[] = [];
+  displayedOrders: IOrder[] = [];
   total = 0;
   timeArr = Array.from({ length: 24 - 7 + 1 }, (_, i) => i + 7); // Dynamic array from 1 to 24
   selectedTime = 7;  // Default selected time
   selectedOrder = 'old'
   printedOrder: IOrder | undefined;
   isLoading = false;
+
+  // Infinite scroll parameters
+  limit = 20;
+  step = 10;
+
   private readonly customerNameInput$ = new Subject<string>();
   constructor(
     private _trackingService: TrackingService,
@@ -56,6 +63,7 @@ export class OrdersPageComponent implements OnInit {
       // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PENDING);
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
+      this.displayedOrders = this.filteredOrders.slice(0, this.limit);
       // this.calcQuantities();
       this.sortOrders();
       if (this.customerNameInput) {
@@ -75,6 +83,7 @@ export class OrdersPageComponent implements OnInit {
 
   sortOrders() {
     this.filteredOrders = sortOrders(this.filteredOrders, this.selectedOrder);
+    this.displayedOrders = this.filteredOrders.slice(0, this.limit);
   }
 
   onOrderChange(){
@@ -95,6 +104,26 @@ export class OrdersPageComponent implements OnInit {
     });
   }
 
+  loadMore(): void {
+    if (this.isLoading || this.displayedOrders.length >= this.filteredOrders.length) {
+      return;
+    }
+    console.log('Loading more orders...');
+
+    this.isLoading = true;
+
+    const nextItems = this.filteredOrders.slice(
+      this.displayedOrders.length,
+      this.displayedOrders.length + this.step
+    );
+
+    if (nextItems.length > 0) {
+      this.displayedOrders = [...this.displayedOrders, ...nextItems];
+    }
+
+    this.isLoading = false;
+  }
+
   private setupCustomerNameSearch(): void {
     this.customerNameInput$.pipe(
       tap((value) => {
@@ -103,6 +132,7 @@ export class OrdersPageComponent implements OnInit {
       debounceTime(DEBOUNCE_TIME),
       switchMap((value) => {
         this.filteredOrders = filterOrders(this.allOrders, value);
+        this.displayedOrders = this.filteredOrders.slice(0, this.limit);
         return of(value);
       }),
       takeUntil(this.destroy$) // <-- Important!
