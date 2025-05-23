@@ -8,6 +8,7 @@ import { OrderSidebarComponent } from "../../components/order-sidebar/order-side
 import { ActivatedRoute, Router } from '@angular/router';
 import { CATEGORIES, ENGLISH_CATEGORIES, PAGES } from '../../defines/defines';
 import { Subject, takeUntil } from 'rxjs';
+import { NotifyService } from '../../services/notify.service';
 
 @Component({
   selector: 'app-edit-page',
@@ -30,10 +31,11 @@ export class EditPageComponent implements OnInit, OnDestroy {
   @ViewChild('searchInput') searchInputElement!:ElementRef;
 
   constructor(
-    private _menuService: MenuService,
-    private _orderService: OrderService,
-    private _activatedRoute: ActivatedRoute,
-    private _router : Router,
+    private readonly _menuService: MenuService,
+    private readonly _orderService: OrderService,
+    private readonly _activatedRoute: ActivatedRoute,
+    private readonly _router : Router,
+    private readonly _notifyService: NotifyService,
   ) {}
 
   cancel() {
@@ -72,10 +74,14 @@ export class EditPageComponent implements OnInit, OnDestroy {
     order.items.forEach(item=>{
       this._menuService.setSelectedItems(item.itemEnglishName,true)
     })
-    this._orderService.updateOrder(order);
-    this._orderService.resetOrderedSidebarItems();
+    this._orderService.updateOrder(order).then((res)=> {
+      this._orderService.resetOrderedSidebarItems();
+      this.showSuccessAlert().then(()=>{
+        this._router.navigate([PAGES.ORDERS]);
+      })
+    } )
+    .catch((err)=> this.showErrorAlert(err));
     // navigate to orders page
-    this._router.navigate([PAGES.ORDERS]);
   }
 
   searchMenuItems(event: Event) {
@@ -103,6 +109,17 @@ export class EditPageComponent implements OnInit, OnDestroy {
         (item) => item.category === category
       );
     }
+  }
+
+  showSuccessAlert() {
+    return this._notifyService.showSuccessAlert();
+  }
+
+  showErrorAlert(err: any) {
+    console.log('====================================');
+    console.error(err);
+    console.log('====================================');
+    return this._notifyService.showErrorAlert();
   }
 
   ngOnDestroy(): void {

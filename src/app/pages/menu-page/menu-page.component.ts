@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from "../../components/modal/modal.component";
 import { User } from '../../models/user';
+import { NotifyService } from '../../services/notify.service';
 
 @Component({
   selector: 'app-menu-page',
@@ -40,9 +41,10 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   editedMenuItem : IMenuItem | null = null;
 
   constructor(
-    private _menuService: MenuService,
-    private _orderService: OrderService,
-    private _authService: AuthService
+    private readonly _menuService: MenuService,
+    private readonly _orderService: OrderService,
+    private readonly _authService: AuthService,
+    private readonly _notifyService: NotifyService,
   ) {
     this._authService.getCurrentUserRole().subscribe((user) => {
       this.userRole = user;
@@ -77,8 +79,11 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   }
 
   setOrder(order: IOrder) {
-    this._orderService.saveOrder(order);
-    this._orderService.resetOrderedSidebarItems();
+    this._orderService.saveOrder(order).then((res)=> {
+      this._orderService.resetOrderedSidebarItems();
+      this.showSuccessAlert();
+    } )
+    .catch((err)=> this.showErrorAlert(err));
   }
 
   searchMenuItems(event: Event) {
@@ -149,6 +154,16 @@ export class MenuPageComponent implements OnInit, OnDestroy {
   // editMenuItem(){
   //   this.closeModal();
   // };
+  showSuccessAlert() {
+    this._notifyService.showSuccessAlert();
+  }
+
+  showErrorAlert(err: any) {
+    this._notifyService.showErrorAlert();
+    console.log('====================================');
+    console.error(err);
+    console.log('====================================');
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -156,3 +171,25 @@ export class MenuPageComponent implements OnInit, OnDestroy {
     this._orderService.setEnableOrdering(false);
   }
 }
+
+
+
+
+
+
+// showAlert() {
+//   Swal.fire({
+//     title: 'Are you sure?',
+//     text: 'This action cannot be undone!',
+//     icon: 'warning',
+//     showCancelButton: true,
+//     confirmButtonColor: '#d33',
+//     cancelButtonColor: '#3085d6',
+//     confirmButtonText: 'Yes, delete it!',
+//   }).then((result) => {
+//     if (result.isConfirmed) {
+//       // Handle deletion logic
+//       console.log('result',result);
+//     }
+//   })
+// }
