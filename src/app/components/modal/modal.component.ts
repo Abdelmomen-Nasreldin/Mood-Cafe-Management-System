@@ -13,6 +13,7 @@ import { CATEGORIES, ENGLISH_CATEGORIES } from '../../defines/defines';
 import { MenuService } from '../../services/menu.service';
 import { IMenuItem } from '../../models/menu-item';
 import { Subject, takeUntil } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-modal',
@@ -22,7 +23,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './modal.component.scss',
 })
 export class ModalComponent implements OnInit, OnChanges, OnDestroy {
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   @Input() isModalOpen = false;
   @Input() isEdit = false;
@@ -74,9 +75,9 @@ export class ModalComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     const newMenuItem: IMenuItem = {
-      id: (this.menuLength + 1).toString(),
-      name: this.nameAr,
-      english_name: this.nameEn,
+      id: uuidv4(),
+      name: this.nameAr.trim(),
+      english_name: this.nameEn.trim(),
       price: this.price,
       category: this.category,
     };
