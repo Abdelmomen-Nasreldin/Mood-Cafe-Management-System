@@ -6,6 +6,7 @@ import { ModalService } from '../../services/modal.service';
 import { OrderPrintComponent } from "../order-print/order-print.component";
 import { OrderDetailsComponent } from "../order-details/order-details.component";
 import { OrderStatusService } from '../../services/order-status.service';
+import { NotifyService } from '../../services/notify.service';
 
 @Component({
   selector: 'app-orders-wrapper',
@@ -26,9 +27,10 @@ export class OrdersWrapperComponent {
   statusChangedOrder: IOrder | undefined;
   isModalOpen = false;
   constructor(
-    private _modalService: ModalService,
-    private _orderService: OrderService,
-    private _orderStatusService: OrderStatusService,
+    private readonly _modalService: ModalService,
+    private readonly _orderService: OrderService,
+    private readonly _orderStatusService: OrderStatusService,
+    private readonly _notifyService: NotifyService,
   ) { }
 
   onEditOrder(orderID: string) {
@@ -52,7 +54,12 @@ export class OrdersWrapperComponent {
   }
 
   onChangeOrderDetails(orderStatusAndId: { orderId: string; newStatus: IOrderStatus; }) {
-    this._orderStatusService.changeOrderStatus(orderStatusAndId);
+    this._orderStatusService.changeOrderStatus(orderStatusAndId)
+    .then((res)=> {
+      this.showSuccessAlert();
+      this.closeOderDetailsModal();
+    })
+    .catch((err)=> this.showErrorAlert(err));
   }
 
   openOderDetailsModal() {
@@ -61,5 +68,16 @@ export class OrdersWrapperComponent {
 
   closeOderDetailsModal() {
     this.isModalOpen = false;
+  }
+
+  showSuccessAlert() {
+    this._notifyService.showSuccessAlert();
+  }
+
+  showErrorAlert(err: any) {
+    this._notifyService.showErrorAlert();
+    console.log('====================================');
+    console.error(err);
+    console.log('====================================');
   }
 }

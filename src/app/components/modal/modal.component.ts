@@ -14,6 +14,7 @@ import { MenuService } from '../../services/menu.service';
 import { IMenuItem } from '../../models/menu-item';
 import { Subject, takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { NotifyService } from '../../services/notify.service';
 
 @Component({
   selector: 'app-modal',
@@ -41,7 +42,10 @@ export class ModalComponent implements OnInit, OnChanges, OnDestroy {
   price : number | null = null
   category = '';
   menuLength = 0;
-  constructor(private _menuService: MenuService) {}
+  constructor(
+    private readonly _menuService: MenuService,
+    private readonly _notifyService: NotifyService,
+  ) {}
   ngOnInit(): void {
     this._menuService.getMenuItems().pipe(takeUntil(this.destroy$)).subscribe((menuItems) => {
       this.menuLength = menuItems.length;
@@ -82,8 +86,13 @@ export class ModalComponent implements OnInit, OnChanges, OnDestroy {
       category: this.category,
     };
 
-    this._menuService.addMenuItem(newMenuItem);
-    this.save.emit();
+    this._menuService.addMenuItem(newMenuItem)
+    .then((res)=> {
+      this.showSuccessAlert();
+      this.save.emit();
+    })
+    .catch((err)=> this.showErrorAlert(err));
+
   }
 
   onEdit(): void {
@@ -99,9 +108,13 @@ export class ModalComponent implements OnInit, OnChanges, OnDestroy {
       category: this.category,
     }
 
-    this._menuService.updateMenuItem(this.menuItem.id, partiallyUpdatedItem);
+    this._menuService.updateMenuItem(this.menuItem.id, partiallyUpdatedItem)
+    .then((res)=> {
+      this.showSuccessAlert();
+      this.save.emit();
+    })
+    .catch((err)=> this.showErrorAlert(err));
 
-    this.save.emit();
   }
 
   resetForm() {
@@ -110,6 +123,18 @@ export class ModalComponent implements OnInit, OnChanges, OnDestroy {
     this.price = null;
     this.category = '';
   }
+
+  showSuccessAlert() {
+   return this._notifyService.showSuccessAlert();
+  }
+
+  showErrorAlert(err: any) {
+    console.log('====================================');
+    console.error(err);
+    console.log('====================================');
+    this._notifyService.showErrorAlert();
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

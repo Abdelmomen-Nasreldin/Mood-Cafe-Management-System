@@ -39,7 +39,7 @@ export class OrderStatusService {
       wantedOrder.paidDate = new Date().getTime();
     }
 
-    this._orderService.updateOrder(wantedOrder);
+    return this._orderService.updateOrder(wantedOrder);
   }
 
   // getPaidOrdersByDate(date: string) {

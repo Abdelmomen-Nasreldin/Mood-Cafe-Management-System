@@ -40,7 +40,6 @@ export class OrderDetailsComponent implements OnChanges, OnDestroy{
 
   save() {
     this.changeOrderStatus.emit({ orderId: this.order.orderId, newStatus: this.selectedOrderStatus });
-    this.closeModal.emit();
   }
 
   ngOnDestroy(): void {
