@@ -57,6 +57,7 @@ export class OrdersWrapperComponent {
     this._orderStatusService.changeOrderStatus(orderStatusAndId)
     .then((res)=> {
       this.showSuccessAlert();
+      this.closeOderDetailsModal();
     })
     .catch((err)=> this.showErrorAlert(err));
   }
