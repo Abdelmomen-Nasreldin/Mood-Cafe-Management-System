@@ -34,7 +34,7 @@ export class OrdersPageComponent implements OnInit {
   selectedOrder = 'old'
   printedOrder: IOrder | undefined;
   isLoading = false;
-
+  periodOrders = 'today';
   // Infinite scroll parameters
   limit = 20;
   step = 10;
@@ -58,13 +58,14 @@ export class OrdersPageComponent implements OnInit {
 
     this._orderStatusService.pendingOrders$.pipe(takeUntil(this.destroy$)).subscribe({
       next: (orders) => {
-        // const isCustomDay = period === TRACKING_PERIODS.CUSTOM_DAY;
-      this.allOrders = this._trackingService.getTodayOrdersFromCustomTime(orders, this.selectedTime);
-      // this.allOrders = this.allOrders.filter(order => order.status === OrderStatus.PENDING);
+        if(this.periodOrders === 'today'){
+          this.allOrders = this._trackingService.getTodayOrdersFromCustomTime(orders, this.selectedTime);
+        }else{
+          this.allOrders = this._trackingService.getOrdersFromOtherDays(orders);
+        }
       this.total = calculateOrderTotal(this.allOrders);
       this.filteredOrders = [...this.allOrders];
       this.displayedOrders = this.filteredOrders.slice(0, this.limit);
-      // this.calcQuantities();
       this.sortOrders();
       if (this.customerNameInput) {
         this.customerNameInput.nativeElement.value = "";
@@ -77,6 +78,7 @@ export class OrdersPageComponent implements OnInit {
        }
     });
   }
+
   onTimeChange(){
     this.loadOrders();
   }
@@ -88,6 +90,10 @@ export class OrdersPageComponent implements OnInit {
 
   onOrderChange(){
     this.sortOrders();
+  }
+
+  onPeriodChange(){
+    this.loadOrders();
   }
 
   editOrder(orderId: string) {

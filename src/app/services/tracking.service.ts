@@ -121,6 +121,18 @@ export class TrackingService {
     }
     return [];
   }
+
+  getOrdersFromOtherDays(orders: IOrder[]): IOrder[] {
+    const startHour = 7;
+    const today = new Date();
+    let customStartTime: Date;
+    if (today.getHours() <= 6) {
+      customStartTime = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, startHour, 0, 0);
+    } else {
+      customStartTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startHour, 0, 0);
+    }
+    return orders.filter((order) => new Date(order.date) < customStartTime);
+  }
 }
 
 
