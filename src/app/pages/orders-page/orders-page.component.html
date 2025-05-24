@@ -11,6 +11,7 @@
       <div>
         <span class="font-bold text-roseDark-100">من الساعة </span>
         <select
+          [disabled]="periodOrders !== 'today'"
           class="px-3 py-2 border-2 rounded bg-beige border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
           name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
           @for (item of timeArr; track $index) {
