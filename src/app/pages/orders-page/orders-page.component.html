@@ -2,7 +2,7 @@
   >
     <div class="flex items-center justify-between">
       <h3 class="my-3 text-xl font-bold text-secondary">
-        {{ "طلبات اليوم" + " (" + allOrders.length + ")" }}
+        {{ "طلبات قيد الانتظار" + " (" + allOrders.length + ")" }}
       </h3>
       <h3 class="text-xl font-bold text-secondary">الاجمالي: {{ total }} جنيه</h3>
     </div>
@@ -11,6 +11,7 @@
       <div>
         <span class="font-bold text-roseDark-100">من الساعة </span>
         <select
+          [disabled]="periodOrders !== 'today'"
           class="px-3 py-2 border-2 rounded bg-beige border-cream text-roseDark-100 focus:bg-beige focus:outline-none"
           name="time" id="time" [(ngModel)]="selectedTime" (change)="onTimeChange()">
           @for (item of timeArr; track $index) {
@@ -35,13 +36,22 @@
     <!-- @if (printedOrder) {
     <app-order-print [order]="printedOrder"></app-order-print>
     } -->
+<div class="flex flex-wrap items-center justify-between gap-2 my-2">
+  <div class="flex flex-wrap items-center gap-2 my-2">
+    <p>ابحث بأسم العميل :</p>
+    <input type="search" name="searchOrder" id="searchOrder" (input)="searchByCustomerName($event)" #customerNameInput
+    class="p-1 m-2 border shadow-sm rounded-xl " placeholder="ابحث" />
+  </div>
+  <div>
+    <span class="font-bold text-roseDark-100">الفترة </span>
 
-    <div class="flex flex-wrap items-center gap-2 my-2">
-      <p>ابحث بأسم العميل :</p>
-      <input type="search" name="searchOrder" id="searchOrder" (input)="searchByCustomerName($event)" #customerNameInput
-        class="p-1 m-2 border shadow-sm rounded-xl " placeholder="ابحث" />
-    </div>
-
+    <select class="rounded px-3 py-2 border-2 bg-beige border-cream text-roseDark-100" name="time" id="time"
+      [(ngModel)]="periodOrders" (change)="onPeriodChange()">
+      <option class="hover:bg-roseLight1" value="today">اليوم</option>
+      <option class="hover:bg-roseLight1" value="otherDays">الايام الماضية</option>
+    </select>
+  </div>
+</div>
     <!-- <div class="flex flex-wrap justify-center gap-3 my-5">
       @for (order of filteredOrders; track order.orderId) {
       <app-order-box [order]="order" [isEditAllowed]="true" (editOrder)="editOrder($event)" (printOrder)="printReceipt($event)"></app-order-box>
