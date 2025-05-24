@@ -72,7 +72,7 @@
         <app-orders-wrapper
           [allOrders]="allOrders"
           [filteredOrders]="displayedOrders"
-          [isEditAllowed]="true"
+          [isEditAllowed]="periodOrders === 'today'"
           (editOrder)="editOrder($event)">
         </app-orders-wrapper>
       }
